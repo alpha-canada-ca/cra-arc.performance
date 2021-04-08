@@ -1,6 +1,7 @@
 {
+    "Comingsoon": "Coming soon...",
     "select-date": "Select date range:",
-    "app-title": "Page analytics tool",
+    "app-title": "Usability performance dashboard",
     "Last30days": "Last 30 days",
     "Last7days": "Last 7 days",
     "Yesterday": "Yesterday",
@@ -151,7 +152,7 @@
     "hlp-region-title": "Help for term 'Region'",
     "Feedbackbypage": "Feedback by page",
     "Getdata": "Get data",
-    "BlurbP1":"TEST TEST TEST TEST TEST TESTeb and search analytics data for any existing Canada.ca web page. You can view the analytics data from yesterday, the last 7 days, or the last 30 days.",
+    "BlurbP1":"Use this tool to access web and search analytics data for any existing Canada.ca web page. You can view the analytics data from yesterday, the last 7 days, or the last 30 days.",
     "BlurbP2":"Simply copy and paste the URL of the web page you are interested in into the search bar below. You will then get back data on how many people are visiting a site, where they are coming from, whom they are, what they are doing, and more.",
     "SearchCanada": "Copy and paste a Canada.ca URL",
     "Required": "(required)",
