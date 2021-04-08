@@ -91,7 +91,7 @@ function extractJSON (obj, indent) {
         }
 
 function setQueryParams(url, date) {
-    window.history.pushState("Query Parameters", "Addition of Queries", "?url=" + url + "&date=" + date);
+    window.history.pushState("Query Parameters", "Addition of Queries", "?url=" + url + "&date=" + date + "&lang=" + document.documentElement.lang);
 }
 
 function getSpecifiedParam(object, val) {
@@ -142,6 +142,15 @@ function generateTableHead(table, data, title) {
         let text = document.createTextNode(key);
 
         th.setAttribute("scope", "col")
+        /*
+        if ( text == "CTR" ) {
+            console.log("yes, CTR called")
+            th.appendChild(text + "<sup> <a class=\"fas fa-question-circle fas-1 wb-lbx lbx-modal\" title=\"Help for term 'CTR'\" href=\"#gscctr_content_modal\"></a></sup>")
+        }
+        else {
+            th.appendChild(text);
+        }
+        */
         th.appendChild(text);
         row.appendChild(th);
     }
@@ -609,8 +618,8 @@ const jsonTrendGenerate = (json, day, dates) => {
         var valVarLong = [];
 
         for (var m = moment(dates[0]); m.isBefore(dates[1]); m.add(1, 'days')) {
-            valVar.push( m.format('MMM-DD'));
-            valVarLong.push( m.format('MMMM DD'));
+            valVar.push( m.locale(document.documentElement.lang).format('MMM-DD'));
+            valVarLong.push( m.locale(document.documentElement.lang).format('MMMM DD'));
         }
 
         //console.log(val)
@@ -716,11 +725,13 @@ const jsonTrendGenerate = (json, day, dates) => {
                     label: $.i18n("CurrentYear"),
                     data: val,
                     borderColor: "#56B4E9",
+                    backgroundColor: "#56B4E9",
                     fill: false
                 }, {
                     label: $.i18n("PreviousYear"),
                     data: lval,
                     borderColor: "#009E73",
+                    backgroundColor: "#009E73",
                     fill: false
                 }]
             },
@@ -1724,7 +1735,7 @@ const jsonMetrics = (json, day) => {
 
         provVal = "#provChart";
         provTitle = $.i18n("provTerr");
-        provHeaders = [ "Province or Territory", "Visits" ]
+        provHeaders = [ $.i18n("provTerrHeader"), "Visits" ]
 
         provAlberta = parseInt(rows[albertaNum])
         provBC = parseInt(rows[bcNum])
@@ -1878,8 +1889,8 @@ const jsonGSCGenerate = (json, day) => {
             ctr.push(parseFloat((val['ctr'] * 100)).toFixed(1));
             pos.push(parseFloat(val['position']).toFixed(1));
             */
-            var $date = moment( val['keys'][0] ).format("MMM-DD")
-            var $dateLong = moment( val['keys'][0] ).format("MMMM DD, YYYY")
+            var $date = moment( val['keys'][0] ).locale(document.documentElement.lang).format('MMM-DD');
+            var $dateLong = moment( val['keys'][0] ).locale(document.documentElement.lang).format("MMMM DD, YYYY")
             keys.push( $date );
 
             var obj = {};
