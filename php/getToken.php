@@ -1,12 +1,11 @@
 <?php
 
-require_once('generate_jwt.php');
-require_once('generate_token.php');
-require_once('api_get.php');
-require_once('api_post.php');
-$config = include('config.php');
+require_once('./php/generate_jwt.php');
+require_once('./php/generate_token.php');
+require_once('./php/api_post.php');
+$config = include('config-aa.php');
 
-$fp = fopen("../keys/secret.pem", "r");
+$fp = fopen("./keys/secret.pem", "r");
 $priv_key = fread($fp, 8192);
 fclose($fp);
 

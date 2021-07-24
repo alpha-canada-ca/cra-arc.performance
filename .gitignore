@@ -3,5 +3,8 @@
 **/config-at.php
 **/keys
 php/service-account-credentials.json
-php/config.php
+php/config-aa.php
 php/config-at.php
+secrets_enc/passphrase.txt
+*.txt
+*.pem
