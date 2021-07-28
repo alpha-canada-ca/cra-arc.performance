@@ -480,7 +480,7 @@ function implode_recursive($g, $p) {
         </tr>
       </thead>
       <tbody>
-    <?php foreach ($qry as $row): array_map('htmlentities', $row); ?>
+    <?php foreach ($qry as $row): array_map('htmlentities', null, $row); ?>
         <tr>
           <td><?=implode_recursive('</td><td>', $row);?></td>
         </tr>
@@ -517,7 +517,7 @@ function implode_recursive($g, $p) {
         </tr>
       </thead>
       <tbody>
-    <?php foreach ($qry as $row): array_map('htmlentities', $row); ?>
+    <?php foreach ($qry as $row): array_map('htmlentities', null, $row); ?>
         <tr>
           <td><?=$row['value'];?></td>
           <td><?=$row['data'][3]?></td>
