@@ -9,13 +9,13 @@ COPY docker/performance_php/secrets/php/config-at.php /var/www/html/php/config-a
 COPY docker/performance_php/secrets/php/service-account-credentials.json /var/www/html/php/service-account-credentials.json
 COPY docker/performance_php/secrets/keys /var/www/html/keys
 #COPY docker/performance_php/mongo_connect.php /var/www/html/php/mongo_connect.php
-
 #COPY docker/performance_php/helloworld.php /var/www/html/php/helloworld.php
 COPY index.html /var/www/html/index.html
 COPY demo.php /var/www/html/demo.php
 COPY vendor/ /var/www/html/vendor/
 COPY overview.php /var/www/html/overview.php
-RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/var/www/html --filename=composer
-RUN php -version
 RUN php -r 'opcache_reset();'
+RUN curl -sS https://getcomposer.org/installer | php
+RUN mv composer.phar /usr/local/bin/composer.phar
+RUN alias composer='/usr/local/bin/composer.phar'
 RUN composer --version
