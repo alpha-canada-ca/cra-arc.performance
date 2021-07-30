@@ -1,0 +1,27 @@
+{
+ "@metadata": {
+ "authors": [
+ "Kole Krstev"
+ ],
+ "last-updated": "2019-05-06",
+ "locale": "en",
+ "message-documentation": "qqq"
+ },
+ "welcome": "FRENCH Welcome!",
+ "welcome2": "FRENCH Welcome 2!",
+ "overview-summary-title": "Aperçu du site Web de l'ARC",
+ "menu-overview": "Aperçu",
+ "menu-pages": "Pages",
+ "menu-tasks": "Tâches",
+ "menu-projects": "Projets",
+ "menu-feedback": "Retour d'information",
+ "tab-summary": "Résumé",
+ "tab-webtraffic": "Trafic Web",
+ "tab-pagefeedback": "Commentaires sur les pages",
+ "tab-searchanalytics": "Analyse de recherche",
+ "tab-calldrivers": "Appeler les chauffeurs",
+ "tab-uxtests": "Tests UX",
+ "tab-details": "Détails",
+ "dr-lastweek": "La semaine dernière",
+ "dr-lastmonth": "Le mois dernier"
+}

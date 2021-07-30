@@ -1,0 +1,27 @@
+{
+ "@metadata": {
+ "authors": [
+ "Kole Krstev"
+ ],
+ "last-updated": "2019-05-06",
+ "locale": "en",
+ "message-documentation": "qqq"
+ },
+ "welcome": "Welcome!",
+ "welcome2": "Welcome 2!",
+ "overview-summary-title": "Overview of CRA website",
+ "menu-overview": "Overview",
+ "menu-pages": "Pages",
+ "menu-tasks": "Tasks",
+ "menu-projects": "Projects",
+ "menu-feedback": "Feedback",
+ "tab-summary": "Summary",
+ "tab-webtraffic": "Web traffic",
+ "tab-pagefeedback": "Page feedback",
+ "tab-searchanalytics": "Search analytics",
+ "tab-calldrivers": "Call drivers",
+ "tab-uxtests": "UX tests",
+ "tab-details": "Details",
+ "dr-lastweek": "Last week",
+ "dr-lastmonth": "Last month"
+}

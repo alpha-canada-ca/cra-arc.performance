@@ -2,7 +2,9 @@ FROM nginx:alpine
 COPY docker/performance_nginx/nginx.conf /etc/nginx/nginx.conf
 COPY assets/ /var/www/html/assets/
 COPY js/ /var/www/html/js/
+COPY css/ /var/www/html/css/
 COPY php/ /var/www/html/php/
+COPY includes/ /var/www/html/includes/
 COPY index.html /var/www/html/index.html
 COPY demo/ /var/www/html/demo/
 COPY vendor/ /var/www/html/vendor/
