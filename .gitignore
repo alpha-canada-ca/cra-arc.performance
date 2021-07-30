@@ -6,5 +6,6 @@ php/service-account-credentials.json
 php/config-aa.php
 php/config-at.php
 secrets_enc/passphrase.txt
+vendor/
 *.txt
 *.pem
