@@ -15,8 +15,9 @@ COPY demo.php /var/www/html/demo.php
 COPY vendor/ /var/www/html/vendor/
 COPY overview.php /var/www/html/overview.php
 COPY upd_overview.php /var/www/html/upd_overview.php
-RUN php -r 'opcache_reset();'
+
 RUN curl -sS https://getcomposer.org/installer | php
-RUN mv composer.phar /usr/local/bin/composer.phar
-RUN alias composer='/usr/local/bin/composer.phar'
+RUN mv composer.phar /var/www/html/composer.phar
+RUN alias composer='/var/www/html/composer.phar'
 RUN composer --version
+RUN php -r 'opcache_reset();'
