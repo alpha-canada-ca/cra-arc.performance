@@ -2,7 +2,7 @@
 <?php include "./includes/upd_sidebar.php"; ?>
 <?php include "./includes/date-ranges.php"; ?>
 <?php include "./includes/functions.php"; ?>
-<?php ini_set('display_errors', 0);
+<?php //ini_set('display_errors', 1);
  ?>
 
 <!--Translation Code start-->
@@ -16,7 +16,6 @@
 <script src="./assets/i18n/js/jquery.i18n.emitter.js"></script>
 <script src="./assets/i18n/js/jquery.i18n.emitter.bidi.js"></script>
 <script src="./assets/i18n/js/global.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/4.13.0/d3.min.js"></script>
 
 <!--Main content start-->
 
@@ -108,18 +107,8 @@ if ($succ === 1)
     $startHeader = (new DateTime($weekStart))->format($iso);
     $endHeader = (new DateTime($weekEnd))->modify('-1 days')
         ->format($iso);
-    // Weekly date ranges for the Header
+
     $datesHeader = [[$startLastHeader, $endLastHeader], [$startHeader, $endHeader]];
-
-    // Added by Kole - Monthly date ranges for the Header
-    $monthStartHeader = (new DateTime("first day of last month midnight"))->format($iso);
-    $monthEndHeader = (new DateTime("last day of last month midnight"))->format($iso);
-
-    $previousMonthStartHeader = (new DateTime("first day of -2 month midnight"))->format($iso);
-    $previousMonthEndHeader = (new DateTime("last day of -2 month midnight"))->format($iso);
-
-    // Monthly date ranges for the Header
-    $datesHeaderMonth = [[$previousMonthStartHeader, $previousMonthEndHeader], [$monthStartHeader, $monthEndHeader]];
 
 }
 
@@ -133,135 +122,152 @@ if ($succ === 1)
           <li><a class="dropdown-item active" href="#" aria-current="true" data-i18n="dr-lastweek">Last week</a></li>
           <li><a class="dropdown-item" href="#" data-i18n="dr-lastmonth">Last month</a></li>
         </ul>
+        <!-- Remove this JUST for preview (gets all variables from date-ranges.php)-->
+        <p>
+          <?php
+/*
+              echo "Start Date Last week: ".$startDate_lastweek."<br/>";
+              echo "End Date Last week: ".$endDate_lastweek."<br/>";
 
+              echo "Start Date 2 weeks ago: ".$startDate_last2weeks."<br/>";
+              echo "End Date 2 weeks ago: ".$endDate_last2weeks."<br/>";
+
+              echo "Start Date Last month: ".$startDate_lastmonth."<br/>";
+              echo "End Date Last month: ".$endDate_lastmonth."<br/>";
+
+              echo "Start Date 2 months ago: ".$startDate_last2months."<br/>";
+              echo "End Date 2 months ago: ".$endDate_last2months."<br/>";
+*/
+?>
+        </p>
       </div>
     </div>
 
 
 
         <?php
-        $urls = "";
-        $url = "";
-        if (substr($url, 0, 8) == "https://")
-        {
-            $urls = substr($url, 8, strlen($url));
-        }
-        else
-        {
-            $urls = $url;
-        }
+$urls = "";
+$url = "";
+if (substr($url, 0, 8) == "https://")
+{
+    $urls = substr($url, 8, strlen($url));
+}
+else
+{
+    $urls = $url;
+}
 
-        $r = new ApiClient($config[0]['ADOBE_API_KEY'], $config[0]['COMPANY_ID'], $_SESSION['token']);
+$r = new ApiClient($config[0]['ADOBE_API_KEY'], $config[0]['COMPANY_ID'], $_SESSION['token']);
 
-        $temp = ['aa-ovrvw-smmry-metrics', 'aa-ovrvw-smmry-fwylf', 'aa-ovrvw-smmry-trnd', 'aa-ovrvw-smmry-tsks']; //, 'fwylf' ];
-        $result = array();
-        $j = array();
+$temp = ['aa-ovrvw-smmry-metrics', 'aa-ovrvw-smmry-fwylf', 'aa-ovrvw-smmry-trnd', 'aa-ovrvw-smmry-tsks']; //, 'fwylf' ];
+$result = array();
+$j = array();
 
-        foreach ($temp as $t)
-        {
+foreach ($temp as $t)
+{
 
-            $json = $data[$t];
-            $json = sprintf($json, $urls);
+    $json = $data[$t];
+    $json = sprintf($json, $urls);
 
-            $json = str_replace(array(
-                "*previousMonthStart*",
-                "*previousMonthEnd*",
-                "*monthStart*",
-                "*monthEnd*",
-                "*previousWeekStart*",
-                "*previousWeekEnd*",
-                "*weekStart*",
-                "*weekEnd*"
-            ) , array(
-                $previousMonthStart,
-                $previousMonthEnd,
-                $monthStart,
-                $monthEnd,
-                $previousWeekStart,
-                $previousWeekEnd,
-                $weekStart,
-                $weekEnd
-            ) , $json);
-            //$result = api_post($config[0]['ADOBE_API_KEY'], $config[0]['COMPANY_ID'], $_SESSION['token'], $api);
-            $result[] = $r->requestEntity($json);
-            $j[] = $json;
+    $json = str_replace(array(
+        "*previousMonthStart*",
+        "*previousMonthEnd*",
+        "*monthStart*",
+        "*monthEnd*",
+        "*previousWeekStart*",
+        "*previousWeekEnd*",
+        "*weekStart*",
+        "*weekEnd*"
+    ) , array(
+        $previousMonthStart,
+        $previousMonthEnd,
+        $monthStart,
+        $monthEnd,
+        $previousWeekStart,
+        $previousWeekEnd,
+        $weekStart,
+        $weekEnd
+    ) , $json);
+    //$result = api_post($config[0]['ADOBE_API_KEY'], $config[0]['COMPANY_ID'], $_SESSION['token'], $api);
+    $result[] = $r->requestEntity($json);
+    $j[] = $json;
 
-        }
+}
 
-        //echo var_dump($result[0]);
-        foreach ($result as $r)
-        {
+//echo var_dump($result[0]);
+foreach ($result as $r)
+{
 
-        }
+}
 
-        $res = json_decode($result[0], true);
-        $metrics = $res["summaryData"]["filteredTotals"];
+$res = json_decode($result[0], true);
+$metrics = $res["summaryData"]["filteredTotals"];
 
-        $res2 = json_decode($result[1], true);
-        $metrics2 = $res2["summaryData"]["filteredTotals"];
+$res2 = json_decode($result[1], true);
+$metrics2 = $res2["summaryData"]["filteredTotals"];
 
-        $aaResultTrend = json_decode($result[2], true);
-        $aaMetricsTrend = $aaResultTrend["rows"];
+$aaResultTrend = json_decode($result[2], true);
+$aaMetricsTrend = $aaResultTrend["rows"];
 
-        $aaTrendWeeks = array_slice($aaMetricsTrend, -14);
-        $aaTrendLastWeek = array_slice($aaTrendWeeks, 0, 7);
-        $aaTrendWeek = array_slice($aaTrendWeeks, -7);
+$aaTrendWeeks = array_slice($aaMetricsTrend, -14);
+$aaTrendLastWeek = array_slice($aaTrendWeeks, 0, 7);
+$aaTrendWeek = array_slice($aaTrendWeeks, -7);
 
-        $aaTasks = json_decode($result[3], true);
-        $aaTasksStats = $aaTasks["rows"];
+$aaTasks = json_decode($result[3], true);
+$aaTasksStats = $aaTasks["rows"];
 
-        $taskArray = array();
-        foreach ($aaTasksStats as $task)
-        {
-            $taskArray[] = $task['value'];
-        }
+$taskArray = array();
+foreach ($aaTasksStats as $task)
+{
+    $taskArray[] = $task['value'];
+}
 
-        $fwylfYes = 0;
-        $fwylfNo = 4;
-        $pv = 8;
-        $visitors = 12;
-        $visits = 16;
+$fwylfYes = 0;
+$fwylfNo = 4;
+$pv = 8;
+$visitors = 12;
+$visits = 16;
 
-        function differ($old, $new)
-        {
-            return (($new - $old) / $old);
-        }
+function differ($old, $new)
+{
+    return (($new - $old) / $old);
+}
 
-        function numDiffer($old, $new)
-        {
-            return ($new - $old);
-        }
+function numDiffer($old, $new)
+{
+    return ($new - $old);
+}
 
-        function posOrNeg($num)
-        {
-            if ($num > 0) return 'text-success:arrow_upward';
-            else if ($num == 0) return 'text-warning:horizontal_rule';
-            else return 'text-danger:arrow_downward';
-        }
+function posOrNeg($num)
+{
+    if ($num > 0) return 'text-success:arrow_upward';
+    else if ($num == 0) return 'text-warning:horizontal_rule';
+    else return 'text-danger:arrow_downward';
+}
 
-        function posOrNeg2($num)
-        {
-            if ($num > 0) return 'text-success:+';
-            else if ($num == 0) return 'text-warning:';
-            else return 'text-danger:-';
-        }
+function posOrNeg2($num)
+{
+    if ($num > 0) return 'text-success:+';
+    else if ($num == 0) return 'text-warning:';
+    else return 'text-danger:-';
+}
 
-        function percent($num)
-        {
-            return round($num * 100, 0) . '%';
-        }
+function percent($num)
+{
+    return round($num * 100, 0) . '%';
+}
 
-        $diff = differ($metrics[$visitors + 2], $metrics[$visitors + 3]);
-        $pos = posOrNeg($diff);
-        $pieces = explode(":", $pos);
+$diff = differ($metrics[$visitors + 2], $metrics[$visitors + 3]);
+$pos = posOrNeg($diff);
+$pieces = explode(":", $pos);
 
-        $diff = abs($diff);
+$diff = abs($diff);
 
-        $fwylfICantFindTheInfo = 0;
-        $fwylfOtherReason = 4;
-        $fwylfInfoHardToUnderstand = 8;
-        $fwylfError = 12;
-        ?>
+$fwylfICantFindTheInfo = 0;
+$fwylfOtherReason = 4;
+$fwylfInfoHardToUnderstand = 8;
+$fwylfError = 12;
+?>
 
         <div class="row mb-3 gx-3">
           <div class="col-lg-4 col-md-6 col-sm-12">
@@ -269,7 +275,7 @@ if ($succ === 1)
               <div class="card-body card-pad pt-2">
                 <h3 class="card-title"><span class="card-tooltip h6" data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-placement="right" data-bs-content="Description of what this means">Unique visitors</span></h3>
                   <div class="row">
-                    <div class="col-lg-8 col-md-8 col-sm-8"><span class="h3 text-nowrap"><?=number_format($metrics[$visitors + 3]) ?></span><span class="small"><?//=number_format($metrics[$visitors + 2]) ?></span></div>
+                    <div class="col-lg-8 col-md-8 col-sm-8"><span class="h3 text-nowrap"><?=number_format($metrics[$visitors + 3]) ?></span><span class="small"><?=number_format($metrics[$visitors + 2]) ?></span></div>
                     <div class="col-lg-4 col-md-4 col-sm-4 text-end"><span class="h3 <?=$pieces[0] ?> text-nowrap"><span class="material-icons"><?=$pieces[1] ?></span> <?=percent($diff) ?></span></div>
                 </div>
               </div>
@@ -287,7 +293,7 @@ $diff = abs($diff);
               <div class="card-body card-pad pt-2">
                 <h3 class="card-title"><span class="card-tooltip h6" data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-placement="right" data-bs-content="Description of what this means">Visits to all CRA pages</span></h3>
                   <div class="row">
-                    <div class="col-md-8 col-sm-6"><span class="h3 text-nowrap"><?=number_format($metrics[$visits + 3]) ?></span><span class="small"><?//=number_format($metrics[$visits + 2]) ?></span></div>
+                    <div class="col-md-8 col-sm-6"><span class="h3 text-nowrap"><?=number_format($metrics[$visits + 3]) ?></span><span class="small"><?=number_format($metrics[$visits + 2]) ?></span></div>
                     <div class="col-lg-4 col-md-4 col-sm-4 text-end"><span class="h3 <?=$pieces[0] ?> text-nowrap"><span class="material-icons"><?=$pieces[1] ?></span> <?=percent($diff) ?></span></div>
                 </div>
               </div>
@@ -305,7 +311,7 @@ $diff = abs($diff);
               <div class="card-body card-pad pt-2">
                 <h3 class="card-title"><span class="card-tooltip h6" data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-placement="right" data-bs-content="Description of what this means">Page views</span></h3>
                   <div class="row">
-                    <div class="col-sm-8"><span class="h3 text-nowrap"><?=number_format($metrics[$pv + 3]) ?></span><span class="small"><?//=number_format($metrics[$pv + 2]) ?></span></div>
+                    <div class="col-sm-8"><span class="h3 text-nowrap"><?=number_format($metrics[$pv + 3]) ?></span><span class="small"><?=number_format($metrics[$pv + 2]) ?></span></div>
                     <div class="col-lg-4 col-md-4 col-sm-4 text-end"><span class="h3 <?=$pieces[0] ?> text-nowrap"><span class="material-icons"><?=$pieces[1] ?></span> <?=percent($diff) ?></span></div>
                 </div>
               </div>
@@ -319,10 +325,10 @@ $diff = abs($diff);
           <div class="card-body pt-2">
             <h3 class="card-title"><span class="card-tooltip h6" data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-placement="right" data-bs-content="Description of what this means" data-bs-original-title="" title="">Traffic breakdown compared to call volume</span></h3>
             <!-- Chart.js temporary placeholder-->
-            <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.4.1/chart.min.js" integrity="sha512-5vwN8yor2fFT9pgPS9p9R7AszYaNn0LkQElTXIsZFCL7ucT8zDCAqlQXDdaqgA1mZP47hdvztBMsIoFxq/FyyQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script> -->
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.4.1/chart.min.js" integrity="sha512-5vwN8yor2fFT9pgPS9p9R7AszYaNn0LkQElTXIsZFCL7ucT8zDCAqlQXDdaqgA1mZP47hdvztBMsIoFxq/FyyQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
             <canvas id="mixed-chart" width="1262" height="315" style="display: block; box-sizing: border-box; height: 315px; width: 1262px;"></canvas>
-            <!-- <script>
+            <script>
             new Chart(document.getElementById("mixed-chart"), {
                 type: 'bar',
                 data: {
@@ -365,7 +371,7 @@ $diff = abs($diff);
                   legend: { display: false }
                 }
             });
-            </script> -->
+            </script>
              <details class="details-chart">
                   <summary>View table data</summary>
                   <div class="table-responsive">
@@ -392,7 +398,7 @@ foreach ($aaTrendLastWeek as $trend)
 }
 
 ?>
-
+        
 
       </tbody>
     </table>
@@ -420,7 +426,7 @@ foreach ($aaTrendWeek as $trend)
 }
 
 ?>
-
+        
 
       </tbody>
     </table>
@@ -489,7 +495,7 @@ $diff = abs($diff);
               <div class="card-body card-pad pt-2">
                 <h3 class="card-title"><span class="card-tooltip h6" data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-placement="right" data-bs-content="Description of what this means">Total impressions from Google</span></h3>
                   <div class="row">
-                    <div class="col-lg-8 col-md-8 col-sm-8"><span class="h3 text-nowrap"><?=number_format($imp) ?></span><span class="small"><?//=number_format($lastImp) ?></span></div>
+                    <div class="col-lg-8 col-md-8 col-sm-8"><span class="h3 text-nowrap"><?=number_format($imp) ?></span><span class="small"><?=number_format($lastImp) ?></span></div>
                     <div class="col-lg-4 col-md-4 col-sm-4 text-end"><span class="h3 <?=$pieces[0] ?> text-nowrap"><span class="material-icons"><?=$pieces[1] ?></span> <?=percent($diff) ?></span></div>
                 </div>
               </div>
@@ -509,7 +515,7 @@ $diff = abs($diff);
               <div class="card-body card-pad pt-2">
                 <h3 class="card-title"><span class="card-tooltip h6" data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-placement="right" data-bs-content="Description of what this means">Click through rate from Google</span></h3>
                   <div class="row">
-                    <div class="col-md-8 col-sm-6"><span class="h3 text-nowrap"><?=percent($ctr) ?></span><span class="small"><?//=percent($lastCtr) ?></span></div>
+                    <div class="col-md-8 col-sm-6"><span class="h3 text-nowrap"><?=percent($ctr) ?></span><span class="small"><?=percent($lastCtr) ?></span></div>
                     <div class="col-lg-4 col-md-4 col-sm-4 text-end"><span class="h3 <?=$pieces[0] ?> text-nowrap"><span class="material-icons"><?=$pieces[1] ?></span> <?=percent($diff) ?></span></div>
                 </div>
               </div>
@@ -528,7 +534,7 @@ $diff = abs($diff);
               <div class="card-body card-pad pt-2">
                 <h3 class="card-title"><span class="card-tooltip h6" data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-placement="right" data-bs-content="Description of what this means">Average rank on Google</span></h3>
                   <div class="row">
-                    <div class="col-sm-8"><span class="h3 text-nowrap"><?=number_format($pos) ?></span><span class="small"><?//=number_format($lastPos) ?></span></div>
+                    <div class="col-sm-8"><span class="h3 text-nowrap"><?=number_format($pos) ?></span><span class="small"><?=number_format($lastPos) ?></span></div>
                     <div class="col-lg-4 col-md-4 col-sm-4 text-end"><span class="h3 <?=$pieces[0] ?> text-nowrap"><span class="material-icons"><?=$pieces[1] ?></span> <?=$diff ?></span></div>
                 </div>
               </div>
@@ -657,7 +663,7 @@ $sumNumUsers = number_format(array_sum($con1));
                     $diff = abs($diff);
                     ?>
                     <td><span class="<?=$pieces[0]?>"><?=$pieces[1]?> <?=percent($diff)?></span></td>
-                    <td><span><strong><?=$row['data'][3]?></strong></span> <span class="small"><?//=$row['data'][2]?></span></td>
+                    <td><span><strong><?=$row['data'][3]?></strong></span> <span class="small"><?=$row['data'][2]?></span></td>
                   </tr>
               <?php } ?>
                 </tbody>
@@ -722,8 +728,8 @@ $sumNumUsers = number_format(array_sum($con1));
         <div class="card">
           <div class="card-body pt-2">
             <h3 class="card-title"><span class="card-tooltip h6" data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-placement="right" data-bs-content="Description of what this means" data-bs-original-title="" title="">Total calls by inquiry line</span></h3>
-             <canvas id="myChart" width="1262" height="315" style="display: block; box-sizing: border-box; height: 315px; width: 1262px;"></canvas>
-            <!--<script>
+            <canvas id="myChart" width="1262" height="315" style="display: block; box-sizing: border-box; height: 315px; width: 1262px;"></canvas>
+            <script>
             var ctx = document.getElementById('myChart');
             var myChart = new Chart(ctx, {
                 type: 'bar',
@@ -758,7 +764,7 @@ $sumNumUsers = number_format(array_sum($con1));
                     }
                 }
             });
-            </script> -->
+            </script>
             <details class="details-chart">
               <summary>View table data</summary>
               <?php
@@ -802,121 +808,30 @@ endif;
         <div class="card">
           <div class="card-body pt-2">
             <h3 class="card-title"><span class="card-tooltip h6" data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-placement="right" data-bs-content="Description of what this means" data-bs-original-title="" title="">Did you find what you were looking for?</span></h3>
-              <div class="card-body pt-2" id="d3_dyfwywlf_barchart"></div>
-                <!-- Did you find what you werel looking - D3 100% Stacked Bar chart -->
-                <?php
-
-                  $d3Data_DYFWYWLF_DateRanges = array($datesHeaderMonth[0][0].'-'.$datesHeaderMonth[0][1],$datesHeaderMonth[1][0].'-'.$datesHeaderMonth[1][1],$datesHeader[0][0].'-'.$datesHeader[0][1],$datesHeader[1][0].'-'.$datesHeader[1][1]); // previous $a1
-                  $d3Data_DYFWYWLF_subgroups =  array("Yes","Yes","Yes","Yes","No","No","No","No"); // previous $b1
-                  $d3Data_DYFWYWLF_data = array_slice($metrics, 0, 8); // previous $c1
-
-                  for ($i = 0; $i < 4; ++$i) {
-                    $final_array["dateRange"] = $d3Data_DYFWYWLF_DateRanges[$i];
-                    $final_array["Yes"] = $d3Data_DYFWYWLF_data[$i];
-                    $final_array["No"] = $d3Data_DYFWYWLF_data[$i+4];
-                    $new_array[]=$final_array;
+            <canvas id="bar-chart" width="602" height="338" style="display: block; box-sizing: border-box; height: 338px; width: 602px;"></canvas>
+            <script>
+            new Chart(document.getElementById("bar-chart"), {
+                type: 'bar',
+                data: {
+                  labels: ["Africa", "Asia"],
+                  datasets: [
+                    {
+                      label: "Population (millions)",
+                      backgroundColor: ["#f57f17", "#2e5ea7"],
+                      barPercentage: 0.5,
+                      data: [2478,5267]
+                    }
+                  ]
+                },
+                options: {
+                  legend: { display: false },
+                  title: {
+                    display: true,
+                    text: 'Predicted world population (millions) in 2050'
                   }
-                  //$mydata = json_encode($new_array);
-                  //just present the Weekly date range data - index 2 and 3 from new_array
-                  $mydata = json_encode(array_slice($new_array, 2)); ;
-
-                  $subgroups = json_encode(array("Yes", "No"));
-
-                  //$groups = json_encode(array_unique($d3Data_DYFWYWLF_DateRanges));
-                  //just present the Weekly date ranges
-                  $groups = json_encode(array($d3Data_DYFWYWLF_DateRanges[2],$d3Data_DYFWYWLF_DateRanges[3]));
-
-                  ?>
-                  <script>
-
-                  // set the dimensions and margins of the graph
-                  width = parseInt(d3.select('#d3_dyfwywlf_barchart').style('width'), 10)
-                  height = width / 1.5;
-                  //alert("hellp");
-                  var margin = {top: 10, right: 30, bottom: 30, left: 30},
-                      width = width - margin.left - margin.right,
-                      height = height - margin.top - margin.bottom;
-
-                  // append the svg object to the body of the page
-                  var svg_new = d3.select("#d3_dyfwywlf_barchart")
-                    .append("svg")
-                      .attr("width", width + margin.left + margin.right)
-                      .attr("height", height + margin.top + margin.bottom)
-                    .append("g")
-                      .attr("transform",
-                            "translate(" + margin.left + "," + margin.top + ")");
-
-                    var data = <?=$mydata?>;
-
-                    var subgroups = <?=$subgroups?>;
-
-                    // List of groups = species here = value of the first column called group -> I show them on the X axis
-                    //var groups = d3.map(data, function(d){return(d.group)}).keys()
-                    var groups = <?=$groups?>;
-
-                    // Add X axis
-                    var x = d3.scaleBand()
-                        .domain(groups)
-                        .range([0, width])
-                        .padding([0.5])
-                    svg_new.append("g")
-                      .attr("transform", "translate(0," + height + ")")
-                      .call(d3.axisBottom(x).tickSizeOuter(0));
-
-                    // Add Y axis
-                    var y = d3.scaleLinear()
-                      .domain([0, 100])
-                      .range([ height, 0 ]);
-                    svg_new.append("g")
-                      .call(d3.axisLeft(y).ticks(5));
-
-                    // color palette = one color per subgroup
-                    var color = d3.scaleOrdinal()
-                      .domain(subgroups)
-                      .range(['#345EA5','#F17F2B'])
-
-                    // Normalize the data -> sum of each group must be 100!
-
-                    dataNormalized = []
-                    data.forEach(function(d){
-                      // Compute the total
-                      tot = 0
-                      for (i in subgroups){ name=subgroups[i] ; tot += +d[name]; }
-                      // Now normalize
-                      for (i in subgroups){ name=subgroups[i] ; d[name] = d[name] / tot * 100; }
-                    })
-
-                    //stack the data? --> stack per subgroup
-                    var stackedData = d3.stack()
-                      .keys(subgroups)
-                      (data)
-                    //console.log(stackedData)
-                    // Show the bars
-                    svg_new.append("g")
-                      .selectAll("g")
-                      // Enter in the stack data = loop key per key = group per group
-                      .data(stackedData)
-                      .enter().append("g")
-                        .attr("fill", function(d) { return color(d.key); })
-                        .selectAll("rect")
-                        // enter a second time = loop subgroup per subgroup to add all rectangles
-                        .data(function(d) { return d; })
-                        .enter().append("rect")
-                          .attr("x", function(d) { return x(d.data.dateRange); })
-                          .attr("y", function(d) { return y(d[1]); })
-                          .attr("height", function(d) { return y(d[0]) - y(d[1]); })
-                          .attr("width",x.bandwidth())
-                  //})
-
-                  svg_new.selectAll(".tick text")
-                     //.attr("class","axis_labels")
-                     .style("font-size","14px")
-                     .style("fill","#666");
-
-                  </script>
-
-
-
+                }
+            });
+          </script>
             <details class="details-chart">
               <summary>View table data</summary>
               <div class="table-responsive">
@@ -944,7 +859,7 @@ endif;
                       <td><?=number_format($metrics[$fwylfNo + 1]) ?></td>
                       <td><?=number_format($metrics[$fwylfNo + 2]) ?></td>
                       <td><?=number_format($metrics[$fwylfNo + 3]) ?></td>
-                    </tr>
+                    </tr>        
 
                   </tbody>
                 </table>
@@ -957,127 +872,30 @@ endif;
         <div class="card">
           <div class="card-body pt-2">
             <h3 class="card-title"><span class="card-tooltip h6" data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-placement="right" data-bs-content="Description of what this means" data-bs-original-title="" title="">What was wrong?</span></h3>
-              <div class="card-body pt-2" id="d3_www_barchart"></div>
-                <!-- Did you find what you werel looking - WHAT WAS WRONG D3 100% Stacked Bar chart -->
-                <?php
-
-                $d3Data_DYFWYWLF_DateRanges = array($datesHeaderMonth[0][0].'-'.$datesHeaderMonth[0][1],$datesHeaderMonth[1][0].'-'.$datesHeaderMonth[1][1],$datesHeader[0][0].'-'.$datesHeader[0][1],$datesHeader[1][0].'-'.$datesHeader[1][1]); // previous $a1
-                $d3Data_WWW_subgroups =  array("Yes","Yes","Yes","Yes","No","No","No","No"); // previous $b1
-                $d3Data_WWW_data = $metrics2; // previous $c1
-
-                for ($i = 0; $i < 4; ++$i) {
-                  $final_www_array["dateRange"] = $d3Data_DYFWYWLF_DateRanges[$i];
-                  $final_www_array["I can't find the info"] = $d3Data_WWW_data[$i];
-                  $final_www_array["Other reason"] = $d3Data_WWW_data[$i+4];
-                  $final_www_array["Info is hard to understand"] = $d3Data_WWW_data[$i+8];
-                  $final_www_array["Error/something didn't work"] = $d3Data_WWW_data[$i+12];
-                  $new_www_array[]=$final_www_array;
-
+            <canvas id="bar-chart2" width="602" height="338" style="display: block; box-sizing: border-box; height: 338px; width: 602px;"></canvas>
+            <script>
+            new Chart(document.getElementById("bar-chart2"), {
+                type: 'bar',
+                data: {
+                  labels: ["Africa", "Asia"],
+                  datasets: [
+                    {
+                      label: "Population (millions)",
+                      backgroundColor: ["#fbc02d", "#26a69a"],
+                      barPercentage: 0.5,
+                      data: [2478,5267]
+                    }
+                  ]
+                },
+                options: {
+                  legend: { display: false },
+                  title: {
+                    display: true,
+                    text: 'Predicted world population (millions) in 2050'
+                  }
                 }
-                //$my_www_data = json_encode($new_www_array);
-                //just present the Weekly date range data - index 2 and 3 from new_array
-                $my_www_data = json_encode(array_slice($new_www_array, 2));
-
-                $subgroups_www = json_encode(array("I can't find the info", "Other reason","Info is hard to understand","Error/something didn't work"));
-
-                //$groups_www = json_encode(array_unique($d3Data_DYFWYWLF_DateRanges));
-                //just present the Weekly date ranges
-                $groups_www = json_encode(array($d3Data_DYFWYWLF_DateRanges[2],$d3Data_DYFWYWLF_DateRanges[3]));
-
-                ?>
-                <script>
-
-                // set the dimensions and margins of the graph
-                width = parseInt(d3.select('#d3_www_barchart').style('width'), 10)
-                height = width / 1.5;
-                //alert("hellp");
-                var margin = {top: 10, right: 30, bottom: 30, left: 30},
-                    width = width - margin.left - margin.right,
-                    height = height - margin.top - margin.bottom;
-
-                // append the svg object to the body of the page
-                var svg = d3.select("#d3_www_barchart")
-                  .append("svg")
-                    .attr("width", width + margin.left + margin.right)
-                    .attr("height", height + margin.top + margin.bottom)
-                  .append("g")
-                    .attr("transform",
-                          "translate(" + margin.left + "," + margin.top + ")");
-
-                  var data = <?=$my_www_data?>;
-
-                  // List of subgroups = header of the csv files = soil condition here
-
-                  var subgroups = <?=$subgroups_www?>;
-
-                  // List of groups = species here = value of the first column called group
-                  //var groups = d3.map(data, function(d){return(d.group)}).keys()
-                  var groups = <?=$groups_www?>;
-
-                  // Add X axis
-                  var x = d3.scaleBand()
-                      .domain(groups)
-                      .range([0, width])
-                      .padding([0.5])
-                  svg.append("g")
-                    //.attr("class", "axis_labels")
-                    .attr("transform", "translate(0," + height + ")")
-                    .call(d3.axisBottom(x).tickSizeOuter(0));
-
-                  // Add Y axis
-                  var y = d3.scaleLinear()
-                    .domain([0, 100])
-                    .range([ height, 0 ]);
-                  svg.append("g")
-                    //.attr("class", "axis_labels")
-                    .call(d3.axisLeft(y).ticks(5));
-
-
-                  // color palette = one color per subgroup
-                  var color = d3.scaleOrdinal()
-                    .domain(subgroups)
-                    .range(['#345EA5','#6CB5F3','#36A69A','#F8C040'])
-
-                  // Normalize the data -> sum of each group must be 100!
-
-                  dataNormalized = []
-                  data.forEach(function(d){
-                    // Compute the total
-                    tot = 0
-                    for (i in subgroups){ name=subgroups[i] ; tot += +d[name]; }
-                    // Now normalize
-                    for (i in subgroups){ name=subgroups[i] ; d[name] = d[name] / tot * 100; }
-                  })
-
-                  //stack the data? --> stack per subgroup
-                  var stackedData = d3.stack()
-                    .keys(subgroups)
-                    (data)
-                  //console.log(stackedData)
-                  // Show the bars
-                  svg.append("g")
-                    .selectAll("g")
-                    // Enter in the stack data = loop key per key = group per group
-                    .data(stackedData)
-                    .enter().append("g")
-                      .attr("fill", function(d) { return color(d.key); })
-                      .selectAll("rect")
-                      // enter a second time = loop subgroup per subgroup to add all rectangles
-                      .data(function(d) { return d; })
-                      .enter().append("rect")
-                        .attr("x", function(d) { return x(d.data.dateRange); })
-                        .attr("y", function(d) { return y(d[1]); })
-                        .attr("height", function(d) { return y(d[0]) - y(d[1]); })
-                        .attr("width",x.bandwidth())
-                //})
-
-                svg.selectAll(".tick text")
-                   //.attr("class","axis_labels")
-                   .style("font-size","14px")
-                   .style("fill","#666");
-
-                </script>
-
+            });
+          </script>
             <details class="details-chart">
               <summary>View table data</summary>
               <div class="table-responsive">

@@ -17,6 +17,7 @@ COPY demo.php /var/www/html/demo.php
 COPY vendor/ /var/www/html/vendor/
 COPY overview.php /var/www/html/overview.php
 COPY upd_overview.php /var/www/html/upd_overview.php
+COPY upd_overview_orig.php /var/www/html/upd_overview_orig.php
 
 RUN curl -sS https://getcomposer.org/installer | php
 RUN mv composer.phar /var/www/html/composer.phar
