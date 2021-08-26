@@ -1,15 +1,12 @@
 {
  "@metadata": {
  "authors": [
- "Kole Krstev"
+ "Kole Krstev","Adam Monsour","Anthony Debassige", "Spencer Griffin"
  ],
- "last-updated": "2019-05-06",
+ "last-updated": "2021-08-10",
  "locale": "en",
  "message-documentation": "qqq"
  },
- "welcome": "FRENCH Welcome!",
- "welcome2": "FRENCH Welcome 2!",
- "overview-summary-title": "Aperçu du site Web de l'ARC",
  "menu-overview": "Aperçu",
  "menu-pages": "Pages",
  "menu-tasks": "Tâches",
@@ -23,5 +20,18 @@
  "tab-uxtests": "Tests UX",
  "tab-details": "Détails",
  "dr-lastweek": "La semaine dernière",
- "dr-lastmonth": "Le mois dernier"
+ "dr-lastmonth": "Le mois dernier",
+ "dr-alltime": "Tout le temps",
+ "compared_to": "par rapport à",
+ "overview-title": "Aperçu du site Web de l'ARC",
+ "tests_completed": "Projets de test UX terminés (tous les temps)",
+ "tests_last_fiscal_year": "Tests de l'exercice précédent",
+ "tests_last_quarter": "Tests du dernier trimestre",
+ "total_tasks_tested": "Total des tâches testées",
+ "number_of_participants": "Nombre de participants",
+ "table_title_testing_results": "Résultats des tests UX par projet",
+ "ux_projects": "Projets UX",
+ "type": "Taper",
+ "date": "Date",
+ "avg_success_rate": "Taux de réussite moyen"
 }

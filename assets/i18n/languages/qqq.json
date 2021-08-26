@@ -1,8 +1,35 @@
 {
  "@metadata": {
  "authors": [
- "Kole Krstev"
- ]
+ "Kole Krstev","Adam Monsour","Anthony Debassige", "Spencer Griffin"
+ ],
+ "last-updated": "2021-08-10"
  },
- "welcome": "A welcoming message displayed on the main page of the site. Should be friendly, informal, and, ummm, welcoming."
+ "menu-overview": "Left sidebar menu label for Overview menu item",
+ "menu-pages": "Left sidebar menu label for Pages menu item",
+ "menu-tasks": "Left sidebar menu label for Tasks menu item",
+ "menu-projects": "Left sidebar menu label for Projects menu item",
+ "menu-feedback": "Left sidebar menu label for Feedback menu item",
+ "tab-summary": "Tab menu label - Summary",
+ "tab-webtraffic": "Tab menu label - Web traffic",
+ "tab-pagefeedback": "Tab menu label - Page feedback",
+ "tab-searchanalytics": "Tab menu label - Search analytics",
+ "tab-calldrivers": "Tab menu label - Call drivers",
+ "tab-uxtests": "Tab menu label - UX tests",
+ "tab-details": "Tab menu label - Details",
+ "dr-lastweek": "Weekly date range header label - Last week",
+ "dr-lastmonth": "Monthly date range header lable - Last month",
+ "dr-alltime": "All time date range header label",
+ "compared_to": "'Compared to' text in between date ranges in the Header",
+ "overview-title": "Page title for Overview menu item",
+ "tests_completed": "Number of UX test projects completed All time",
+ "tests_last_fiscal_year": "Number of tests completed from last fiscal year",
+ "tests_last_quarter": "Number of tests completed from last quarter",
+ "total_tasks_tested": "Number of tasks tested",
+ "number_of_participants": "Number of participants in all tests",
+ "table_title_testing_results": "UX test results by project table title",
+ "ux_projects": "UX projects - column title in Ux test results by project table",
+ "type": "Type - column title in Ux test results by project table",
+ "date": "Date - column title in Ux test results by project table",
+ "avg_success_rate": "Average success rate - column title in Ux test results by project table"
 }

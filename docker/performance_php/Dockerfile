@@ -18,6 +18,8 @@ COPY vendor/ /var/www/html/vendor/
 COPY overview.php /var/www/html/overview.php
 COPY upd_overview.php /var/www/html/upd_overview.php
 COPY upd_overview_orig.php /var/www/html/upd_overview_orig.php
+COPY overview_summary.php /var/www/html/overview_summary.php
+COPY overview_uxtests.php /var/www/html/overview_uxtests.php
 
 RUN curl -sS https://getcomposer.org/installer | php
 RUN mv composer.phar /var/www/html/composer.phar

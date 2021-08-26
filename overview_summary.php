@@ -33,7 +33,7 @@
         <li <?php if ($tab=="searchanalytics") {echo "class='is-active'";} ?>><a href="#" data-i18n="tab-searchanalytics">Search analytics</a></li>
         <li <?php if ($tab=="pagefeedback") {echo "class='is-active'";} ?>><a href="#" data-i18n="tab-pagefeedback">Page feedback</a></li>
         <li <?php if ($tab=="calldrivers") {echo "class='is-active'";} ?>><a href="#" data-i18n="tab-calldrivers">Call drivers</a></li>
-        <li <?php if ($tab=="uxtest") {echo "class='is-active'";} ?>><a href="#" data-i18n="tab-uxtests">UX tests</a></li>
+        <li <?php if ($tab=="uxtests") {echo "class='is-active'";} ?>><a href="#" data-i18n="tab-uxtests">UX tests</a></li>
       </ul>
     </div>
 
@@ -829,9 +829,6 @@ endif;
                   $groups = json_encode(array($d3Data_DYFWYWLF_DateRanges[2],$d3Data_DYFWYWLF_DateRanges[3]));
 
                   ?>
-                  <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/4.13.0/d3.min.js"></script>
-                  <script src="https://cdnjs.cloudflare.com/ajax/libs/d3-legend/2.25.6/d3-legend.min.js"></script> -->
-
                   <script>
 
                   // set the dimensions and margins of the graph
@@ -996,7 +993,7 @@ endif;
           <div class="card-body pt-2">
             <h3 class="card-title"><span class="card-tooltip h6" data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-placement="right" data-bs-content="Description of what this means" data-bs-original-title="" title="">What was wrong?</span></h3>
               <div class="card-body pt-2" id="d3_www_barchart"></div>
-              <div id="d3_www_legend"></div>
+                <div id="d3_www_legend"></div>
                 <!-- Did you find what you werel looking - WHAT WAS WRONG D3 100% Stacked Bar chart -->
                 <?php
 

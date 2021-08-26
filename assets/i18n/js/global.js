@@ -8,7 +8,7 @@ jQuery(function($) {
 
   var translate_funct = function() {
    $('html').i18n();
-   $('#welcome').text($.i18n('welcome'));
+   //$('#welcome').text($.i18n('welcome'));
    // console.log($.i18n('{{abbr:www|world wide web}}'));
    // $('#welcome').text(
    // $.i18n('welcome', current_user.name)
@@ -29,8 +29,9 @@ jQuery(function($) {
  }).done(function() {
  $('.locale-switcher').on('click', 'a', function(e) {
  e.preventDefault();
- console.log($(this).data('locale'));
+ //console.log($(this).data('locale'));
  $.i18n().locale = $(this).data('locale');
+ $('.list-inline-item').toggle();
  translate_funct();
  });
  translate_funct();

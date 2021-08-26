@@ -1,15 +1,12 @@
 {
  "@metadata": {
  "authors": [
- "Kole Krstev"
+ "Kole Krstev","Adam Monsour","Anthony Debassige", "Spencer Griffin"
  ],
- "last-updated": "2019-05-06",
+ "last-updated": "2021-08-10",
  "locale": "en",
  "message-documentation": "qqq"
  },
- "welcome": "Welcome!",
- "welcome2": "Welcome 2!",
- "overview-summary-title": "Overview of CRA website",
  "menu-overview": "Overview",
  "menu-pages": "Pages",
  "menu-tasks": "Tasks",
@@ -23,5 +20,18 @@
  "tab-uxtests": "UX tests",
  "tab-details": "Details",
  "dr-lastweek": "Last week",
- "dr-lastmonth": "Last month"
+ "dr-lastmonth": "Last month",
+ "dr-alltime": "All time",
+ "compared_to": "compared to",
+ "overview-title": "Overview of CRA website",
+ "tests_completed": "UX test projects completed (All time)",
+ "tests_last_fiscal_year": "Tests from last fiscal year",
+ "tests_last_quarter": "Tests from last quarter",
+ "total_tasks_tested": "Total tasks tested",
+ "number_of_participants": "Number of participants",
+ "table_title_testing_results": "UX test results by project",
+ "ux_projects": "UX projects",
+ "type": "Type",
+ "date": "Date",
+ "avg_success_rate": "Average success rate"
 }

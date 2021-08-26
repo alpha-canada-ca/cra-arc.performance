@@ -336,7 +336,52 @@ a {
     color: #1D8177 !important;
 }
 
+table .text-success {
+    color: #333 !important;
+}
+
 /* remove additional 1rem margin at the bottom on this ul */
 .locale-switcher{
   margin-bottom: 0 !important
+}
+
+/* clas added for axis labels text and color and font*/
+.axis_labels {
+  font: 1rem sans-serif !important;
+  color: #f39 !important;
+
+  }
+
+.label {
+    transform: translate(23px,13px) !important;
+}
+
+.hidden {
+  display: none;
+}
+
+.axis-grid line {
+stroke: #ddd;
+}
+
+/* classes for What_went_wrong_legend */
+#d3_www_legend {
+  display: inline-block;
+  margin-left: 50px;
+
+}
+
+.legend {
+    float:left;
+    margin-right: 1em;
+}
+
+.legend_field {
+    margin: 0 !important;
+}
+.legend_color {
+    display: inline-block;
+    height: 15px;
+    margin-right: .5em;
+    width: 15px;
 }
