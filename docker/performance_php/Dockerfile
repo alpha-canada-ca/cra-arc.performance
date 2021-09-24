@@ -20,6 +20,10 @@ COPY upd_overview.php /var/www/html/upd_overview.php
 COPY upd_overview_orig.php /var/www/html/upd_overview_orig.php
 COPY overview_summary.php /var/www/html/overview_summary.php
 COPY overview_uxtests.php /var/www/html/overview_uxtests.php
+COPY overview_calldrivers.php /var/www/html/overview_calldrivers.php
+COPY overview_pagefeedback.php /var/www/html/overview_pagefeedback.php
+COPY overview_searchanalytics.php /var/www/html/overview_searchanalytics.php
+COPY overview_webtraffic.php /var/www/html/overview_webtraffic.php
 
 RUN curl -sS https://getcomposer.org/installer | php
 RUN mv composer.phar /var/www/html/composer.phar
