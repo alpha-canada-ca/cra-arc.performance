@@ -28,11 +28,11 @@
 
     <div class="tabs sticky">
       <ul>
-        <li <?php if ($tab=="summary") {echo "class='is-active'";} ?>><a href=# data-i18n="tab-summary">Summary</a></li>
-        <li <?php if ($tab=="webtraffic") {echo "class='is-active'";} ?>><a href="#" data-i18n="tab-webtraffic">Web traffic</a></li>
-        <li <?php if ($tab=="searchanalytics") {echo "class='is-active'";} ?>><a href="#" data-i18n="tab-searchanalytics">Search analytics</a></li>
-        <li <?php if ($tab=="pagefeedback") {echo "class='is-active'";} ?>><a href="#" data-i18n="tab-pagefeedback">Page feedback</a></li>
-        <li <?php if ($tab=="calldrivers") {echo "class='is-active'";} ?>><a href="#" data-i18n="tab-calldrivers">Call drivers</a></li>
+        <li <?php if ($tab=="summary") {echo "class='is-active'";} ?>><a href="./overview_summary.php" data-i18n="tab-summary">Summary</a></li>
+        <li <?php if ($tab=="webtraffic") {echo "class='is-active'";} ?>><a href="./overview_webtraffic.php" data-i18n="tab-webtraffic">Web traffic</a></li>
+        <li <?php if ($tab=="searchanalytics") {echo "class='is-active'";} ?>><a href="./overview_searchanalytics.php" data-i18n="tab-searchanalytics">Search analytics</a></li>
+        <li <?php if ($tab=="pagefeedback") {echo "class='is-active'";} ?>><a href="./overview_pagefeedback.php" data-i18n="tab-pagefeedback">Page feedback</a></li>
+        <li <?php if ($tab=="calldrivers") {echo "class='is-active'";} ?>><a href="./overview_calldrivers.php" data-i18n="tab-calldrivers">Call drivers</a></li>
         <li <?php if ($tab=="uxtests") {echo "class='is-active'";} ?>><a href="#" data-i18n="tab-uxtests">UX tests</a></li>
       </ul>
     </div>
@@ -285,16 +285,16 @@
 
       <?php
 
-              function implode_recursive($g, $p)
-              {
-              return is_array($p) ? implode($g, array_map(__FUNCTION__, array_fill(0, count($p) , $g) , $p)) : $p;
-              }
+              // function implode_recursive($g, $p)
+              // {
+              // return is_array($p) ? implode($g, array_map(__FUNCTION__, array_fill(0, count($p) , $g) , $p)) : $p;
+              // }
 
               $config = include ('./php/config-at.php');
 
               $start2 = microtime(true);
 
-              $airtable = new Airtable($config);
+              $airtable = new Airtable($config["tasks"]);
 
               //var_dump($taskArray);
               // Tasks in AirTable
@@ -468,43 +468,43 @@
 
 
 
-                    function single_array($arr){
-                        foreach($arr as $key){
-                            if(is_array($key)){
-                                $arr1=single_array($key);
-                                foreach($arr1 as $k){
-                                    $new_arr[]=$k;
-                                }
-                            }
-                            else{
-                                $new_arr[]=$key;
-                            }
-                        }
-                        return $new_arr;
-                    }
+                    // function single_array($arr){
+                    //     foreach($arr as $key){
+                    //         if(is_array($key)){
+                    //             $arr1=single_array($key);
+                    //             foreach($arr1 as $k){
+                    //                 $new_arr[]=$k;
+                    //             }
+                    //         }
+                    //         else{
+                    //             $new_arr[]=$key;
+                    //         }
+                    //     }
+                    //     return $new_arr;
+                    // }
                     //
 
 
-                     /**
-                      * Function that groups an array of associative arrays by some key.
-                      *
-                      * @param {String} $key Property to sort by.
-                      * @param {Array} $data Array that stores multiple associative arrays.
-                      */
-                     function group_by($key, $data) {
-                         $result = array();
-
-                         foreach($data as $val) {
-                             if(array_key_exists($key, $val)){
-                                 $result[$val[$key]][] = $val;
-                             }else{
-                                 $result[""][] = $val;
-                             }
-                         }
-
-                         return $result;
-
-                     }
+                     // /**
+                     //  * Function that groups an array of associative arrays by some key.
+                     //  *
+                     //  * @param {String} $key Property to sort by.
+                     //  * @param {Array} $data Array that stores multiple associative arrays.
+                     //  */
+                     // function group_by($key, $data) {
+                     //     $result = array();
+                     //
+                     //     foreach($data as $val) {
+                     //         if(array_key_exists($key, $val)){
+                     //             $result[$val[$key]][] = $val;
+                     //         }else{
+                     //             $result[""][] = $val;
+                     //         }
+                     //     }
+                     //
+                     //     return $result;
+                     //
+                     // }
 
 
                     $sub_tasks = array_column_recursive($re, 'Sub-Task');
@@ -542,23 +542,23 @@
                     //echo "Total of unique Tasks:". count(array_unique(single_array($total_tasks)));
 
 
-                    function array_flatten($array = null) {
-                        $result = array();
-
-                        if (!is_array($array)) {
-                            $array = func_get_args();
-                        }
-
-                        foreach ($array as $key => $value) {
-                            if (is_array($value)) {
-                                $result = array_merge($result, array_flatten($value));
-                            } else {
-                                $result = array_merge($result, array($key => $value));
-                            }
-                        }
-
-                        return $result;
-                    }
+                    // function array_flatten($array = null) {
+                    //     $result = array();
+                    //
+                    //     if (!is_array($array)) {
+                    //         $array = func_get_args();
+                    //     }
+                    //
+                    //     foreach ($array as $key => $value) {
+                    //         if (is_array($value)) {
+                    //             $result = array_merge($result, array_flatten($value));
+                    //         } else {
+                    //             $result = array_merge($result, array($key => $value));
+                    //         }
+                    //     }
+                    //
+                    //     return $result;
+                    // }
 
                     //echo "<br><br><pre>";
                     //print_r(array_flatten($total_tasks)); //Prev WEEK
