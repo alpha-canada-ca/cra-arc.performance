@@ -31,6 +31,7 @@
           <ul class="locale-switcher list-inline">
               <li class="list-inline-item hidden"><a href="#" data-locale="en">English</a></li>
               <li class="list-inline-item"><a href="#" data-locale="fr">Français</a></li>
-          </ul><!--  <a href="#" data-locale="en">English</a> | <a href="#" data-locale="fr">Français</a> </div> -->
+          </ul>
       </div>
+    </div>
     </header>
