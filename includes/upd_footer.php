@@ -23,12 +23,14 @@
 <script>
 
   $(document).ready(function() {
-  $('#toptask').DataTable({
-      "paging":   false,
-      "ordering": true,
-      "searching": false,
-      "info": false
-    });
+    $('#toptask,#toptask2').DataTable({
+        "paging":   false,
+        //"ordering": true //default value
+        //"order": [[ 1, "asc" ]],
+        "order": [],
+        "searching": false,
+        "info": false
+      });
   });
 </script>
 
