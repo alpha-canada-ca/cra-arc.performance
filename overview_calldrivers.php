@@ -910,7 +910,7 @@
                   var x = d3.scaleBand()
                       .domain(groups)
                       .range([0, width])
-                      .padding([0.5]);
+                      .padding([0.3]);
                   svg_new.append("g")
                     .attr("transform", "translate(0," + height + ")")
                     .call(d3.axisBottom(x).tickSizeOuter(0));

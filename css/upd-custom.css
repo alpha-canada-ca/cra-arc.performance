@@ -365,7 +365,7 @@ stroke: #ddd;
 }
 
 /* classes for What_went_wrong_legend */
-#d3_www_legend {
+#d3_www_legend, #d3_www_legend2, #d3_www_legend3 {
   display: inline-block;
   margin-left: 50px;
 
