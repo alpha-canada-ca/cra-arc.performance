@@ -205,7 +205,13 @@ if ($succ === 1)
         $aaResultTrend = json_decode($result[2], true);
         $aaMetricsTrend = $aaResultTrend["rows"];
 
-        $aaTrendWeeks = array_slice($aaMetricsTrend, -14);
+        $weeks_index = date("M j, Y", strtotime($previousWeekStart));
+        //echo $weeks_index;
+        $value_date = array_column($aaMetricsTrend, 'value');
+        $index_key = array_search($weeks_index, $value_date);
+
+        //$aaTrendWeeks = array_slice($aaMetricsTrend, -14);
+        $aaTrendWeeks = array_slice($aaMetricsTrend, $index_key, 14);
         $aaTrendLastWeek = array_slice($aaTrendWeeks, 0, 7);
         $aaTrendWeek = array_slice($aaTrendWeeks, -7);
 
@@ -314,119 +320,486 @@ $diff = abs($diff);
             </div>
           </div>
         </div>
+          <?php
+                // ***************************************************************************
+                // AIRTABLE API calls for Call drivers data for TOTAL CALLS BY INQURY LINE
+                // ***************************************************************************
+
+
+                $lastMonthAndYear = date('F Y', strtotime($monthStartHeader));
+                $twoMonthsAgoAndYear = date('F Y', strtotime($previousMonthStartHeader));
+
+                $s = $startLastGSC;
+                $e = $endLastGSC;
+                $s1 = $startGSC;
+                $e1 = $endGSC;
+
+                $weeklyMonthRanges = getMonthRanges($s, $e1);
+
+
+                /* **************************************************************************************************** */
+                // Set up config file and credentials for the Airtable API
+                /* **************************************************************************************************** */
+                //$config = include ('./php/config-at_cd.php');
+                $config = include ('./php/config-at.php');
+
+
+                //time the page load
+                //$start2 = microtime(true);
+
+                if (count($weeklyMonthRanges) > 1) {
+                    //echo "data ranges spread in two months";
+                    $curMonth1 = date('F Y', strtotime($weeklyMonthRanges[0]['start']));
+                    $curMonth2 = date('F Y', strtotime($weeklyMonthRanges[1]['start']));
+
+                    $curQuarter1 = ceil(date("n", strtotime($weeklyMonthRanges[0]['start'])) / 3);
+                    $curQuarter2 = ceil(date("n", strtotime($weeklyMonthRanges[1]['start'])) / 3);
+
+                    $curYear1 = date('Y', strtotime($weeklyMonthRanges[0]['start']));
+                    $curYear2 = date('Y', strtotime($weeklyMonthRanges[1]['start']));
+
+                    $base1 = "DCD-".$curYear1."-Q".$curQuarter1;
+                    $base2 = "DCD-".$curYear2."-Q".$curQuarter2;
+
+                    //$airtable = new Airtable($config);
+                    $airtable1 = new Airtable(array(
+                         'api_key'   => $config['call_data']['api_key'],
+                         'base'      => $config['call_data']['base'][$base1],
+                    ));
+
+                    $airtable2 = new Airtable(array(
+                         'api_key'   => $config['call_data']['api_key'],
+                         'base'      => $config['call_data']['base'][$base2],
+                    ));
+
+                    $wMrS1 = $weeklyMonthRanges[0]['start'];
+                    $wMrE1 = $weeklyMonthRanges[0]['end'];
+                    $wMrS2 = $weeklyMonthRanges[1]['start'];
+                    $wMrE2 = $weeklyMonthRanges[1]['end'];
+
+                    // **************************************************************************************************************************
+                    // I M P O R T A N T
+                    // IS_AFTER() and IS_BEFORE() functions don't count the border dates when filtering.
+                    // that's why we do DATEADD (one day) for is_BEFORE() ...
+                    // for IS_AFTER() we don't substract a day for $params1, cause that start day is always Saturday and on Sundays there's no call centre data.
+                    // As a correct coding practice, we need to subtact a day from $params1 (TO BE DONE)
+                    // for $params2, instead of subtract a day, we use the $params1 end date (that is a one day less the the $params2 start date).
+                    // **************************************************************************************************************************
+
+                    $params1 = array("filterByFormula" => "AND(IS_AFTER({CALL_DATE}, '$wMrS1'), IS_BEFORE({CALL_DATE}, DATEADD('$wMrE1',1,'days')))"); // array( "filterByFormula" => 'SEARCH(Task, "'.implode($taskArray, ',').'") != ""');
+                    $params2 = array("filterByFormula" => "AND(IS_AFTER({CALL_DATE}, '$wMrE1'), IS_BEFORE({CALL_DATE}, DATEADD('$wMrE2',1,'days')))"); // array( "filterByFormula" => 'SEARCH(Task, "'.implode($taskArray, ',').'") != ""');
+
+                    $table1 = $curMonth1;
+                    $table2 = $curMonth2;
+
+
+                    //API REQUST 1
+                    $fullArray1 = [];
+
+                    $request1 = $airtable1->getContent($table1, $params1);
+                    do
+                    {
+                        $response1 = $request1->getResponse();
+                        $fullArray1 = array_merge($fullArray1, ($response1->records));
+                    }
+                    while ($request1 = $response1->next());
+
+                    $weeklyRe1 = ( json_decode(json_encode($fullArray1), true));//['records'];
+
+                    // if there's data (record exist)
+                    if ( count( $weeklyRe1 ) > 0 ) {
+                      // do things here
+                    }
+
+                    // ***************** //
+
+                      //API REQUST 2
+                    $fullArray2 = [];
+
+                    $request2 = $airtable2->getContent($table2, $params2);
+                    do
+                    {
+                        $response2 = $request2->getResponse();
+                        $fullArray2 = array_merge($fullArray2, ($response2->records));
+                    }
+                    while ($request2 = $response2->next());
+
+                    $weeklyRe2 = ( json_decode(json_encode($fullArray2), true));//['records'];
+
+                    // if there's data (record exist)
+                    if ( count( $weeklyRe2 ) > 0 ) {
+                      // do things here
+                    }
+
+                    // WE NEED TO MERGE $weeklyRe1 and $weeklyRe2
+                    $fullArray = array_merge($fullArray1, $fullArray2);
+
+                }
+
+                if (count($weeklyMonthRanges) == 1) {
+
+                    $curMonth = date('F Y', strtotime($e1));
+                    $curQuarter = ceil(date("n", strtotime($e1)) / 3);
+                    $curYear = date('Y', strtotime($e1));
+
+                    $base = "DCD-".$curYear."-Q".$curQuarter;
+                    //echo "base: ". $base;
+
+                    $airtable = new Airtable(array(
+                         'api_key'   => $config['call_data']['api_key'],
+                         'base'      => $config['call_data']['base'][$base],
+                    ));
+
+                    $s = date("Y-m-d", strtotime($s));
+                    $e1 = date("Y-m-d", strtotime($e1));
+
+                    $params = array("filterByFormula" => "AND(IS_AFTER({CALL_DATE}, '$s'), IS_BEFORE({CALL_DATE}, DATEADD('$e1',1,'days')))");
+
+                    $table = $curMonth;
+
+                    $fullArray = [];
+
+
+                    $request = $airtable->getContent($table, $params);
+                    do
+                    {
+                        $response = $request->getResponse();
+                        $fullArray = array_merge($fullArray, ($response->records));
+                    }
+                    while ($request = $response->next());
+
+                    $weeklyRe = ( json_decode(json_encode($fullArray), true));//['records'];
+
+                    // if there's data (record exist)
+                    if ( count( $weeklyRe ) > 0 ) {
+                      //do things here
+                    }
+                    //get data with API
+                    $fullArray = $weeklyRe;
+
+                }
+
+
+                $re = ( json_decode(json_encode($fullArray), true));//['records'];
+
+                //weekly data
+                $rangeStartW = strtotime($s1);
+                $rangeEndW = strtotime($e1);
+                //previous week
+                $rangeStartPW = strtotime($s);
+                $rangeEndPW = strtotime($e);
+                //filter array by date ranges
+
+                $WeeklyData = array_filter( $re, function($var) use ($rangeStartW, $rangeEndW) {
+                   $utime = strtotime($var['fields']['CALL_DATE']);
+                   return $utime <= $rangeEndW && $utime >= $rangeStartW;
+                });
+
+                $PWeeklyData = array_filter( $re, function($var) use ($rangeStartPW, $rangeEndPW) {
+                   $utime = strtotime($var['fields']['CALL_DATE']);
+                   return $utime <= $rangeEndPW && $utime >= $rangeStartPW;
+                });
+
+
+                if (( count( $WeeklyData ) > 0 ) && ( count( $PWeeklyData ) > 0 )) {
+
+                      // Get just the ['fields'] array of each record -  as a separate array - $all_fields
+                      $all_fields = array_column_recursive($WeeklyData, 'fields');
+                      $all_fieldsPW = array_column_recursive($PWeeklyData, 'fields');
+
+                      //Sort all_fields array by Call_Date key in descending order
+                      // if we need an ascernding order, swap the $a and $b variable as function arguments
+                      usort($all_fields, function($a, $b) {
+                         return new DateTime($a['CALL_DATE']) <=> new DateTime($b['CALL_DATE']);
+                       });
+
+                       usort($all_fieldsPW, function($a, $b) {
+                          return new DateTime($a['CALL_DATE']) <=> new DateTime($b['CALL_DATE']);
+                        });
+
+                      $fieldsByGroup = group_by('Topic', $all_fields);
+                      $fieldsByGroupPW = group_by('Topic', $all_fieldsPW);
+
+
+                      foreach ( $fieldsByGroupPW as &$item ) {
+                        $item["Total topic calls"] = array_sum(array_column_recursive($item, "Calls"));
+                      }
+                      //
+
+                      $i=1;
+                      foreach ( $fieldsByGroup as &$item1 ) {
+                        // Add Total Topic Calls and Change (in teh number of calls from previous week) keys
+                        $item1["Total topic calls"] = array_sum(array_column_recursive($item1, "Calls"));
+
+                        if (array_key_exists("Topic", $item1[0])) {
+                          if (array_key_exists($item1[0]['Topic'], $fieldsByGroupPW)){
+                                $item1["Change"] = differ( $fieldsByGroupPW[$item1[0]['Topic']]['Total topic calls'], $item1['Total topic calls'] );
+                          }
+                          else {
+                              $item1["Change"] = 0;
+                          }
+                        }
+                        else {
+                          $item1["Change"] = 0;
+                        }
+                      }
+
+                      //uasort -keeps the key associations
+                      uasort($fieldsByGroup, function($b, $a) {
+                           if ($a["Total topic calls"] == $b["Total topic calls"]) {
+                               return 0;
+                           }
+                           return ($a["Total topic calls"] < $b["Total topic calls"]) ? -1 : 1;
+                       });
+
+                       $top5Topics = array_slice($fieldsByGroup, 0, 5);
+
+                } //if ( count( $re ) > 0 )
+
+                // END AIRTALBE API CALLS
+                // ****************************************************************************
+
+              ?>
+
 
     <div class="row mb-4">
       <div class="col-lg-12 col-md-12">
         <div class="card">
           <div class="card-body pt-2">
-            <h3 class="card-title"><span class="card-tooltip h6" data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-placement="right" data-bs-content="Description of what this means" data-bs-original-title="" title="">Traffic breakdown compared to call volume</span></h3>
-            <!-- Chart.js temporary placeholder-->
-            <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.4.1/chart.min.js" integrity="sha512-5vwN8yor2fFT9pgPS9p9R7AszYaNn0LkQElTXIsZFCL7ucT8zDCAqlQXDdaqgA1mZP47hdvztBMsIoFxq/FyyQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script> -->
+            <h3 class="card-title"><span class="card-tooltip h6" data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-placement="right" data-bs-content="Description of what this means" data-bs-original-title="" title="">Visits compared to call volume</span></h3>
+            <div class="card-body pt-2" id="d3_visits"></div>
+            <div id="d3_www_legend"></div>
+              <!-- Total calls by Enquiry_line D3 bar chart -->
+              <?php
 
-            <canvas id="mixed-chart" width="1262" height="315" style="display: block; box-sizing: border-box; height: 315px; width: 1262px;"></canvas>
-            <!-- <script>
-            new Chart(document.getElementById("mixed-chart"), {
-                type: 'bar',
-                data: {
-                  labels: ["1900", "1950", "1999", "2050"],
-                  datasets: [{
-                      label: "Europe",
-                      type: "line",
-                      borderColor: "#8e5ea2",
-                      barPercentage: 0.5,
-                      data: [408,547,675,734],
-                      fill: false
-                    }, {
-                      label: "Africa",
-                      type: "line",
-                      borderColor: "#3e95cd",
-                      barPercentage: 0.5,
-                      data: [133,221,783,2478],
-                      fill: false
-                    }, {
-                      label: "Europe",
-                      type: "bar",
-                      backgroundColor: "#2E5EA7",
-                      barPercentage: 0.5,
-                      data: [408,547,675,734],
-                    }, {
-                      label: "Africa",
-                      type: "bar",
-                      backgroundColor: "#B5C2CC",
-                      backgroundColorHover: "#3e95cd",
-                      barPercentage: 0.5,
-                      data: [133,221,783,2478]
-                    }
-                  ]
-                },
-                options: {
-                  title: {
-                    display: true,
-                    text: 'Population growth (millions): Europe & Africa'
-                  },
-                  legend: { display: false }
+                $s = $startLastGSC;
+                $e = $endLastGSC;
+                $s1 = $startGSC;
+                $e1 = $endGSC;
+
+                $s = date("M d", strtotime($s));
+                $e = date("M d", strtotime($e));
+                $s1 = date("M d", strtotime($s1));
+                $e1 = date("M d", strtotime($e1));
+
+                $days = array('Sunday', 'Monday', 'Tuesday', 'Wednesday','Thursday','Friday', 'Saturday');
+                $d3DateRanges = array($s.'-'.$e,$s1.'-'.$e1); // previous $a1
+                //$dates = [[$startLastGSC, $endLastGSC], [$startGSC, $endGSC]];
+                //$dataPW = $aaTrendLastWeek;
+                //$dataW = $aaTrendWeek;
+
+                for ($i = 0; $i < 7; ++$i) {
+                  $final_array1["day"] = $days[$i];
+                  $final_array1[$d3DateRanges[0]] = $aaTrendLastWeek[$i]['data'][1];
+                  $final_array1[$d3DateRanges[1]] = $aaTrendWeek[$i]['data'][1];
+                  $data_array[]=$final_array1;
                 }
-            });
-            </script> -->
-             <details class="details-chart">
-                  <summary>View table data</summary>
-                  <div class="table-responsive">
-    <table class="table">
-      <caption>Last Week</caption>
-      <thead>
-        <th>Date</th>
-        <th>Value</th>
-      </thead>
-      <tbody>
 
-        <?php
-foreach ($aaTrendLastWeek as $trend)
-{
+                $subgroups = json_encode($d3DateRanges);
 
-?>
+                $groups = json_encode($days);
 
-        <tr>
-          <td><?=$trend['value'] ?></td>
-          <td><?=number_format($trend['data'][1]) ?></td>
-        </tr>
+                $mydata = json_encode($data_array);
 
-        <?php
-}
+                ?>
+                <script>
+                //
+                // set the dimensions and margins of the graph
+                width = parseInt(d3.select('#d3_visits').style('width'), 10)
+                height = width / 3;
+                //alert("hellp");
+                var margin = {top: 10, right: 30, bottom: 30, left: 100},
+                    width = width - margin.left - margin.right,
+                    height = height - margin.top - margin.bottom,
+                    legendHeight = 0;
 
-?>
+                // append the svg object to the body of the page
+                var svg1 = d3.select("#d3_visits")
+                  .append("svg")
+                    .attr("width", width + margin.left + margin.right)
+                    .attr("height", height + margin.top + margin.bottom + legendHeight)
+                  .append("g")
+                    .attr("transform",
+                          "translate(" + margin.left + "," + margin.top + ")");
+
+                // Parse the Data
+                  var data = <?=$mydata?>;
+
+                  //console.log(data)
+                  //console.log(typeof data)
+                  // List of subgroups = header of the csv files = soil condition here
+                  //var subgroups = data.columns.slice(1)
+                  var subgroups = <?=$subgroups?>;
+                  //console.log(subgroups)
+                  //console.log(typeof subgroups)
+
+                  // List of groups = species here = value of the first column called group -> I show them on the X axis
+                  //var groups = d3.map(data, function(d){return(d.group)}).keys()
+                  var groups = <?=$groups?>;
+                  //console.log(groups)
+                  //console.log(typeof groups)
+
+                  // Add X axis
+                  var x = d3.scaleBand()
+                      .domain(groups)
+                      .range([0, width])
+                      .padding([0.4]);
+                  svg1.append("g")
+                    .attr("transform", "translate(0," + height + ")")
+                    .call(d3.axisBottom(x).tickSizeOuter(0));
+
+                  // get the max value from the data json object for the y axis domain
+                  var max1 = d3.max(data, function(d){ return d3.max(d3.values(d).filter(function(d1){ return !isNaN(d1)}))});
+                  console.log(max1);
+                  var num_digits1 = Math.floor(Math.log10(max1)) + 1;
+                  console.log(num_digits1);
+                  console.log(Math.ceil(max1/Math.pow(10,num_digits1-1))*Math.pow(10,num_digits1-1));
+
+                  // Add Y axis
+                  var y = d3.scaleLinear()
+                    .domain([0, Math.ceil(max1/Math.pow(10,num_digits1-1))*Math.pow(10,num_digits1-1)])
+                    .range([ height, 0 ]);
+
+                  // grid lines on Y axis
+                  var yGrid = d3.axisLeft(y).tickSize(-width).tickFormat('').ticks(5);
+
+                  // Another scale for subgroup position?
+                  var xSubgroup = d3.scaleBand()
+                    .domain(subgroups)
+                    .range([0, x.bandwidth()])
+                    .padding([0.1]);
+
+                  //create  yGrid
+                  svg1.append('g')
+                    .attr('class', 'axis-grid')
+                    .call(yGrid);
+
+                  //create Y axis
+                  svg1.append("g")
+                    .call(d3.axisLeft(y).ticks(5));
+
+                  // color palette = one color per subgroup
+                  var color = d3.scaleOrdinal()
+                    .domain(subgroups)
+                    .range(['#B6C2CB','#345EA5']);
+
+                    // Show the bars
+                  svg1.append("g")
+                      .selectAll("g")
+                      // Enter in data = loop group per group
+                      .data(data)
+                      .enter()
+                      .append("g")
+                        .attr("transform", function(d) { return "translate(" + x(d.day) + ",0)"; })
+                      .selectAll("rect")
+                      .data(function(d) { return subgroups.map(function(key) { return {key: key, value: d[key]}; }); })
+                      .enter().append("rect")
+                        .attr("x", function(d) { return xSubgroup(d.key); })
+                        .attr("y", function(d) { return y(d.value); })
+                        .attr("width", xSubgroup.bandwidth())
+                        .attr("height", function(d) { return height - y(d.value); })
+                        .attr("fill", function(d) { return color(d.key); });
+
+                  svg1.selectAll(".tick text")
+                       .style("font-size","14px")
+                       .style("fill","#666");
 
 
-      </tbody>
-    </table>
+                  // D3 legend
+                  //color.domain(d3.keys(data[0]).filter(function(key) { return key !== "dateRange"; }));
 
-    <table class="table">
-      <caption>Week</caption>
-      <thead>
-        <th>Date</th>
-        <th>Value</th>
-      </thead>
-      <tbody>
+                  // svg_new.append("g")
+                  //    .attr("class", "legendOrdinal")
+                  //    .attr("transform", "translate(0,"+(height+45)+")");
+                  //
+                  // var legendOrdinal = d3.legendColor()
+                  //  .shape("rect")
+                  //  .shapePadding(150)
+                  //  .orient('horizontal')
+                  //  .labelAlign("start")
+                  //  .scale(color);
+                  //
+                  // svg_new.select(".legendOrdinal")
+                  //    .call(legendOrdinal);
 
-        <?php
-foreach ($aaTrendWeek as $trend)
-{
+                  var legend = d3.select('#d3_www_legend').selectAll("legend")
+                      .data(subgroups);
 
-?>
+                  var legend_cells = legend.enter().append("div")
+                    .attr("class","legend");
 
-        <tr>
-          <td><?=$trend['value'] ?></td>
-          <td><?=number_format($trend['data'][1]) ?></td>
-        </tr>
+                  var p1 = legend_cells.append("p").attr("class","legend_field");
+                  p1.append("span").attr("class","legend_color").style("background",function(d,i) { return color(i) } );
+                  p1.insert("text").text(function(d,i) { return d } );
 
-        <?php
-}
+                  // text label for the y axis
+                  svg1.append("text")
+                      .attr("transform", "rotate(-90)")
+                      .attr("y", 0 - margin.left)
+                      .attr("x",0 - (height / 2))
+                      .attr("dy", "1em")
+                      .style("text-anchor", "middle")
+                      .text("Visits");
 
-?>
+                </script>
+                 <details class="details-chart">
+                      <summary>View table data</summary>
+                      <div class="table-responsive">
+                          <table class="table">
+                            <caption>Last Week</caption>
+                            <thead>
+                              <th>Date</th>
+                              <th>Value</th>
+                            </thead>
+                            <tbody>
+
+                              <?php
+                                  foreach ($aaTrendLastWeek as $trend)
+                                  {
+
+                                  ?>
+
+                                          <tr>
+                                            <td><?=$trend['value'] ?></td>
+                                            <td><?=number_format($trend['data'][1]) ?></td>
+                                          </tr>
+
+                                          <?php
+                                  }
+
+                                  ?>
 
 
-      </tbody>
-    </table>
-                </details>
+                            </tbody>
+                          </table>
+
+                          <table class="table">
+                            <caption>Week</caption>
+                            <thead>
+                              <th>Date</th>
+                              <th>Value</th>
+                            </thead>
+                            <tbody>
+
+                              <?php
+                                  foreach ($aaTrendWeek as $trend)
+                                  {
+
+                                  ?>
+
+                                          <tr>
+                                            <td><?=$trend['value'] ?></td>
+                                            <td><?=number_format($trend['data'][1]) ?></td>
+                                          </tr>
+
+                                          <?php
+                                  }
+
+                                  ?>
+
+                            </tbody>
+                          </table>
+                    </details>
           </div>
         </div>
       </div>
@@ -667,52 +1040,6 @@ $sumNumUsers = number_format(array_sum($con1));
             </div>
               <?php } ?>
 
-              <!--
-              <table id="toptask" class="table table-striped dataTable no-footer" data="" role="grid">
-              <thead>
-              <tr role="row"><th class="sorting sorting_asc" tabindex="0" aria-controls="toptask" rowspan="1" colspan="1" aria-sort="ascending" aria-label="Topic: activate to sort column descending" style="width: 255.781px;">Topic</th><th class="sorting" tabindex="0" aria-controls="toptask" rowspan="1" colspan="1" aria-label="Sub-topic: activate to sort column ascending" style="width: 325.516px;">Sub-topic</th><th class="sorting" tabindex="0" aria-controls="toptask" rowspan="1" colspan="1" aria-label="Change: activate to sort column ascending" style="width: 281.078px;">Change</th><th class="sorting" tabindex="0" aria-controls="toptask" rowspan="1" colspan="1" aria-label="--: activate to sort column ascending" style="width: 247.625px;">--</th></tr>
-              </thead>
-              <tbody>
-
-
-
-
-
-
-              <tr class="odd">
-                <td class="sorting_1">COVID-19</td>
-                <td>CRB</td>
-                <td><span class="text-danger">+ 5.0%</span></td>
-                <td>1,938,203</td>
-              </tr><tr class="even">
-                <td class="sorting_1">COVID-19</td>
-                <td>CRB</td>
-                <td><span class="text-danger">+ 5.0%</span></td>
-                <td>1,938,203</td>
-              </tr><tr class="odd">
-                <td class="sorting_1">COVID-19</td>
-                <td>CRB</td>
-                <td><span class="text-danger">+ 5.0%</span></td>
-                <td>1,938,203</td>
-              </tr><tr class="even">
-                <td class="sorting_1">COVID-19</td>
-                <td>CRB</td>
-                <td><span class="text-danger">+ 5.0%</span></td>
-                <td>1,938,203</td>
-              </tr><tr class="odd">
-                <td class="sorting_1">cra login</td>
-                <td>My account</td>
-                <td>− 5.0%</td>
-                <td>938,203</td>
-              </tr><tr class="even">
-                <td class="sorting_1">cra login</td>
-                <td>My account</td>
-                <td>− 5.0%</td>
-                <td>938,203</td>
-              </tr></tbody>
-            </table>
-          -->
-
             </div></div><div class="row"><div class="col-sm-12 col-md-5"></div><div class="col-sm-12 col-md-7"></div></div></div>
           </div>
         </div>
@@ -724,76 +1051,230 @@ $sumNumUsers = number_format(array_sum($con1));
         <div class="card">
           <div class="card-body pt-2">
             <h3 class="card-title"><span class="card-tooltip h6" data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-placement="right" data-bs-content="Description of what this means" data-bs-original-title="" title="">Total calls by inquiry line</span></h3>
-             <canvas id="myChart" width="1262" height="315" style="display: block; box-sizing: border-box; height: 315px; width: 1262px;"></canvas>
-            <!--<script>
-            var ctx = document.getElementById('myChart');
-            var myChart = new Chart(ctx, {
-                type: 'bar',
-                data: {
-                    labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple'],
-                    datasets: [{
-                        label: '# of Votes',
-                        barPercentage: 0.5,
-                        data: [12, 19, 3, 5, 2],
-                        backgroundColor: [
-                            '#2e5ea7',
-                            '#64b5f6',
-                            '#26a69a',
-                            '#f57f17',
-                            '#fbc02d'
-                        ],
-                        borderColor: [
-                            'rgba(255, 99, 132, 1)',
-                            'rgba(54, 162, 235, 1)',
-                            'rgba(255, 206, 86, 1)',
-                            'rgba(75, 192, 192, 1)',
-                            'rgba(153, 102, 255, 1)'
-                        ],
-                        borderWidth: 1
-                    }]
-                },
-                options: {
-                    scales: {
-                        y: {
-                            beginAtZero: true
-                        }
-                    }
-                }
-            });
-            </script> -->
-            <details class="details-chart">
-              <summary>View table data</summary>
-              <?php
-if (count($arrFinal) > 0): ?>
-        <div class="table-responsive">
-    <table class="table">
-      <thead>
-        <tr>
-          <th>Inquiry Line</th>
-          <th>Number of calls</th>
-        </tr>
-      </thead>
-      <tbody>
-    <?php foreach ($arrFinal as $key => $value)
-    {
-        if ($key !== '')
-        {
-?>
-        <tr>
-          <td><?=$key; ?></td>
-          <td><?=number_format($value); ?></td>
-        </tr>
-    <?php
-        }
-    }
-?>
-      </tbody>
-    </table>
-</div>
-    <?php
-endif;
-?>
-            </details>
+            <div class="card-body pt-2" id="d3_tcbil"></div>
+              <div id="d3_www_legend3"></div>
+                <!-- Total calls by Enquiry_line D3 bar chart -->
+                <?php
+
+                  $fieldsByGroupEL = group_by('Enquiry_line', $all_fields);
+                  $fieldsByGroupELPW = group_by('Enquiry_line', $all_fieldsPW);
+
+
+                  foreach ( $fieldsByGroupEL as &$item ) {
+                    $item["Total EL calls"] = array_sum(array_column_recursive($item, "Calls"));
+                  }
+
+                  foreach ( $fieldsByGroupELPW as &$item ) {
+                    $item["Total EL calls"] = array_sum(array_column_recursive($item, "Calls"));
+                  }
+
+                  $s = date("M d", strtotime($s));
+                  $e = date("M d", strtotime($e));
+                  $s1 = date("M d", strtotime($s1));
+                  $e1 = date("M d", strtotime($e1));
+
+                  $d3DateRanges = array($s.'-'.$e,$s1.'-'.$e1); // previous $a1
+
+                  $groups = json_encode($d3DateRanges);
+
+                  $el = array_values(array_unique(array_column_recursive($fieldsByGroup, "Enquiry_line")));
+                  $subgroups = json_encode($el);
+
+                  /// ---------------------
+                  /// MAKE SURE WE ADD THE DATA IN THE RIGHT DATE RANGE - AND TRIPLE CHECK THE RESULTS WITH THE ACTUAL DATA IN THE WEKLY AND PWEEKLY VARIABLES
+                  /// -----------------------
+                  for ($i = 0; $i < 2; ++$i) {
+                    $final_array2["dateRange"] = $d3DateRanges[$i];
+                          if ($i==0) {
+                              for ($k = 0; $k < count($el); ++$k) {
+                                $final_array2[$el[$k]] = $fieldsByGroupELPW[$el[$k]]["Total EL calls"];
+                              }
+                          }
+                          else {
+                            for ($k = 0; $k < count($el); ++$k) {
+                              $final_array2[$el[$k]] = $fieldsByGroupEL[$el[$k]]["Total EL calls"];
+                            }
+                          }
+                    // $final_array["No"] = $d3Data[$i+4];
+                    $d3_data_w[]=$final_array2;
+                  }
+
+                  $mydata2 = json_encode($d3_data_w);
+
+                  // echo "<pre>";
+                  // print_r($d3_data_w);
+                  // echo "</pre>";
+
+                  ?>
+                  <script>
+
+                  // set the dimensions and margins of the graph
+                  width = parseInt(d3.select('#d3_tcbil').style('width'), 10)
+                  height = width / 3;
+                  //alert("hellp");
+                  var margin = {top: 10, right: 30, bottom: 30, left: 100},
+                      width = width - margin.left - margin.right,
+                      height = height - margin.top - margin.bottom,
+                      legendHeight = 0;
+
+                  // append the svg object to the body of the page
+                  var svg2 = d3.select("#d3_tcbil")
+                    .append("svg")
+                      .attr("width", width + margin.left + margin.right)
+                      .attr("height", height + margin.top + margin.bottom + legendHeight)
+                    .append("g")
+                      .attr("transform",
+                            "translate(" + margin.left + "," + margin.top + ")");
+
+                  // Parse the Data
+                    var data2 = <?=$mydata2?>;
+
+                    //console.log(data)
+                    //console.log(typeof data)
+                    // List of subgroups = header of the csv files = soil condition here
+                    //var subgroups = data.columns.slice(1)
+                    var subgroups = <?=$subgroups?>;
+                    //console.log(subgroups)
+                    //console.log(typeof subgroups)
+
+                    // List of groups = species here = value of the first column called group -> I show them on the X axis
+                    //var groups = d3.map(data, function(d){return(d.group)}).keys()
+                    var groups = <?=$groups?>;
+                    //console.log(groups)
+                    //console.log(typeof groups)
+
+                    // Add X axis
+                    var x = d3.scaleBand()
+                        .domain(groups)
+                        .range([0, width])
+                        .padding([0.3]);
+                    svg2.append("g")
+                      .attr("transform", "translate(0," + height + ")")
+                      .call(d3.axisBottom(x).tickSizeOuter(0));
+
+                    // get the max value from the data json object for the y axis domain
+                    var max = d3.max(data2, function(d){ return d3.max(d3.values(d).filter(function(d1){ return !isNaN(d1)}))});
+                    console.log(max);
+                    var num_digits = Math.floor(Math.log10(max)) + 1;
+                    console.log(num_digits);
+                    console.log(Math.ceil(max/Math.pow(10,num_digits-1))*Math.pow(10,num_digits-1));
+
+                    // Add Y axis
+                    var y = d3.scaleLinear()
+                      .domain([0, Math.ceil(max/Math.pow(10,num_digits-1))*Math.pow(10,num_digits-1)])
+                      //.domain([0, 200000])
+                      .range([ height, 0 ]);
+
+                    // grid lines on Y axis
+                    var yGrid = d3.axisLeft(y).tickSize(-width).tickFormat('').ticks(5);
+
+                    // Another scale for subgroup position?
+                    var xSubgroup = d3.scaleBand()
+                      .domain(subgroups)
+                      .range([0, x.bandwidth()])
+                      .padding([0.1]);
+
+                    //create  yGrid
+                    svg2.append('g')
+                      .attr('class', 'axis-grid')
+                      .call(yGrid);
+
+                    //create Y axis
+                    svg2.append("g")
+                      .call(d3.axisLeft(y).ticks(5));
+
+                    // color palette = one color per subgroup
+                    var color = d3.scaleOrdinal()
+                      .domain(subgroups)
+                      .range(['#345EA5','#6CB5F3','#36A69A','#F8C040','#3EE9B7','#F17F2B']);
+
+                      // Show the bars
+                    svg2.append("g")
+                        .selectAll("g")
+                        // Enter in data = loop group per group
+                        .data(data2)
+                        .enter()
+                        .append("g")
+                          .attr("transform", function(d) { return "translate(" + x(d.dateRange) + ",0)"; })
+                        .selectAll("rect")
+                        .data(function(d) { return subgroups.map(function(key) { return {key: key, value: d[key]}; }); })
+                        .enter().append("rect")
+                          .attr("x", function(d) { return xSubgroup(d.key); })
+                          .attr("y", function(d) { return y(d.value); })
+                          .attr("width", xSubgroup.bandwidth())
+                          .attr("height", function(d) { return height - y(d.value); })
+                          .attr("fill", function(d) { return color(d.key); });
+
+                    svg2.selectAll(".tick text")
+                         .style("font-size","14px")
+                         .style("fill","#666");
+
+
+                    // D3 legend
+                    //color.domain(d3.keys(data[0]).filter(function(key) { return key !== "dateRange"; }));
+
+                    // svg_new.append("g")
+                    //    .attr("class", "legendOrdinal")
+                    //    .attr("transform", "translate(0,"+(height+45)+")");
+                    //
+                    // var legendOrdinal = d3.legendColor()
+                    //  .shape("rect")
+                    //  .shapePadding(150)
+                    //  .orient('horizontal')
+                    //  .labelAlign("start")
+                    //  .scale(color);
+                    //
+                    // svg_new.select(".legendOrdinal")
+                    //    .call(legendOrdinal);
+
+                    var legend = d3.select('#d3_www_legend3').selectAll("legend")
+                        .data(subgroups);
+
+                    var legend_cells = legend.enter().append("div")
+                      .attr("class","legend");
+
+                    var p1 = legend_cells.append("p").attr("class","legend_field");
+                    p1.append("span").attr("class","legend_color").style("background",function(d,i) { return color(i) } );
+                    p1.insert("text").text(function(d,i) { return d } );
+
+                    // text label for the y axis
+                    svg2.append("text")
+                        .attr("transform", "rotate(-90)")
+                        .attr("y", 0 - margin.left)
+                        .attr("x",0 - (height / 2))
+                        .attr("dy", "1em")
+                        .style("text-anchor", "middle")
+                        .text("Number of calls");
+
+                  </script>
+                  <details class="details-chart">
+                    <summary>View table data</summary>
+                    <div class="table-responsive">
+                      <table class="table">
+                        <thead>
+                          <th>Metrics</th>
+                          <!-- <th>Previous Month</th>
+                          <th>Month</th> -->
+                          <th>Previous Week</th>
+                          <th>Week</th>
+                        </thead>
+                        <tbody>
+
+                        <?php foreach ($el as $row) { ?>
+                          <tr>
+                            <td><?=$row?></td>
+                            <td><?=number_format($fieldsByGroupELPW[$row]["Total EL calls"]) ?></td>
+                            <td><?=number_format($fieldsByGroupEL[$row]["Total EL calls"]) ?></td>
+                          </tr>
+                        <?php } ?>
+
+                        </tbody>
+                      </table>
+                    </div>
+                  </details>
+
+
+
           </div>
         </div>
       </div>
@@ -993,7 +1474,7 @@ endif;
           <div class="card-body pt-2">
             <h3 class="card-title"><span class="card-tooltip h6" data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-placement="right" data-bs-content="Description of what this means" data-bs-original-title="" title="">What was wrong?</span></h3>
               <div class="card-body pt-2" id="d3_www_barchart"></div>
-                <div id="d3_www_legend"></div>
+                <div id="d3_www_legend2"></div>
                 <!-- Did you find what you werel looking - WHAT WAS WRONG D3 100% Stacked Bar chart -->
                 <?php
 
@@ -1153,7 +1634,7 @@ endif;
                   //     .call(legendOrdinal);
 
                     // New D3 legend (if the legend labels are long and wont fit in a single line)
-                    var legend = d3.select('#d3_www_legend').selectAll("legend")
+                    var legend = d3.select('#d3_www_legend2').selectAll("legend")
                         .data(subgroups);
 
                     var legend_cells = legend.enter().append("div")
