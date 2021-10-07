@@ -3,7 +3,7 @@
 <?php include "./includes/upd_sidebar.php"; ?>
 <?php include "./includes/date-ranges.php"; ?>
 <?php include "./includes/functions.php"; ?>
-<?php //ini_set('display_errors', 1);
+<?php ini_set('display_errors', 1);
  ?>
 
 <!--Translation Code start-->
@@ -151,7 +151,10 @@
     <!-- Dropdown - date range   -->
     <div class="row mb-4 mt-1">
       <div class="dropdown">
-        <button type="button" class="btn bg-white border border-1 dropdown-toggle" id="range-button" data-bs-toggle="dropdown" aria-expanded="false"><span class="material-icons align-top">calendar_today</span> Last week </button> <span class="text-secondary ps-2 text-nowrap dates-header-week"><?=$datesHeader[1][0] ?> to <?=$datesHeader[1][1] ?> compared to <?=$datesHeader[0][0] ?> to <?=$datesHeader[0][1] ?></span>
+        <button type="button" class="btn bg-white border border-1 dropdown-toggle" id="range-button" data-bs-toggle="dropdown" aria-expanded="false"><span class="material-icons align-top">calendar_today</span> <span data-i18n="dr-lastweek">Last week</span></button>
+            <span class="text-secondary ps-2 text-nowrap dates-header-week"><?=$datesHeader[1][0] ?> - <?=$datesHeader[1][1] ?></span>
+            <span class="text-secondary ps-2 text-nowrap dates-header-week" data-i18n="compared_to"> compared to </span>
+            <span class="text-secondary ps-2 text-nowrap dates-header-week"><?=$datesHeader[0][0] ?> - <?=$datesHeader[0][1] ?></span>
         <?php /*<span class="text-secondary ps-2 text-nowrap dates-header-month d-none"><?=$datesHeaderMonth[1][0] ?> to <?=$datesHeaderMonth[1][1] ?> compared to <?=$datesHeaderMonth[0][0] ?> to <?=$datesHeaderMonth[0][1] ?></span>*/?>
 
         <ul class="dropdown-menu" aria-labelledby="range-button" style="">
@@ -758,7 +761,7 @@
       <div class="col-lg-12 col-md-12">
         <div class="card">
           <div class="card-body pt-2">
-            <h3 class="card-title"><span class="card-tooltip h6" data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-placement="top" data-bs-content="Total number of Calls (Call Centre) per Inquiry Line" data-bs-original-title="" title="" data-i18n="">Total calls by inqury line</span></h3>
+            <h3 class="card-title"><span class="card-tooltip h6" data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-placement="right" data-bs-content="Total number of calls per enquiry line: ITE (Individual Tax Enquiries), e-services, Child and Family Benefits, Buiness Enquiries, etc." data-bs-original-title="" title="" data-i18n="d3-tcbil">Total calls by inqury line</span></h3>
 
             <div class="card-body pt-2" id="d3_tcbil"></div>
             <div id="d3_www_legend"></div>
@@ -1010,15 +1013,15 @@
 
                 </script>
                 <details class="details-chart">
-                  <summary>View table data</summary>
+                  <summary data-i18n="view-data-table">View table data</summary>
                   <div class="table-responsive">
                     <table class="table">
                       <thead>
-                        <th>Metrics</th>
+                        <th data-i18n="">Inquiry line</th>
                         <!-- <th>Previous Month</th>
                         <th>Month</th> -->
-                        <th>Previous Week</th>
-                        <th>Week</th>
+                        <th>Number of calls for <?=$d3DateRanges[0]?><!--two weeks ago--></th>
+                        <th>Number of calls for <?=$d3DateRanges[1]?><!--last week--></th>
                       </thead>
                       <tbody>
 
@@ -1045,7 +1048,7 @@
       <div class="col-lg-12 col-md-12">
         <div class="card">
           <div class="card-body pt-2">
-            <h3 class="card-title"><span class="card-tooltip h6" data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-placement="top" data-bs-content="Top 5 call drivers" data-bs-original-title="" title="" data-i18n="">Top 5 call drivers</span></h3>
+            <h3 class="card-title"><span class="h6" data-i18n="top5-call-drivers">Top 5 call drivers</span></h3>
               <div id="toptask_wrapper" class="dataTables_wrapper dt-bootstrap5 no-footer"><div class="row"><div class="col-sm-12 col-md-6"></div><div class="col-sm-12 col-md-6"></div></div><div class="row"><div class="col-sm-12">
 
                 <?php
@@ -1063,10 +1066,10 @@
                          <table class="table table-striped dataTable no-footer" id="toptask" data="" role="grid">
                            <thead>
                              <tr>
-                               <th class="sorting" aria-controls="toptask" aria-label="Topic: activate to sort column" data-i18n="">Topic</th>
-                               <th class="sorting" aria-controls="toptask" aria-label="Change: activate to sort column" data-i18n="" >Number of calls</th>
+                               <th class="sorting" aria-controls="toptask" aria-label="Topic: activate to sort column" data-i18n="topic">Topic</th>
+                               <th class="sorting" aria-controls="toptask" aria-label="Change: activate to sort column" data-i18n="# of calls" >Number of calls</th>
                                <!-- <th class="sorting" aria-controls="toptask" aria-label="Change: activate to sort column" data-i18n="" >Prev Week Calls</th> -->
-                               <th data-i18n="">Change (# of calls)</th>
+                               <th data-i18n="change">Change (# of calls)</th>
                              </tr>
                            </thead>
                            <tbody>
@@ -1105,7 +1108,7 @@
       <div class="col-lg-12 col-md-12">
         <div class="card">
           <div class="card-body pt-2">
-            <h3 class="card-title"><span class="card-tooltip h6" data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-placement="top" data-bs-content="Top 5 call drivers with the biggest decrease in calls over the period" data-bs-original-title="" title="" data-i18n="">Top 5 call drivers with biggest decrease over period</span></h3>
+            <h3 class="card-title"><span class="h6" data-i18n="top5-call-drivers-decrease">Top 5 call drivers with biggest decrease over period</span></h3>
               <div id="toptask_wrapper" class="dataTables_wrapper dt-bootstrap5 no-footer"><div class="row"><div class="col-sm-12 col-md-6"></div><div class="col-sm-12 col-md-6"></div></div><div class="row"><div class="col-sm-12">
                 <?php
                     uasort($fieldsByGroup, function($b, $a) {
@@ -1125,9 +1128,9 @@
                         <table class="table table-striped dataTable no-footer" id="toptask2" data="" role="grid">
                           <thead>
                             <tr>
-                              <th class="sorting ascending" aria-controls="toptask2" aria-label="Topic: activate to sort column ascending" data-i18n="">Topic</th>
-                              <th class="sorting" aria-controls="toptask" aria-label="Change: activate to sort column" data-i18n="" >Number of calls</th>
-                              <th class="sorting" aria-controls="toptask2" aria-label="Change: activate to sort column ascending" data-i18n="" >Change (# of calls)</th>
+                              <th class="sorting ascending" aria-controls="toptask2" aria-label="Topic: activate to sort column ascending" data-i18n="topic">Topic</th>
+                              <th class="sorting" aria-controls="toptask" aria-label="Change: activate to sort column" data-i18n="# of calls" >Number of calls</th>
+                              <th class="sorting" aria-controls="toptask2" aria-label="Change: activate to sort column ascending" data-i18n="change" >Change (# of calls)</th>
                             </tr>
                           </thead>
                           <tbody>
@@ -1173,7 +1176,7 @@
       <div class="col-lg-12 col-md-12">
         <div class="card">
           <div class="card-body pt-2">
-            <h3 class="card-title"><span class="card-tooltip h6" data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-placement="top" data-bs-content="Top 5 call drivers with the biggest increase in calls over the period" data-bs-original-title="" title="" data-i18n="">Top 5 call drivers with biggest increase over period</span></h3>
+            <h3 class="card-title"><span class="h6" data-i18n="top5-call-drivers-increase">Top 5 call drivers with biggest increase over period</span></h3>
               <div id="toptask_wrapper" class="dataTables_wrapper dt-bootstrap5 no-footer"><div class="row"><div class="col-sm-12 col-md-6"></div><div class="col-sm-12 col-md-6"></div></div><div class="row"><div class="col-sm-12">
                 <?php
                 if (count($top5Decrease) > 0) { ?>
@@ -1181,9 +1184,9 @@
                     <table class="table table-striped dataTable no-footer" id="toptask2" data="" role="grid">
                       <thead>
                         <tr>
-                          <th class="sorting ascending" aria-controls="toptask2" aria-label="Topic: activate to sort column ascending" data-i18n="">Topic</th>
-                          <th class="sorting" aria-controls="toptask" aria-label="Change: activate to sort column" data-i18n="" >Number of calls</th>
-                          <th class="sorting" aria-controls="toptask2" aria-label="Change: activate to sort column ascending" data-i18n="" >Change (# of calls)</th>
+                          <th class="sorting ascending" aria-controls="toptask2" aria-label="Topic: activate to sort column ascending" data-i18n="topic">Topic</th>
+                          <th class="sorting" aria-controls="toptask" aria-label="Change: activate to sort column" data-i18n="# of calls" >Number of calls</th>
+                          <th class="sorting" aria-controls="toptask2" aria-label="Change: activate to sort column ascending" data-i18n="change" >Change (# of calls)</th>
                         </tr>
                       </thead>
                       <tbody>

@@ -133,7 +133,10 @@ if ($succ === 1)
 
     <div class="row mb-4 mt-1">
       <div class="dropdown">
-        <button type="button" class="btn bg-white border border-1 dropdown-toggle" id="range-button" data-bs-toggle="dropdown" aria-expanded="false"><span class="material-icons align-top">calendar_today</span> Last week </button> <span class="text-secondary ps-2 text-nowrap"><?=$datesHeader[1][0] ?> to <?=$datesHeader[1][1] ?> compared to <?=$datesHeader[0][0] ?> to <?=$datesHeader[0][1] ?></span>
+        <button type="button" class="btn bg-white border border-1 dropdown-toggle" id="range-button" data-bs-toggle="dropdown" aria-expanded="false"><span class="material-icons align-top">calendar_today</span> <span data-i18n="dr-lastweek">Last week</span></button>
+            <span class="text-secondary ps-2 text-nowrap dates-header-week"><?=$datesHeader[1][0] ?> - <?=$datesHeader[1][1] ?></span>
+            <span class="text-secondary ps-2 text-nowrap dates-header-week" data-i18n="compared_to"> compared to </span>
+            <span class="text-secondary ps-2 text-nowrap dates-header-week"><?=$datesHeader[0][0] ?> - <?=$datesHeader[0][1] ?></span>
 
         <ul class="dropdown-menu" aria-labelledby="range-button" style="">
           <li><a class="dropdown-item active" href="#" aria-current="true" data-i18n="dr-lastweek">Last week</a></li>
@@ -450,7 +453,7 @@ if ($succ === 1)
       <div class="col-lg-6 col-md-6">
         <div class="card">
           <div class="card-body pt-2">
-            <h3 class="card-title"><span class="card-tooltip h6" data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-placement="right" data-bs-content="Description of what this means" data-bs-original-title="" title="">Did you find what you were looking for?</span></h3>
+            <h3 class="card-title"><span class="card-tooltip h6" data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-placement="right" data-bs-content="Responses to  'Did you find what you were looking for?' on pages with page feedback question" data-bs-original-title="" title="" data-i18n="d3-dyfwywlf">Did you find what you were looking for?</span></h3>
               <div class="card-body pt-2" id="d3_dyfwywlf_barchart"></div>
                 <!-- Did you find what you werel looking - D3 100% Stacked Bar chart -->
                 <?php
@@ -600,7 +603,7 @@ if ($succ === 1)
 
 
             <details class="details-chart">
-              <summary>View table data</summary>
+              <summary data-i18n="view-data-table">View table data</summary>
               <div class="table-responsive">
                 <table class="table">
                   <thead>
@@ -638,7 +641,7 @@ if ($succ === 1)
       <div class="col-lg-6 col-md-6">
         <div class="card">
           <div class="card-body pt-2">
-            <h3 class="card-title"><span class="card-tooltip h6" data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-placement="right" data-bs-content="Description of what this means" data-bs-original-title="" title="">What was wrong?</span></h3>
+            <h3 class="card-title"><span class="card-tooltip h6" data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-placement="right" data-bs-content="Reponses to  'What was wrong?' question after visitors clicked 'No' on the 'Did you find what you were looking for?' question." data-bs-original-title="" title="" data-i18n="d3-www">What was wrong?</span></h3>
               <div class="card-body pt-2" id="d3_www_barchart"></div>
                 <div id="d3_www_legend"></div>
                 <!-- Did you find what you werel looking - WHAT WAS WRONG D3 100% Stacked Bar chart -->
@@ -796,7 +799,7 @@ if ($succ === 1)
                 </script>
 
             <details class="details-chart">
-              <summary>View table data</summary>
+              <summary data-i18n="view-data-table">View table data</summary>
                 <div class="table-responsive">
                     <table class="table">
                       <thead>
@@ -853,7 +856,7 @@ if ($succ === 1)
       <div class="col-lg-12 col-md-12">
         <div class="card">
           <div class="card-body pt-2">
-            <h3 class="card-title"><span class="card-tooltip h6" data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-placement="right" data-bs-content="Description of what this means" data-bs-original-title="" title="">Top 5 programs/services with the most feedback</span></h3>
+            <h3 class="card-title"><span class="h6" data-i18n="top5-programs-most-feedback">Top 5 programs/services with the most feedback</span></h3>
             <div id="toptask_wrapper" class="dataTables_wrapper dt-bootstrap5 no-footer"><div class="row"><div class="col-sm-12 col-md-6"></div><div class="col-sm-12 col-md-6"></div></div><div class="row"><div class="col-sm-12">
 
               <?php
@@ -865,9 +868,9 @@ if ($succ === 1)
                          <table class="table table-striped dataTable no-footer">
                            <thead>
                              <tr>
-                               <th>Program/service</th>
-                               <th># of comments</th>
-                               <th>Change</th>
+                               <th data-i18n="program-service">Program/service</th>
+                               <th data-i18n="# of comments"># of comments</th>
+                               <th data-i18n="change">Change</th>
                              </tr>
                            </thead>
                            <tbody>
@@ -908,7 +911,7 @@ if ($succ === 1)
       <div class="col-lg-12 col-md-12">
         <div class="card">
           <div class="card-body pt-2">
-            <h3 class="card-title"><span class="card-tooltip h6" data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-placement="right" data-bs-content="Description of what this means" data-bs-original-title="" title="">Top 5 pages with the most feedback</span></h3>
+            <h3 class="card-title"><span class="h6" data-i18n="top5-pages-most-feedback">Top 5 pages with the most feedback</span></h3>
             <div id="toptask_wrapper" class="dataTables_wrapper dt-bootstrap5 no-footer"><div class="row"><div class="col-sm-12 col-md-6"></div><div class="col-sm-12 col-md-6"></div></div><div class="row"><div class="col-sm-12">
 
                <?php
@@ -920,9 +923,9 @@ if ($succ === 1)
                         <table class="table table-striped dataTable no-footer">
                           <thead>
                             <tr>
-                              <th>Page</th>
-                              <th># of comments</th>
-                              <th>Change</th>
+                              <th data-i18n="page">Page</th>
+                              <th data-i18n="# of comments"># of comments</th>
+                              <th data-i18n="change">Change</th>
                             </tr>
                           </thead>
                           <tbody>

@@ -129,7 +129,10 @@ if ($succ === 1)
 
     <div class="row mb-4 mt-1">
       <div class="dropdown">
-        <button type="button" class="btn bg-white border border-1 dropdown-toggle" id="range-button" data-bs-toggle="dropdown" aria-expanded="false"><span class="material-icons align-top">calendar_today</span> Last week </button> <span class="text-secondary ps-2 text-nowrap"><?=$datesHeader[1][0] ?> to <?=$datesHeader[1][1] ?> compared to <?=$datesHeader[0][0] ?> to <?=$datesHeader[0][1] ?></span>
+        <button type="button" class="btn bg-white border border-1 dropdown-toggle" id="range-button" data-bs-toggle="dropdown" aria-expanded="false"><span class="material-icons align-top">calendar_today</span> <span data-i18n="dr-lastweek">Last week</span></button>
+            <span class="text-secondary ps-2 text-nowrap dates-header-week"><?=$datesHeader[1][0] ?> - <?=$datesHeader[1][1] ?></span>
+            <span class="text-secondary ps-2 text-nowrap dates-header-week" data-i18n="compared_to"> compared to </span>
+            <span class="text-secondary ps-2 text-nowrap dates-header-week"><?=$datesHeader[0][0] ?> - <?=$datesHeader[0][1] ?></span>
 
         <ul class="dropdown-menu" aria-labelledby="range-button" style="">
           <li><a class="dropdown-item active" href="#" aria-current="true" data-i18n="dr-lastweek">Last week</a></li>
@@ -275,7 +278,7 @@ if ($succ === 1)
           <div class="col-lg-4 col-md-6 col-sm-12">
             <div class="card">
               <div class="card-body card-pad pt-2">
-                <h3 class="card-title"><span class="card-tooltip h6" data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-placement="right" data-bs-content="Description of what this means">Unique visitors</span></h3>
+                <h3 class="card-title"><span class="card-tooltip h6" data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-placement="right" data-bs-content="Visitors who visited the website at least once and is counted only once in the reporting time period" data-i18n="unique-visitors">Unique visitors</span></h3>
                   <div class="row">
                     <div class="col-lg-8 col-md-8 col-sm-8"><span class="h3 text-nowrap"><?=number_format($metrics[$visitors + 3]) ?></span><span class="small"><?//=number_format($metrics[$visitors + 2]) ?></span></div>
                     <div class="col-lg-4 col-md-4 col-sm-4 text-end"><span class="h3 <?=$pieces[0] ?> text-nowrap"><span class="material-icons"><?=$pieces[1] ?></span> <?=percent($diff) ?></span></div>
@@ -293,7 +296,7 @@ $diff = abs($diff);
           <div class="col-lg-4 col-md-6 col-sm-12">
             <div class="card">
               <div class="card-body card-pad pt-2">
-                <h3 class="card-title"><span class="card-tooltip h6" data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-placement="right" data-bs-content="Description of what this means">Visits to all CRA pages</span></h3>
+                <h3 class="card-title"><span class="card-tooltip h6" data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-placement="right" data-bs-content="The total number of times all CRA pages are visited in the reporting time period" data-i18n="visits-all">Visits to all CRA pages</span></h3>
                   <div class="row">
                     <div class="col-md-8 col-sm-6"><span class="h3 text-nowrap"><?=number_format($metrics[$visits + 3]) ?></span><span class="small"><?//=number_format($metrics[$visits + 2]) ?></span></div>
                     <div class="col-lg-4 col-md-4 col-sm-4 text-end"><span class="h3 <?=$pieces[0] ?> text-nowrap"><span class="material-icons"><?=$pieces[1] ?></span> <?=percent($diff) ?></span></div>
@@ -311,7 +314,7 @@ $diff = abs($diff);
           <div class="col-lg-4 col-md-6 col-sm-12">
             <div class="card">
               <div class="card-body card-pad pt-2">
-                <h3 class="card-title"><span class="card-tooltip h6" data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-placement="right" data-bs-content="Description of what this means">Page views</span></h3>
+                <h3 class="card-title"><span class="card-tooltip h6" data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-placement="right" data-bs-content="The total number of times CRA pages are viewed in the reporting time period" data-i18n="page-views">Page views</span></h3>
                   <div class="row">
                     <div class="col-sm-8"><span class="h3 text-nowrap"><?=number_format($metrics[$pv + 3]) ?></span><span class="small"><?//=number_format($metrics[$pv + 2]) ?></span></div>
                     <div class="col-lg-4 col-md-4 col-sm-4 text-end"><span class="h3 <?=$pieces[0] ?> text-nowrap"><span class="material-icons"><?=$pieces[1] ?></span> <?=percent($diff) ?></span></div>
@@ -566,7 +569,7 @@ $diff = abs($diff);
       <div class="col-lg-12 col-md-12">
         <div class="card">
           <div class="card-body pt-2">
-            <h3 class="card-title"><span class="card-tooltip h6" data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-placement="right" data-bs-content="Description of what this means" data-bs-original-title="" title="">Visits compared to call volume</span></h3>
+            <h3 class="card-title"><span class="card-tooltip h6" data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-placement="right" data-bs-content="Number of page visits breakdown (bar chart) relation over selected Date ranges, compared to the Call volume (line chart) - the total number of calls in the Calls centre for the same date ranges." data-bs-original-title="" title="" data-i18n="d3-visits-compared-to-calls">Visits compared to call volume</span></h3>
             <div class="card-body pt-2" id="d3_visits"></div>
             <div id="d3_www_legend"></div>
               <!-- Total calls by Enquiry_line D3 bar chart -->
@@ -743,13 +746,13 @@ $diff = abs($diff);
 
                 </script>
                  <details class="details-chart">
-                      <summary>View table data</summary>
+                      <summary data-i18n="view-data-table">View table data</summary>
                       <div class="table-responsive">
                           <table class="table">
-                            <caption>Last Week</caption>
+                            <caption><!--Last Week--></caption>
                             <thead>
-                              <th>Date</th>
-                              <th>Value</th>
+                              <th data-i18n="date">Date (<?=$d3DateRanges[0]?>)</th>
+                              <th data-i18n="visits">Visits</th>
                             </thead>
                             <tbody>
 
@@ -774,10 +777,10 @@ $diff = abs($diff);
                           </table>
 
                           <table class="table">
-                            <caption>Week</caption>
+                            <caption><!--Week--></caption>
                             <thead>
-                              <th>Date</th>
-                              <th>Value</th>
+                              <th data-i18n="date">Date (<?=$d3DateRanges[1]?>)</th>
+                              <th data-i18n="visits">Visits</th>
                             </thead>
                             <tbody>
 
@@ -862,7 +865,7 @@ $diff = abs($diff);
           <div class="col-lg-4 col-md-6 col-sm-12">
             <div class="card">
               <div class="card-body card-pad pt-2">
-                <h3 class="card-title"><span class="card-tooltip h6" data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-placement="right" data-bs-content="Description of what this means">Total impressions from Google</span></h3>
+                <h3 class="card-title"><span class="card-tooltip h6" data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-placement="right" data-bs-content="The number of times CRA pages appeared in Google search results" data-i18n="total-impressions-google">Total impressions from Google</span></h3>
                   <div class="row">
                     <div class="col-lg-8 col-md-8 col-sm-8"><span class="h3 text-nowrap"><?=number_format($imp) ?></span><span class="small"><?//=number_format($lastImp) ?></span></div>
                     <div class="col-lg-4 col-md-4 col-sm-4 text-end"><span class="h3 <?=$pieces[0] ?> text-nowrap"><span class="material-icons"><?=$pieces[1] ?></span> <?=percent($diff) ?></span></div>
@@ -882,7 +885,7 @@ $diff = abs($diff);
           <div class="col-lg-4 col-md-6 col-sm-12">
             <div class="card">
               <div class="card-body card-pad pt-2">
-                <h3 class="card-title"><span class="card-tooltip h6" data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-placement="right" data-bs-content="Description of what this means">Click through rate from Google</span></h3>
+                <h3 class="card-title"><span class="card-tooltip h6" data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-placement="right" data-bs-content="Percentage of impressions in Google search results that resulted in a click" data-i18n="ctr-google">Click through rate from Google</span></h3>
                   <div class="row">
                     <div class="col-md-8 col-sm-6"><span class="h3 text-nowrap"><?=percent($ctr) ?></span><span class="small"><?//=percent($lastCtr) ?></span></div>
                     <div class="col-lg-4 col-md-4 col-sm-4 text-end"><span class="h3 <?=$pieces[0] ?> text-nowrap"><span class="material-icons"><?=$pieces[1] ?></span> <?=percent($diff) ?></span></div>
@@ -901,7 +904,7 @@ $diff = abs($diff);
           <div class="col-lg-4 col-md-6 col-sm-12">
             <div class="card">
               <div class="card-body card-pad pt-2">
-                <h3 class="card-title"><span class="card-tooltip h6" data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-placement="right" data-bs-content="Description of what this means">Average rank on Google</span></h3>
+                <h3 class="card-title"><span class="card-tooltip h6" data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-placement="right" data-bs-content="Average rank in Google search results for all CRA pages" data-i18n="avg-rank">Average rank on Google</span></h3>
                   <div class="row">
                     <div class="col-sm-8"><span class="h3 text-nowrap"><?=number_format($pos) ?></span><span class="small"><?//=number_format($lastPos) ?></span></div>
                     <div class="col-lg-4 col-md-4 col-sm-4 text-end"><span class="h3 <?=$pieces[0] ?> text-nowrap"><span class="material-icons"><?=$pieces[1] ?></span> <?=$diff ?></span></div>
@@ -1003,7 +1006,7 @@ $sumNumUsers = number_format(array_sum($con1));
       <div class="col-lg-12 col-md-12">
         <div class="card">
           <div class="card-body pt-2">
-            <h3 class="card-title"><span class="card-tooltip h6" data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-placement="right" data-bs-content="Description of what this means" data-bs-original-title="" title="">Top 10 tasks - GC task success survey</span></h3>
+            <h3 class="card-title"><span class="card-tooltip h6" data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-placement="right" data-bs-content="Top Tasks from the CRA Quarterly Top Task Survey" data-bs-original-title="" title="" data-i18n="top10-tasks">Top 10 tasks</span></h3>
             <div id="toptask_wrapper" class="dataTables_wrapper dt-bootstrap5 no-footer"><div class="row"><div class="col-sm-12 col-md-6"></div><div class="col-sm-12 col-md-6"></div></div><div class="row"><div class="col-sm-12">
 
                <?php
@@ -1016,9 +1019,9 @@ $sumNumUsers = number_format(array_sum($con1));
               <table class="table table-striped dataTable no-footer">
                 <thead>
                   <tr>
-                    <th>Task</th>
-                    <th>Change</th>
-                    <th>Task Success Survey Completed</th>
+                    <th data-i18n="task">Task</th>
+                    <th data-i18n="change">>Change</th>
+                    <th data-i18n="">>Task Success Survey Completed</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -1050,7 +1053,7 @@ $sumNumUsers = number_format(array_sum($con1));
       <div class="col-lg-12 col-md-12">
         <div class="card">
           <div class="card-body pt-2">
-            <h3 class="card-title"><span class="card-tooltip h6" data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-placement="right" data-bs-content="Description of what this means" data-bs-original-title="" title="">Total calls by inquiry line</span></h3>
+            <h3 class="card-title"><span class="card-tooltip h6" data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-placement="right" data-bs-content="Total number of calls per enquiry line: ITE (Individual Tax Enquiries), e-services, Child and Family Benefits, Buiness Enquiries, etc." data-bs-original-title="" title="" data-i18n="d3-tcbil">Total calls by inquiry line</span></h3>
             <div class="card-body pt-2" id="d3_tcbil"></div>
               <div id="d3_www_legend3"></div>
                 <!-- Total calls by Enquiry_line D3 bar chart -->
@@ -1248,15 +1251,15 @@ $sumNumUsers = number_format(array_sum($con1));
 
                   </script>
                   <details class="details-chart">
-                    <summary>View table data</summary>
+                    <summary data-i18n="view-data-table">View table data</summary>
                     <div class="table-responsive">
                       <table class="table">
                         <thead>
-                          <th>Metrics</th>
+                          <th>Inquiry line</th>
                           <!-- <th>Previous Month</th>
                           <th>Month</th> -->
-                          <th>Previous Week</th>
-                          <th>Week</th>
+                          <th>Number of calls for <?=$d3DateRanges[0]?><!--two weeks ago--></th>
+                          <th>Number of calls for <?=$d3DateRanges[1]?><!--last week--></th>
                         </thead>
                         <tbody>
 
@@ -1284,7 +1287,7 @@ $sumNumUsers = number_format(array_sum($con1));
       <div class="col-lg-6 col-md-6">
         <div class="card">
           <div class="card-body pt-2">
-            <h3 class="card-title"><span class="card-tooltip h6" data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-placement="right" data-bs-content="Description of what this means" data-bs-original-title="" title="">Did you find what you were looking for?</span></h3>
+            <h3 class="card-title"><span class="card-tooltip h6" data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-placement="right" data-bs-content="Responses to  'Did you find what you were looking for?' on pages with page feedback question" data-bs-original-title="" title="" data-i18n="d3-dyfwywlf">Did you find what you were looking for?</span></h3>
               <div class="card-body pt-2" id="d3_dyfwywlf_barchart"></div>
                 <!-- Did you find what you werel looking - D3 100% Stacked Bar chart -->
                 <?php
@@ -1434,7 +1437,7 @@ $sumNumUsers = number_format(array_sum($con1));
 
 
             <details class="details-chart">
-              <summary>View table data</summary>
+              <summary data-i18n="view-data-table">View table data</summary>
               <div class="table-responsive">
                 <table class="table">
                   <thead>
@@ -1472,7 +1475,7 @@ $sumNumUsers = number_format(array_sum($con1));
       <div class="col-lg-6 col-md-6">
         <div class="card">
           <div class="card-body pt-2">
-            <h3 class="card-title"><span class="card-tooltip h6" data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-placement="right" data-bs-content="Description of what this means" data-bs-original-title="" title="">What was wrong?</span></h3>
+            <h3 class="card-title"><span class="card-tooltip h6" data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-placement="right" data-bs-content="Reponses to  'What was wrong?' question after visitors clicked 'No' on the 'Did you find what you were looking for?' question." data-bs-original-title="" title="" data-i18n="d3-www">What was wrong?</span></h3>
               <div class="card-body pt-2" id="d3_www_barchart"></div>
                 <div id="d3_www_legend2"></div>
                 <!-- Did you find what you werel looking - WHAT WAS WRONG D3 100% Stacked Bar chart -->
@@ -1648,64 +1651,66 @@ $sumNumUsers = number_format(array_sum($con1));
                 </script>
 
             <details class="details-chart">
-              <summary>View table data</summary>
+              <summary data-i18n="view-data-table">View table data</summary>
               <div class="table-responsive">
-    <table class="table">
-      <thead>
-        <th>Metrics</th>
-        <th>Previous Month</th>
-        <th>Month</th>
-        <th>Previous Week</th>
-        <th>Week</th>
-      </thead>
-      <tbody>
-   <tr>
-          <td>FWYLF - I can't find the information</td>
-          <td><?=number_format($metrics2[$fwylfICantFindTheInfo + 0]) ?></td>
-          <td><?=number_format($metrics2[$fwylfICantFindTheInfo + 1]) ?></td>
-          <td><?=number_format($metrics2[$fwylfICantFindTheInfo + 2]) ?></td>
-          <td><?=number_format($metrics2[$fwylfICantFindTheInfo + 3]) ?></td>
-        </tr>
+                    <table class="table">
+                      <thead>
+                        <th>Metrics</th>
+                        <th>Previous Month</th>
+                        <th>Month</th>
+                        <th>Previous Week</th>
+                        <th>Week</th>
+                      </thead>
+                      <tbody>
+                   <tr>
+                          <td data-i18n="d3-cant-find-info">I can't find the information</td>
+                          <td><?=number_format($metrics2[$fwylfICantFindTheInfo + 0]) ?></td>
+                          <td><?=number_format($metrics2[$fwylfICantFindTheInfo + 1]) ?></td>
+                          <td><?=number_format($metrics2[$fwylfICantFindTheInfo + 2]) ?></td>
+                          <td><?=number_format($metrics2[$fwylfICantFindTheInfo + 3]) ?></td>
+                        </tr>
 
-        <tr>
-          <td>FWYLF - Other reason</td>
-          <td><?=number_format($metrics2[$fwylfOtherReason + 0]) ?></td>
-          <td><?=number_format($metrics2[$fwylfOtherReason + 1]) ?></td>
-          <td><?=number_format($metrics2[$fwylfOtherReason + 2]) ?></td>
-          <td><?=number_format($metrics2[$fwylfOtherReason + 3]) ?></td>
-        </tr>
+                        <tr>
+                          <td data-i18n="d3-other">Other reason</td>
+                          <td><?=number_format($metrics2[$fwylfOtherReason + 0]) ?></td>
+                          <td><?=number_format($metrics2[$fwylfOtherReason + 1]) ?></td>
+                          <td><?=number_format($metrics2[$fwylfOtherReason + 2]) ?></td>
+                          <td><?=number_format($metrics2[$fwylfOtherReason + 3]) ?></td>
+                        </tr>
 
-        <tr>
-          <td>FWYLF - Information hard to understand</td>
-          <td><?=number_format($metrics2[$fwylfInfoHardToUnderstand + 0]) ?></td>
-          <td><?=number_format($metrics2[$fwylfInfoHardToUnderstand + 1]) ?></td>
-          <td><?=number_format($metrics2[$fwylfInfoHardToUnderstand + 2]) ?></td>
-          <td><?=number_format($metrics2[$fwylfInfoHardToUnderstand + 3]) ?></td>
-        </tr>
+                        <tr>
+                          <td data-i18n="d3-hard-to-understand">Information hard to understand</td>
+                          <td><?=number_format($metrics2[$fwylfInfoHardToUnderstand + 0]) ?></td>
+                          <td><?=number_format($metrics2[$fwylfInfoHardToUnderstand + 1]) ?></td>
+                          <td><?=number_format($metrics2[$fwylfInfoHardToUnderstand + 2]) ?></td>
+                          <td><?=number_format($metrics2[$fwylfInfoHardToUnderstand + 3]) ?></td>
+                        </tr>
 
-        <tr>
-          <td>FWYLF - Error/something didn't work</td>
-          <td><?=number_format($metrics2[$fwylfError + 0]) ?></td>
-          <td><?=number_format($metrics2[$fwylfError + 1]) ?></td>
-          <td><?=number_format($metrics2[$fwylfError + 2]) ?></td>
-          <td><?=number_format($metrics2[$fwylfError + 3]) ?></td>
-        </tr>
+                        <tr>
+                          <td data-i18n="d3-error">Error/something didn't work</td>
+                          <td><?=number_format($metrics2[$fwylfError + 0]) ?></td>
+                          <td><?=number_format($metrics2[$fwylfError + 1]) ?></td>
+                          <td><?=number_format($metrics2[$fwylfError + 2]) ?></td>
+                          <td><?=number_format($metrics2[$fwylfError + 3]) ?></td>
+                        </tr>
 
-      </tbody>
-    </table>
+                      </tbody>
+                    </table>
 
-  </div>
+                </div>
             </details>
           </div>
         </div>
       </div>
     </div>
-
+    <!-- <div class="row mb-3 gx-3">
+      <h4>UX Tests</h4>
+    </div> -->
     <div class="row mb-3 gx-3">
       <div class="col-lg-4 col-md-6 col-sm-12">
         <div class="card">
           <div class="card-body card-pad pt-2">
-            <h3 class="card-title"><span class="card-tooltip h6" data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-placement="right" data-bs-content="Description of what this means" data-bs-original-title="" title="">Tasks tested</span></h3>
+            <h3 class="card-title"><span class="h6" title="">Tasks tested</span></h3>
               <div class="row">
                 <div class="col-lg-8 col-md-8 col-sm-8"><span class="h3 text-nowrap"><?=$totalTasks; ?></span></div>
                 <div class="col-lg-4 col-md-4 col-sm-4 text-end"><span class="h3 text-danger text-nowrap"></span></div>
@@ -1716,7 +1721,7 @@ $sumNumUsers = number_format(array_sum($con1));
       <div class="col-lg-4 col-md-6 col-sm-12">
         <div class="card">
           <div class="card-body card-pad pt-2">
-            <h3 class="card-title"><span class="card-tooltip h6" data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-placement="right" data-bs-content="Description of what this means" data-bs-original-title="" title="">Average success rate</span></h3>
+            <h3 class="card-title"><span class="h6" title="">Average success rate</span></h3>
               <div class="row">
                 <div class="col-md-8 col-sm-6"><span class="h3 text-nowrap"><?=$avgSuccessRate; ?></span></div>
                 <div class="col-md-4 col-sd-6 text-end"><span class="h3 text-success text-nowrap"></span></div>
@@ -1727,7 +1732,7 @@ $sumNumUsers = number_format(array_sum($con1));
       <div class="col-lg-4 col-md-6 col-sm-12">
         <div class="card">
           <div class="card-body card-pad pt-2">
-            <h3 class="card-title"><span class="card-tooltip h6" data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-placement="right" data-bs-content="Description of what this means" data-bs-original-title="" title="">Participants</span></h3>
+            <h3 class="card-title"><span class="h6" title="">Participants</span></h3>
               <div class="row">
                 <div class="col-sm-8"><span class="h3 text-nowrap"><?=$sumNumUsers; ?></span></div>
                 <div class="col-sm-4 text-end"><span class="h3 text-danger text-nowrap"></span></div>

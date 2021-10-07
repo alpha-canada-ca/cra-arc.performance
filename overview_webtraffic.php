@@ -215,7 +215,10 @@ if ($succ === 1)
 
     <div class="row mb-4 mt-1">
       <div class="dropdown">
-        <button type="button" class="btn bg-white border border-1 dropdown-toggle" id="range-button" data-bs-toggle="dropdown" aria-expanded="false"><span class="material-icons align-top">calendar_today</span> Last week </button> <span class="text-secondary ps-2 text-nowrap"><?=$datesHeader[1][0] ?> to <?=$datesHeader[1][1] ?> compared to <?=$datesHeader[0][0] ?> to <?=$datesHeader[0][1] ?></span>
+        <button type="button" class="btn bg-white border border-1 dropdown-toggle" id="range-button" data-bs-toggle="dropdown" aria-expanded="false"><span class="material-icons align-top">calendar_today</span> <span data-i18n="dr-lastweek">Last week</span></button>
+            <span class="text-secondary ps-2 text-nowrap dates-header-week"><?=$datesHeader[1][0] ?> - <?=$datesHeader[1][1] ?></span>
+            <span class="text-secondary ps-2 text-nowrap dates-header-week" data-i18n="compared_to"> compared to </span>
+            <span class="text-secondary ps-2 text-nowrap dates-header-week"><?=$datesHeader[0][0] ?> - <?=$datesHeader[0][1] ?></span>
 
         <ul class="dropdown-menu" aria-labelledby="range-button" style="">
           <li><a class="dropdown-item active" href="#" aria-current="true" data-i18n="dr-lastweek">Last week</a></li>
@@ -389,7 +392,7 @@ if ($succ === 1)
           <div class="col-lg-4 col-md-6 col-sm-12">
             <div class="card">
               <div class="card-body card-pad pt-2">
-                <h3 class="card-title"><span class="card-tooltip h6" data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-placement="right" data-bs-content="Description of what this means">Unique visitors</span></h3>
+                <h3 class="card-title"><span class="card-tooltip h6" data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-placement="right" data-bs-content="Visitors who visited the website at least once and is counted only once in the reporting time period" data-i18n="unique-visitors">Unique visitors</span></h3>
                   <div class="row">
                     <div class="col-lg-8 col-md-8 col-sm-8"><span class="h3 text-nowrap"><?=number_format($metrics[$visitors + 3]) ?></span><span class="small"><?//=number_format($metrics[$visitors + 2]) ?></span></div>
                     <div class="col-lg-4 col-md-4 col-sm-4 text-end"><span class="h3 <?=$pieces[0] ?> text-nowrap"><span class="material-icons"><?=$pieces[1] ?></span> <?=percent($diff) ?></span></div>
@@ -407,7 +410,7 @@ $diff = abs($diff);
           <div class="col-lg-4 col-md-6 col-sm-12">
             <div class="card">
               <div class="card-body card-pad pt-2">
-                <h3 class="card-title"><span class="card-tooltip h6" data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-placement="right" data-bs-content="Description of what this means">Visits to all CRA pages</span></h3>
+                <h3 class="card-title"><span class="card-tooltip h6" data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-placement="right" data-bs-content="The total number of times all CRA pages are visited in the reporting time period" data-i18n="visits-all">Visits to all CRA pages</span></h3>
                   <div class="row">
                     <div class="col-md-8 col-sm-6"><span class="h3 text-nowrap"><?=number_format($metrics[$visits + 3]) ?></span><span class="small"><?//=number_format($metrics[$visits + 2]) ?></span></div>
                     <div class="col-lg-4 col-md-4 col-sm-4 text-end"><span class="h3 <?=$pieces[0] ?> text-nowrap"><span class="material-icons"><?=$pieces[1] ?></span> <?=percent($diff) ?></span></div>
@@ -425,7 +428,7 @@ $diff = abs($diff);
           <div class="col-lg-4 col-md-6 col-sm-12">
             <div class="card">
               <div class="card-body card-pad pt-2">
-                <h3 class="card-title"><span class="card-tooltip h6" data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-placement="right" data-bs-content="Description of what this means">Page views</span></h3>
+                <h3 class="card-title"><span class="card-tooltip h6" data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-placement="right" data-bs-content="The total number of times CRA pages are viewed in the reporting time period" data-i18n="page-views">Page views</span></h3>
                   <div class="row">
                     <div class="col-sm-8"><span class="h3 text-nowrap"><?=number_format($metrics[$pv + 3]) ?></span><span class="small"><?//=number_format($metrics[$pv + 2]) ?></span></div>
                     <div class="col-lg-4 col-md-4 col-sm-4 text-end"><span class="h3 <?=$pieces[0] ?> text-nowrap"><span class="material-icons"><?=$pieces[1] ?></span> <?=percent($diff) ?></span></div>
@@ -439,7 +442,7 @@ $diff = abs($diff);
       <div class="col-lg-12 col-md-12">
         <div class="card">
           <div class="card-body pt-2">
-            <h3 class="card-title"><span class="card-tooltip h6" data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-placement="right" data-bs-content="Description of what this means" data-bs-original-title="" title="">Visits</span></h3>
+            <h3 class="card-title"><span class="h6" data-i18n="visits">Visits</span></h3>
 
             <div class="card-body pt-2" id="d3_visits"></div>
             <div id="d3_www_legend"></div>
@@ -688,13 +691,13 @@ $diff = abs($diff);
 
                 </script>
                  <details class="details-chart">
-                      <summary>View table data</summary>
+                      <summary data-i18n="view-data-table">View table data</summary>
                       <div class="table-responsive">
                               <table class="table">
-                                <caption>Last Week</caption>
+                                <caption data-i18n="dr-lastweek">Last Week</caption>
                                 <thead>
-                                  <th>Date</th>
-                                  <th>Value</th>
+                                  <th data-i18n="date">Date</th>
+                                  <th data-i18n="value">Value</th>
                                 </thead>
                                 <tbody>
 
@@ -756,7 +759,7 @@ $diff = abs($diff);
       <div class="col-lg-12 col-md-12">
         <div class="card">
           <div class="card-body pt-2">
-            <h3 class="card-title"><span class="card-tooltip h6" data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-placement="right" data-bs-content="Description of what this means" data-bs-original-title="" title="">Top 10 pages visited</span></h3>
+            <h3 class="card-title"><span class="h6" data-i18n="top10-pages-visited">Top 10 pages visited</span></h3>
             <div id="toptask_wrapper" class="dataTables_wrapper dt-bootstrap5 no-footer"><div class="row"><div class="col-sm-12 col-md-6"></div><div class="col-sm-12 col-md-6"></div></div><div class="row"><div class="col-sm-12">
 
               <?php

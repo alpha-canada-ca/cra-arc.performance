@@ -129,7 +129,10 @@ require 'vendor/autoload.php';
 
     <div class="row mb-4 mt-1">
       <div class="dropdown">
-        <button type="button" class="btn bg-white border border-1 dropdown-toggle" id="range-button" data-bs-toggle="dropdown" aria-expanded="false"><span class="material-icons align-top">calendar_today</span> Last week </button> <span class="text-secondary ps-2 text-nowrap"><?=$datesHeader[1][0] ?> to <?=$datesHeader[1][1] ?> compared to <?=$datesHeader[0][0] ?> to <?=$datesHeader[0][1] ?></span>
+        <button type="button" class="btn bg-white border border-1 dropdown-toggle" id="range-button" data-bs-toggle="dropdown" aria-expanded="false"><span class="material-icons align-top">calendar_today</span> <span data-i18n="dr-lastweek">Last week</span></button>
+            <span class="text-secondary ps-2 text-nowrap dates-header-week"><?=$datesHeader[1][0] ?> - <?=$datesHeader[1][1] ?></span>
+            <span class="text-secondary ps-2 text-nowrap dates-header-week" data-i18n="compared_to"> compared to </span>
+            <span class="text-secondary ps-2 text-nowrap dates-header-week"><?=$datesHeader[0][0] ?> - <?=$datesHeader[0][1] ?></span>
 
         <!-- <ul class="dropdown-menu" aria-labelledby="range-button" style="">
           <li><a class="dropdown-item active" href="#" aria-current="true" data-i18n="dr-lastweek">Last week</a></li>
@@ -373,7 +376,7 @@ $diff = abs($diff);
           <div class="col-lg-4 col-md-6 col-sm-12">
             <div class="card">
               <div class="card-body card-pad pt-2">
-                <h3 class="card-title"><span class="card-tooltip h6" data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-placement="right" data-bs-content="Description of what this means">Total impressions from Google</span></h3>
+                <h3 class="card-title"><span class="card-tooltip h6" data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-placement="right" data-bs-content="The number of times CRA pages appeared in Google search results" data-i18n="total-impressions-google">Total impressions from Google</span></h3>
                   <div class="row">
                     <div class="col-lg-8 col-md-8 col-sm-8"><span class="h3 text-nowrap"><?=number_format($imp) ?></span><span class="small"><?//=number_format($lastImp) ?></span></div>
                     <div class="col-lg-4 col-md-4 col-sm-4 text-end"><span class="h3 <?=$pieces[0] ?> text-nowrap"><span class="material-icons"><?=$pieces[1] ?></span> <?=percent($diff) ?></span></div>
@@ -393,7 +396,7 @@ $diff = abs($diff);
           <div class="col-lg-4 col-md-6 col-sm-12">
             <div class="card">
               <div class="card-body card-pad pt-2">
-                <h3 class="card-title"><span class="card-tooltip h6" data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-placement="right" data-bs-content="Description of what this means">Click through rate from Google</span></h3>
+                <h3 class="card-title"><span class="card-tooltip h6" data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-placement="right" data-bs-content="Percentage of impressions in Google search results that resulted in a click" data-i18n="ctr-google">Click through rate from Google</span></h3>
                   <div class="row">
                     <div class="col-md-8 col-sm-6"><span class="h3 text-nowrap"><?=percent($ctr) ?></span><span class="small"><?//=percent($lastCtr) ?></span></div>
                     <div class="col-lg-4 col-md-4 col-sm-4 text-end"><span class="h3 <?=$pieces[0] ?> text-nowrap"><span class="material-icons"><?=$pieces[1] ?></span> <?=percent($diff) ?></span></div>
@@ -412,7 +415,7 @@ $diff = abs($diff);
           <div class="col-lg-4 col-md-6 col-sm-12">
             <div class="card">
               <div class="card-body card-pad pt-2">
-                <h3 class="card-title"><span class="card-tooltip h6" data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-placement="right" data-bs-content="Description of what this means">Average rank on Google</span></h3>
+                <h3 class="card-title"><span class="card-tooltip h6" data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-placement="right" data-bs-content="Average rank in Google search results for all CRA pages" data-i18n="avg-rank">Average rank on Google</span></h3>
                   <div class="row">
                     <div class="col-sm-8"><span class="h3 text-nowrap"><?=number_format($pos) ?></span><span class="small"><?//=number_format($lastPos) ?></span></div>
                     <div class="col-lg-4 col-md-4 col-sm-4 text-end"><span class="h3 <?=$pieces[0] ?> text-nowrap"><span class="material-icons"><?=$pieces[1] ?></span> <?=$diff ?></span></div>
@@ -540,7 +543,7 @@ $diff = abs($diff);
       <div class="col-lg-12 col-md-12">
         <div class="card">
           <div class="card-body pt-2">
-            <h3 class="card-title"><span class="card-tooltip h6" data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-placement="right" data-bs-content="Description of what this means" data-bs-original-title="" title="">Top 10 search terms from Google</span></h3>
+            <h3 class="card-title"><span class="card-tooltip h6" data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-placement="right" data-bs-content="Top 10 most used search terms in Google to access CRA pages." data-bs-original-title="" title="" data-i18n="top10-terms-google">Top 10 search terms from Google</span></h3>
             <div id="toptask_wrapper" class="dataTables_wrapper dt-bootstrap5 no-footer"><div class="row"><div class="col-sm-12 col-md-6"></div><div class="col-sm-12 col-md-6"></div></div><div class="row"><div class="col-sm-12">
 
               <?php
@@ -575,12 +578,12 @@ $diff = abs($diff);
                      <table class="table table-striped dataTable no-footer" id="toptask2" data="" role="grid">
                        <thead>
                          <tr>
-                           <th class="sorting" aria-controls="toptask" aria-label="Change: activate to sort column" data-i18n="" >Search term</th>
-                           <th class="sorting ascending" aria-controls="toptask" aria-label="Change: activate to sort column" data-i18n="" >Clicks</th>
-                           <th class="sorting" aria-controls="toptask" aria-label="Change: activate to sort column" data-i18n="" >Comparison</th>
-                           <th class="sorting" aria-controls="toptask" aria-label="Change: activate to sort column" data-i18n="" >Impressions</th>
-                           <th class="sorting" aria-controls="toptask" aria-label="Change: activate to sort column" data-i18n="" >Click through rate (CTR)</th>
-                           <th class="sorting" aria-controls="toptask" aria-label="Change: activate to sort column" data-i18n="" >Position</th>
+                           <th class="sorting" aria-controls="toptask" aria-label="Change: activate to sort column" data-i18n="search-terms" >Search term</th>
+                           <th class="sorting ascending" aria-controls="toptask" aria-label="Change: activate to sort column" data-i18n="clicks" >Clicks</th>
+                           <th class="sorting" aria-controls="toptask" aria-label="Change: activate to sort column" data-i18n="comparison" >Comparison</th>
+                           <th class="sorting" aria-controls="toptask" aria-label="Change: activate to sort column" data-i18n="impressions" >Impressions</th>
+                           <th class="sorting" aria-controls="toptask" aria-label="Change: activate to sort column" data-i18n="ctr" >Click through rate (CTR)</th>
+                           <th class="sorting" aria-controls="toptask" aria-label="Change: activate to sort column" data-i18n="position" >Position</th>
                          </tr>
                        </thead>
                        <tbody>
