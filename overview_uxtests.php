@@ -280,7 +280,7 @@
        <div class="col-lg-4 col-md-6 col-sm-12">
          <div class="card">
            <div class="card-body card-pad pt-2">
-             <h3 class="card-title"><span class="card-tooltip h6" data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-placement="top" data-bs-content="Number of all time UX test projects completed" data-i18n="tests_completed">UX test projects completed (All time)</span></h3>
+             <h3 class="card-title"><span class="h6" data-i18n="tests_completed">UX test completed (All time)</span></h3>
                <div class="row">
                  <div class="col-lg-8 col-md-8 col-sm-8"><span class="h3 text-nowrap"><?=number_format(count($fieldsByGroup)) ?></span><span class="small"></span></div>
                  <div class="col-lg-4 col-md-4 col-sm-4 text-end"><span class="h3 text-nowrap"><span class="material-icons"></span> </span></div>
@@ -292,7 +292,7 @@
        <div class="col-lg-4 col-md-6 col-sm-12">
          <div class="card">
            <div class="card-body card-pad pt-2">
-             <h3 class="card-title"><span class="card-tooltip h6" data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-placement="top" data-bs-content="Number of tests completed from last fiscal year (Apr 01 - Mar 31)" data-i18n="tests_last_fiscal_year">Tests from last fiscal year</span><span class="card-tooltip h6"> (<?=date("Y M d", strtotime($prev_financialyear_startdate));?> - <?=date("Y M d",strtotime($prev_financialyear_enddate));?>)</span></h3>
+             <h3 class="card-title"><span class="h6" data-i18n="tests_last_fiscal_year">Tests from last fiscal year</span><span class="h6"> (<?=date("Y M d", strtotime($prev_financialyear_startdate));?> - <?=date("Y M d",strtotime($prev_financialyear_enddate));?>)</span></h3>
                <div class="row">
                  <div class="col-md-8 col-sm-6"><span class="h3 text-nowrap"><?=number_format($projectsLastFiscal) ?></span><span class="small"></span></div>
                  <div class="col-lg-4 col-md-4 col-sm-4 text-end"><span class="h3 text-nowrap"><span class="material-icons"></span></span></div>
@@ -304,7 +304,7 @@
        <div class="col-lg-4 col-md-6 col-sm-12">
          <div class="card">
            <div class="card-body card-pad pt-2">
-             <h3 class="card-title"><span class="card-tooltip h6" data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-placement="top" data-bs-content="Number of tests completed from last quarter" data-i18n="tests_last_quarter">Tests from last quarter</span><span class="card-tooltip h6"> (Q<?=$lastQuarter."/"?><?=($lastQuarter != 4) ? date('y') : date('y',strtotime('-1 years')); ?>)</span></h3>
+             <h3 class="card-title"><span class="h6" data-i18n="tests_last_quarter">Tests from last quarter</span><span class="h6"> (Q<?=$lastQuarter."/"?><?=($lastQuarter != 4) ? date('y') : date('y',strtotime('-1 years')); ?>)</span></h3>
                <div class="row">
                  <div class="col-sm-8"><span class="h3 text-nowrap"><?=number_format($projectsLastQuarter) ?></span><span class="small"></span></div>
                  <div class="col-lg-4 col-md-4 col-sm-4 text-end"><span class="h3 text-nowrap"><span class="material-icons"></span></span></div>
@@ -319,7 +319,7 @@
        <div class="col-lg-6 col-md-6 col-sm-12">
          <div class="card">
            <div class="card-body card-pad pt-2">
-             <h3 class="card-title"><span class="card-tooltip h6" data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-placement="top" data-bs-content="Number of tasks tested" data-i18n="total_tasks_tested">Total tasks tested</span></h3>
+             <h3 class="card-title"><span class="h6" data-i18n="total_tasks_tested">Total tasks tested</span></h3>
                <div class="row">
                  <div class="col-lg-8 col-md-8 col-sm-8"><span class="h3 text-nowrap"><?=number_format(count($re)); ?></span><span class="small"></span></div>
                  <div class="col-lg-4 col-md-4 col-sm-4 text-end"><span class="h3 text-nowrap"><span class="material-icons"></span> </span></div>
@@ -330,7 +330,7 @@
        <div class="col-lg-6 col-md-6 col-sm-12">
          <div class="card">
            <div class="card-body card-pad pt-2">
-             <h3 class="card-title"><span class="card-tooltip h6" data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-placement="top" data-bs-content="Number of participants in all tests" data-i18n="number_of_participants">Number of participants</span></h3>
+             <h3 class="card-title"><span class="h6" data-i18n="number_of_participants">Number of participants</span></h3>
                <div class="row">
                  <div class="col-md-8 col-sm-6"><span class="h3 text-nowrap"><?=number_format($num_participants); ?></span></div>
                  <div class="col-lg-4 col-md-4 col-sm-4 text-end"><span class="h3 text-nowrap"><span class="material-icons"></span></span></div>
@@ -345,7 +345,7 @@
       <div class="col-lg-12 col-md-12">
         <div class="card">
           <div class="card-body pt-2">
-            <h3 class="card-title"><span class="card-tooltip h6" data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-placement="top" data-bs-content="List of all UX test results, as an average success rate per project" data-bs-original-title="" title="" data-i18n="table_title_testing_results">UX test results by project</span></h3>
+            <h3 class="card-title"><span class="h6" data-i18n="table_title_testing_results">UX test results by project</span></h3>
               <div id="toptask_wrapper" class="dataTables_wrapper dt-bootstrap5 no-footer"><div class="row"><div class="col-sm-12 col-md-6"></div><div class="col-sm-12 col-md-6"></div></div><div class="row"><div class="col-sm-12">
 
                <?php
