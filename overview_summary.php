@@ -1021,7 +1021,7 @@ $sumNumUsers = number_format(array_sum($con1));
                   <tr>
                     <th data-i18n="task">Task</th>
                     <th data-i18n="change">>Change</th>
-                    <th data-i18n="">>Task Success Survey Completed</th>
+                    <th data-i18n="">Task Success Survey Completed</th>
                   </tr>
                 </thead>
                 <tbody>
