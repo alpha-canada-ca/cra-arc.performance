@@ -244,7 +244,7 @@ if ($succ === 1)
 
         $r = new ApiClient($config[0]['ADOBE_API_KEY'], $config[0]['COMPANY_ID'], $_SESSION['token']);
 
-        $temp = ['aa-ovrvw-smmry-metrics', 'aa-ovrvw-smmry-fwylf', 'aa-ovrvw-smmry-trnd', 'aa-ovrvw-smmry-tsks']; //, 'fwylf' ];
+        $temp = ['aa-ovrvw-smmry-metrics', 'aa-ovrvw-smmry-fwylf', 'aa-ovrvw-smmry-trnd', 'aa-ovrvw-smmry-tsks', 'aa-ovrvw-wbtrff-top10-monthly', 'aa-ovrvw-wbtrff-top10-weekly']; //, 'fwylf' ];
         //$temp = ['aa-ovrvw-smmry-metrics', 'aa-ovrvw-webtrafic-top10pages-weekly', 'aa-ovrvw-smmry-trnd', 'aa-ovrvw-webtrafic-top10pages-monthly'];
         $result = array();
         $j = array();
@@ -255,25 +255,53 @@ if ($succ === 1)
             $json = $data[$t];
             $json = sprintf($json, $urls);
 
-            $json = str_replace(array(
-                "*previousMonthStart*",
-                "*previousMonthEnd*",
-                "*monthStart*",
-                "*monthEnd*",
-                "*previousWeekStart*",
-                "*previousWeekEnd*",
-                "*weekStart*",
-                "*weekEnd*"
-            ) , array(
-                $previousMonthStart,
-                $previousMonthEnd,
-                $monthStart,
-                $monthEnd,
-                $previousWeekStart,
-                $previousWeekEnd,
-                $weekStart,
-                $weekEnd
-            ) , $json);
+            if ($t=='aa-ovrvw-wbtrff-top10-monthly') {
+                    $json = str_replace(array(
+                        "*previousMonthStart*",
+                        "*previousMonthEnd*",
+                        "*monthStart*",
+                        "*monthEnd*"
+                    ) , array(
+                        $previousMonthStart,
+                        $previousMonthEnd,
+                        $monthStart,
+                        $monthEnd
+                    ) , $json);
+            }
+            elseif  ($t=='aa-ovrvw-wbtrff-top10-weekly') {
+                    $json = str_replace(array(
+                        "*previousWeekStart*",
+                        "*previousWeekEnd*",
+                        "*weekStart*",
+                        "*weekEnd*"
+                    ) , array(
+                        $previousWeekStart,
+                        $previousWeekEnd,
+                        $weekStart,
+                        $weekEnd
+                    ) , $json);
+            }
+            else {
+                    $json = str_replace(array(
+                        "*previousMonthStart*",
+                        "*previousMonthEnd*",
+                        "*monthStart*",
+                        "*monthEnd*",
+                        "*previousWeekStart*",
+                        "*previousWeekEnd*",
+                        "*weekStart*",
+                        "*weekEnd*"
+                    ) , array(
+                        $previousMonthStart,
+                        $previousMonthEnd,
+                        $monthStart,
+                        $monthEnd,
+                        $previousWeekStart,
+                        $previousWeekEnd,
+                        $weekStart,
+                        $weekEnd
+                    ) , $json);
+            }
             //$result = api_post($config[0]['ADOBE_API_KEY'], $config[0]['COMPANY_ID'], $_SESSION['token'], $api);
             $result[] = $r->requestEntity($json);
             $j[] = $json;
@@ -386,6 +414,22 @@ if ($succ === 1)
         $fwylfOtherReason = 4;
         $fwylfInfoHardToUnderstand = 8;
         $fwylfError = 12;
+
+        $aaTop10vPm = json_decode($result[4], true);
+        $aaTop10VisitedPagesMonthly = $aaTop10vPm["rows"];
+
+        // echo "<pre>";
+        // print_r($aaTop10VisitedPagesMonthly);
+        // echo "</pre>";
+
+        $aaTop10vPw = json_decode($result[5], true);
+        $aaTop10VisitedPagesWeekly = $aaTop10vPw["rows"];
+
+        // echo "<pre>";
+        // print_r($aaTop10VisitedPagesWeekly);
+        // echo "</pre>";
+
+
         ?>
 
         <div class="row mb-3 gx-3">
@@ -765,58 +809,57 @@ $diff = abs($diff);
               <?php
 
 
-              //$qry = $gscTerms['rows'];
+              $qry = $aaTop10VisitedPagesWeekly;
               // echo "<pre>";
               // print_r($qry);
               // echo "</pre>";
 
                //var_dump($qry);
 
-                // if (count($qry) > 0) { ?>
-                   <!-- <div class="table-responsive">
-                     <table class="table table-striped dataTable no-footer" data="" role="grid">
+                if (count($qry) > 0) { ?>
+                   <div class="table-responsive">
+                     <table class="table table-striped dataTable no-footer"  id="toptask" data="" role="grid">
                        <thead>
                          <tr>
-                           <th class="sorting" aria-controls="toptask" aria-label="Change: activate to sort column" data-i18n="" >Rank</th>
-                           <th class="sorting ascending" aria-controls="toptask" aria-label="Change: activate to sort column" data-i18n="" >Page</th>
-                           <th class="sorting" aria-controls="toptask" aria-label="Change: activate to sort column" data-i18n="" >Visitors</th>
-                           <th class="sorting" aria-controls="toptask" aria-label="Change: activate to sort column" data-i18n="" >Comparison</th>
+                           <th class="sorting ascending" aria-controls="toptask" aria-label="Change: activate to sort column" data-i18n="rank">Rank</th>
+                           <th class="sorting" aria-controls="toptask" aria-label="Change: activate to sort column" data-i18n="page" >Page</th>
+                           <th class="sorting" aria-controls="toptask" aria-label="Change: activate to sort column" data-i18n="visitors" >Visitors</th>
+                           <th class="sorting" aria-controls="toptask" aria-label="Change: activate to sort column" data-i18n="comparison" >Comparison</th>
                          </tr>
                        </thead>
                        <tbody>
-                     <?php // foreach ($qry as $row) { ?>
+                     <?php
+                        $rank = 0;
+                        foreach ($qry as $row) { ?>
                          <tr>
-                           <td><?//=$row['keys'][0];?></td>
-                           <td><?//=number_format($row['clicks']);?></td>
+                           <td><?=++$rank;?></td>
+                           <td><?=$row['value'];?></td>
+                           <td><?=number_format($row['data'][1]);?></td>
                            <?php
                                   // $curr_term = $row['keys'][0];
                                   // //echo $curr_term;
                                   // $key_index = array_search($curr_term, $key);
-                                  //
-                                  //
-                                  // if (is_int($key_index) && ($qryLast[$key_index]['clicks'])) {
-                                  //       //&& (array_key_exists($qryLast[$key_index]['clicks'], $qryLast))
-                                  //   //echo $qryLast[$key_index]['clicks'];
-                                  //      $diff = differ($qryLast[$key_index]['clicks'], $row['clicks']);
-                                  //      $posi = posOrNeg2($diff);
-                                  //      $pieces = explode(":", $posi);
-                                  // //
-                                  //      $diff = abs($diff);
-                                  // //     break;
-                                  //  }
-                                  //  else {
-                                  //     $diff = 0;
-                                  //     $pieces = explode(":", 'text-warning:');
-                                  //  }
+
+
+
+                                        //&& (array_key_exists($qryLast[$key_index]['clicks'], $qryLast))
+                                    //echo $qryLast[$key_index]['clicks'];
+                                 $diff = differ($row['data'][0], $row['data'][1]);
+                                 $posi = posOrNeg2($diff);
+                                 $pieces = explode(":", $posi);
+                                 //
+                                 $diff = abs($diff);
+                                  //     break;
+
                             ?>
-                           <td><span class="<?//=$pieces[0]?>"><?//=$pieces[1]?> <?//=percent($diff)?></span></td>
-                           <td><?//=number_format($row['impressions']);?></td>
+                           <td><span class="<?=$pieces[0]?>"><?=$pieces[1]?> <?=percent($diff)?></span></td>
+
                          </tr>
-                     <?php //} ?>
+                     <?php } ?>
                        </tbody>
                      </table>
                    </div>
-               <?php// } ?> -->
+               <?php } ?>
 
             </div></div><div class="row"><div class="col-sm-12 col-md-5"></div><div class="col-sm-12 col-md-7"></div></div></div>
           </div>

@@ -498,6 +498,7 @@ $diff = abs($diff);
                    return $utime <= $rangeEndW && $utime >= $rangeStartW;
                 });
 
+
                 $PWeeklyData = array_filter( $re, function($var) use ($rangeStartPW, $rangeEndPW) {
                    $utime = strtotime($var['fields']['CALL_DATE']);
                    return $utime <= $rangeEndPW && $utime >= $rangeStartPW;
@@ -520,6 +521,9 @@ $diff = abs($diff);
                           return new DateTime($a['CALL_DATE']) <=> new DateTime($b['CALL_DATE']);
                         });
 
+                      //----------------------------------------------------------------------------------------
+                      //GROUP elements by Topic and calculate total call per topic
+                      //----------------------------------------------------------------------------------------
                       $fieldsByGroup = group_by('Topic', $all_fields);
                       $fieldsByGroupPW = group_by('Topic', $all_fieldsPW);
 
@@ -557,6 +561,29 @@ $diff = abs($diff);
 
                        $top5Topics = array_slice($fieldsByGroup, 0, 5);
 
+                       //----------------------------------------------------------------------------------------
+                       //GROUP elements by DATE and calculate total call per DAy
+                       //----------------------------------------------------------------------------------------
+                       // echo "<pre>";
+                       // print_r($all_fields);
+                       // echo "</pre>";
+
+                       $fieldsByGroupDate = group_by('CALL_DATE', $all_fields);
+                       $fieldsByGroupDatePW = group_by('CALL_DATE', $all_fieldsPW);
+
+                       foreach ( $fieldsByGroupDatePW as &$item ) {
+                         $item["Total calls per day"] = array_sum(array_column_recursive($item, "Calls"));
+                       }
+
+                       foreach ( $fieldsByGroupDate as &$item ) {
+                         $item["Total calls per day"] = array_sum(array_column_recursive($item, "Calls"));
+                       }
+
+                       // echo count($fieldsByGroupDate);
+                       // echo "<pre>";
+                       // print_r($fieldsByGroupDate);
+                       // echo "</pre>";
+
                 } //if ( count( $re ) > 0 )
 
                 // END AIRTALBE API CALLS
@@ -580,10 +607,16 @@ $diff = abs($diff);
                 $s1 = $startGSC;
                 $e1 = $endGSC;
 
+                //echo $s;
+                //echo gettype($e1);
+
                 $s = date("M d", strtotime($s));
                 $e = date("M d", strtotime($e));
                 $s1 = date("M d", strtotime($s1));
                 $e1 = date("M d", strtotime($e1));
+
+
+
 
                 $days = array('Sunday', 'Monday', 'Tuesday', 'Wednesday','Thursday','Friday', 'Saturday');
                 $d3DateRanges = array($s.'-'.$e,$s1.'-'.$e1); // previous $a1
@@ -598,11 +631,73 @@ $diff = abs($diff);
                   $data_array[]=$final_array1;
                 }
 
+                //$s = $startLastGSC;
+                //$e = $endLastGSC;
+                //$s1 = $startGSC;
+                //$e1 = $endGSC;
+                //For loop for the call volume data
+
+                $pwDays = [];
+                $wDays = [];
+
+                for ($i = 0; $i < 7; ++$i) {
+                  $pwDays[] = date("Y-m-d", strtotime($startLastGSC. " +".$i."days"));
+                  $wDays[] = date("Y-m-d", strtotime($startGSC. " +".$i."days"));
+                }
+
+                // echo count($pwDays);
+                // echo "<pre>";
+                // print_r($pwDays);
+                // echo "</pre>";
+                // echo "<br>";
+                // echo count($wDays);
+                // echo "<pre>";
+                // print_r($wDays);
+                // echo "</pre>";
+
+
+                for ($i = 0; $i < 7; ++$i) {
+                  $final_array2["day"] = $days[$i];
+                  // get the key from the fieldsByGroupDate and fieldsByGroupDatePW arrays
+                  // convert the value to
+                  // $fieldsByGroupDatePW
+                  // $fieldsByGroupDate
+
+                  // foreach ($fieldsByGroupDatePW as $trend)
+                  // {
+                  if (array_key_exists($pwDays[$i], $fieldsByGroupDatePW)){
+                        $final_array2[$d3DateRanges[0]] = $fieldsByGroupDatePW[$pwDays[$i]]['Total calls per day'];
+                  }
+                  else {
+                        $final_array2[$d3DateRanges[0]] = 0;
+                  }
+                  if (array_key_exists($wDays[$i], $fieldsByGroupDate)){
+                        $final_array2[$d3DateRanges[1]] = $fieldsByGroupDate[$wDays[$i]]['Total calls per day'];
+                  }
+                  else {
+                        $final_array2[$d3DateRanges[1]] = 0;
+                  }
+
+
+                  //$final_array2[$d3DateRanges[1]] = $fieldsByGroupDate['Total calls per day'];
+
+                  $data_array2[]=$final_array2;
+                }
+
+                // echo count($data_array2);
+                // echo "<pre>";
+                // print_r($data_array2);
+                // echo "</pre>";
+
+
+
                 $subgroups = json_encode($d3DateRanges);
 
                 $groups = json_encode($days);
 
                 $mydata = json_encode($data_array);
+
+                $mydataCalls = json_encode($data_array2);
 
                 ?>
                 <script>
@@ -614,7 +709,9 @@ $diff = abs($diff);
                 var margin = {top: 10, right: 30, bottom: 30, left: 100},
                     width = width - margin.left - margin.right,
                     height = height - margin.top - margin.bottom,
-                    legendHeight = 0;
+                    legendHeight = 0,
+                    dualaxisWidth = 120;
+
 
                 // append the svg object to the body of the page
                 var svg1 = d3.select("#d3_visits")
@@ -628,12 +725,17 @@ $diff = abs($diff);
                 // Parse the Data
                   var data = <?=$mydata?>;
 
+                  var dataCalls = <?=$mydataCalls?>;
+                  console.log("line graph data:")
+                  console.log(dataCalls);
+
                   //console.log(data)
                   //console.log(typeof data)
                   // List of subgroups = header of the csv files = soil condition here
                   //var subgroups = data.columns.slice(1)
                   var subgroups = <?=$subgroups?>;
-                  //console.log(subgroups)
+                  console.log(subgroups);
+                  console.log(subgroups[0]);
                   //console.log(typeof subgroups)
 
                   // List of groups = species here = value of the first column called group -> I show them on the X axis
@@ -645,26 +747,38 @@ $diff = abs($diff);
                   // Add X axis
                   var x = d3.scaleBand()
                       .domain(groups)
-                      .range([0, width])
+                      .range([0, width-dualaxisWidth])
                       .padding([0.4]);
                   svg1.append("g")
                     .attr("transform", "translate(0," + height + ")")
                     .call(d3.axisBottom(x).tickSizeOuter(0));
 
-                  // get the max value from the data json object for the y axis domain
+                  // get the max value from the data json object for the y axis domain (Number of visits)
                   var max1 = d3.max(data, function(d){ return d3.max(d3.values(d).filter(function(d1){ return !isNaN(d1)}))});
                   console.log(max1);
                   var num_digits1 = Math.floor(Math.log10(max1)) + 1;
                   console.log(num_digits1);
                   console.log(Math.ceil(max1/Math.pow(10,num_digits1-1))*Math.pow(10,num_digits1-1));
 
+                  //get MAX for dual Y axis (Call volume)
+                  var maxCalls = d3.max(dataCalls, function(d){ return d3.max(d3.values(d).filter(function(d1){ return !isNaN(d1)}))});
+                  console.log(maxCalls);
+                  var num_digitsCalls = Math.floor(Math.log10(maxCalls)) + 1;
+                  console.log(num_digitsCalls);
+                  console.log(Math.ceil(maxCalls/Math.pow(10,num_digitsCalls-1))*Math.pow(10,num_digitsCalls-1));
+
                   // Add Y axis
                   var y = d3.scaleLinear()
                     .domain([0, Math.ceil(max1/Math.pow(10,num_digits1-1))*Math.pow(10,num_digits1-1)])
                     .range([ height, 0 ]);
 
+                  // Add dual Y axix (Call volume)
+                  var y1 = d3.scaleLinear()
+                    .domain([0, Math.ceil(maxCalls/Math.pow(10,num_digitsCalls-1))*Math.pow(10,num_digitsCalls-1)])
+                    .range([ height, 0 ]);
+
                   // grid lines on Y axis
-                  var yGrid = d3.axisLeft(y).tickSize(-width).tickFormat('').ticks(5);
+                  var yGrid = d3.axisLeft(y).tickSize(-(width-dualaxisWidth)).tickFormat('').ticks(5);
 
                   // Another scale for subgroup position?
                   var xSubgroup = d3.scaleBand()
@@ -680,6 +794,13 @@ $diff = abs($diff);
                   //create Y axis
                   svg1.append("g")
                     .call(d3.axisLeft(y).ticks(5));
+
+                  //create dual Y axis (Call volume)
+                  svg1.append("g")
+                    .attr("transform", "translate(" + (width - dualaxisWidth) + ",0)")
+                    //.style("stroke", "red")
+                    .attr("class", "axisRed")
+                    .call(d3.axisRight(y1).ticks(5));
 
                   // color palette = one color per subgroup
                   var color = d3.scaleOrdinal()
@@ -707,6 +828,52 @@ $diff = abs($diff);
                        .style("font-size","14px")
                        .style("fill","#666");
 
+
+                  // Add the line
+                 svg1.append("path")
+                   .datum(dataCalls)
+                   .attr("fill", "none")
+                   .attr("stroke", "orange")
+                   .attr("stroke-width", 1.5)
+                   .attr("d", d3.line()
+                     .x(function(d) { return x(d.day) })
+                     //.y(function(d) { return y1(d['Sep 26-Oct 02']) })
+                     .y(function(d) { return y1(d[subgroups[0]]) })
+                   );
+
+                 // Add the line
+                svg1.append("path")
+                  .datum(dataCalls)
+                  .attr("fill", "none")
+                  .attr("stroke", "red")
+                  .attr("stroke-width", 1.5)
+                  .attr("d", d3.line()
+                    .x(function(d) { return x(d.day) })
+                    //.y(function(d) { return y1(d['Sep 26-Oct 02']) })
+                    .y(function(d) { return y1(d[subgroups[1]]) })
+                  );
+
+
+
+                       // Add the line
+                   // svg1.append("path")
+                   //   .datum(dataCalls)
+                   //   .attr("fill", "none")
+                   //   .attr("stroke", "steelblue")
+                   //   .attr("stroke-width", 1.5)
+                   //   .attr("d", d3.line()
+                   //     .x(function(d) { return x(d.day) })
+                   //     .y(function(d) { return y(d.value) })
+                   //   );
+
+
+                 // var valueline = d3.svg1.line()
+                 //     .x(function(d) { return x(d.day); })
+                 //     .y(function(d) { return y0(d.close); });
+                 //
+                 // var valueline2 = d3.svg1.line()
+                 //     .x(function(d) { return x(d.date); })
+                 //     .y(function(d) { return y1(d.open); });
 
                   // D3 legend
                   //color.domain(d3.keys(data[0]).filter(function(key) { return key !== "dateRange"; }));
@@ -738,11 +905,21 @@ $diff = abs($diff);
                   // text label for the y axis
                   svg1.append("text")
                       .attr("transform", "rotate(-90)")
-                      .attr("y", 0 - margin.left)
+                      .attr("y",0 - margin.left)
                       .attr("x",0 - (height / 2))
                       .attr("dy", "1em")
                       .style("text-anchor", "middle")
                       .text("Visits");
+
+                  // text label for the second (dual) y axis
+                  svg1.append("text")
+                        .attr("transform", "rotate(-90)")
+                        .attr("y",width - 40)
+                        .attr("x",0 - (height / 2))
+                        .attr("dy", "1em")
+                        .style("fill", "red")
+                        .style("text-anchor", "middle")
+                        .text("Call volume");
 
                 </script>
                  <details class="details-chart">
@@ -904,7 +1081,7 @@ $diff = abs($diff);
           <div class="col-lg-4 col-md-6 col-sm-12">
             <div class="card">
               <div class="card-body card-pad pt-2">
-                <h3 class="card-title"><span class="card-tooltip h6" data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-placement="right" data-bs-content="Average rank in Google search results for all CRA pages" data-i18n="avg-rank">Average rank on Google</span></h3>
+                <h3 class="card-title"><span class="card-tooltip h6" data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-placement="right" data-bs-content="Average rank in Google search results for all CRA pages" data-i18n="avg-rank-google">Average rank on Google</span></h3>
                   <div class="row">
                     <div class="col-sm-8"><span class="h3 text-nowrap"><?=number_format($pos) ?></span><span class="small"><?//=number_format($lastPos) ?></span></div>
                     <div class="col-lg-4 col-md-4 col-sm-4 text-end"><span class="h3 <?=$pieces[0] ?> text-nowrap"><span class="material-icons"><?=$pieces[1] ?></span> <?=$diff ?></span></div>
@@ -1076,7 +1253,19 @@ $sumNumUsers = number_format(array_sum($con1));
                   $s1 = date("M d", strtotime($s1));
                   $e1 = date("M d", strtotime($e1));
 
+
+                  // echo $s;
+                  // echo $e;
+                  // echo $s1;
+                  // echo $e1;
+                  //echo gettype($e1);
+
+
                   $d3DateRanges = array($s.'-'.$e,$s1.'-'.$e1); // previous $a1
+
+                  // echo "<pre>";
+                  // print_r($d3DateRanges);
+                  // echo "</pre>";
 
                   $groups = json_encode($d3DateRanges);
 
@@ -1132,7 +1321,8 @@ $sumNumUsers = number_format(array_sum($con1));
                   // Parse the Data
                     var data2 = <?=$mydata2?>;
 
-                    //console.log(data)
+                    console.log("data for TCBIL");
+                    console.log(data2);
                     //console.log(typeof data)
                     // List of subgroups = header of the csv files = soil condition here
                     //var subgroups = data.columns.slice(1)

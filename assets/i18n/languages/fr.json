@@ -1,10 +1,10 @@
 {
  "@metadata": {
  "authors": [
- "Kole Krstev","Adam Monsour","Anthony Debassige", "Spencer Griffin"
+ "Kole Krstev","Adam Monsour","Anthony Debassige","Jacen Arthur"
  ],
- "last-updated": "2021-08-10",
- "locale": "en",
+ "last-updated": "2021-10-07",
+ "locale": "fr-CA",
  "message-documentation": "qqq"
  },
  "menu-overview": "Aperçu",
@@ -51,6 +51,7 @@
   "visits": "Visites",
   "total-impressions-google": "Nombre total d’impressions de Google",
   "ctr-google": "Taux de clics de Google",
+  "avg-rank-google": "Classement moyen sur Google",
   "avg-rank": "Classement moyen",
   "top5-terms-google": "Cinq termes de recherche les plus utilisés sur Google",
   "search-terms": "Termes de recherche",
