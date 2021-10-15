@@ -385,3 +385,15 @@ stroke: #ddd;
     margin-right: .5em;
     width: 15px;
 }
+
+.axisRed line {
+  stroke: red;
+}
+
+.axisRed path {
+  stroke: red;
+}
+
+.axisRed text {
+  fill: red !important;
+}
