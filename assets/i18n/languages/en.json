@@ -1,10 +1,10 @@
 {
  "@metadata": {
  "authors": [
- "Kole Krstev","Adam Monsour","Anthony Debassige", "Spencer Griffin"
+ "Kole Krstev","Adam Monsour","Anthony Debassige","Jacen Arthur"
  ],
- "last-updated": "2021-08-10",
- "locale": "en",
+ "last-updated": "2021-10-07",
+ "locale": "en-CA",
  "message-documentation": "qqq"
  },
  "menu-overview": "Overview",
@@ -33,14 +33,14 @@
  "tests_completed": "Tests completed (All time)",
  "tests_last_fiscal_year": "Tests from last fiscal year",
  "tests_last_quarter": "Tests from last quarter",
- "total_tasks_tested": "Total tasks tested",
- "number_of_participants": "Number of participants",
+ "total_tasks_tested": "Tasks tested",
+ "number_of_participants": "Participants",
  "table_title_testing_results": "UX test results by project",
  "ux_projects": "UX projects",
  "type": "Type",
  "date": "Date",
  "value": "Value",
- "avg_success_rate": "Average success rate",
+ "avg_success_rate": "Average success",
 
  "unique-visitors": "Unique Visitors",
  "visits-all": "Visits to all CRA pages",
@@ -49,7 +49,8 @@
  "calls": "Calls",
  "visits": "Visits",
  "total-impressions-google": "Total impressions from Google",
- "ctr-google": "Click through ratio from Google",
+ "ctr-google": "Click through rate from Google",
+ "avg-rank-google": "Average rank on Google",
  "avg-rank": "Average rank",
  "top5-terms-google": "Top 5 search terms from Google",
  "search-terms": "Search terms",
