@@ -365,7 +365,7 @@ stroke: #ddd;
 }
 
 /* classes for What_went_wrong_legend */
-#d3_www_legend, #d3_www_legend2, #d3_www_legend3 {
+#d3_www_legend, #d3_www_legend2, #d3_www_legend3, #d3_www_legend4 {
   display: inline-block;
   margin-left: 50px;
 
@@ -386,14 +386,23 @@ stroke: #ddd;
     width: 15px;
 }
 
+.legend_color_line {
+    display: inline-block;
+    height: 3px;
+    margin-right: .5em;
+    margin-left: .5em;
+    width: 25px;
+    vertical-align: middle;
+}
+
 .axisRed line {
-  stroke: red;
+  stroke: #F17F2B;
 }
 
 .axisRed path {
-  stroke: red;
+  stroke: #F17F2B;
 }
 
 .axisRed text {
-  fill: red !important;
+  fill: #F17F2B !important;
 }
