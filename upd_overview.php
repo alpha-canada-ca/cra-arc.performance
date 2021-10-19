@@ -598,7 +598,7 @@ $diff = abs($diff);
           <div class="card-body pt-2">
             <h3 class="card-title"><span class="card-tooltip h6" data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-placement="right" data-bs-content="Number of page visits breakdown (bar chart) relation over selected Date ranges, compared to the Call volume (line chart) - the total number of calls in the Calls centre for the same date ranges." data-bs-original-title="" title="" data-i18n="d3-visits-compared-to-calls">Visits compared to call volume</span></h3>
             <div class="card-body pt-2" id="d3_visits"></div>
-            <div id="d3_www_legend"></div>
+            <div id="d3_www_legend"></div><div id="d3_www_legend4"></div>
               <!-- Total calls by Enquiry_line D3 bar chart -->
               <?php
 
@@ -698,6 +698,10 @@ $diff = abs($diff);
                 $mydata = json_encode($data_array);
 
                 $mydataCalls = json_encode($data_array2);
+
+                // echo "<pre>";
+                // print_r($data_array2);
+                // echo "</pre>";
 
                 ?>
                 <script>
@@ -832,8 +836,10 @@ $diff = abs($diff);
                   // Add the line
                  svg1.append("path")
                    .datum(dataCalls)
+                   //.attr("transform", function(d) { return "translate(" + xSubgroup.bandwidth() + ",0)"; })
+                   .attr("transform", function(d) { return "translate(40,0)"; })
                    .attr("fill", "none")
-                   .attr("stroke", "orange")
+                   .attr("stroke", "#F8C040")
                    .attr("stroke-width", 1.5)
                    .attr("d", d3.line()
                      .x(function(d) { return x(d.day) })
@@ -844,8 +850,10 @@ $diff = abs($diff);
                  // Add the line
                 svg1.append("path")
                   .datum(dataCalls)
+                  //.attr("transform", function(d) { return "translate(" + xSubgroup.bandwidth() + ",0)"; })
+                  .attr("transform", function(d) { return "translate(40,0)"; })
                   .attr("fill", "none")
-                  .attr("stroke", "red")
+                  .attr("stroke", "#F17F2B")
                   .attr("stroke-width", 1.5)
                   .attr("d", d3.line()
                     .x(function(d) { return x(d.day) })
@@ -902,6 +910,42 @@ $diff = abs($diff);
                   p1.append("span").attr("class","legend_color").style("background",function(d,i) { return color(i) } );
                   p1.insert("text").text(function(d,i) { return d } );
 
+
+                  // LEGEND for DUAL Y axis - Call volume axis
+                  // --------------------------------------------------------------------------------------------
+
+                  var color_lines = d3.scaleOrdinal()
+                    .domain(subgroups)
+                    .range(['#F8C040','#F17F2B']);
+
+                  var legend2 = d3.select('#d3_www_legend4').selectAll("legend")
+                      .data(subgroups);
+
+                  var legend_cells2 = legend2.enter().append("div")
+                    .attr("class","legend");
+
+                  var p2 = legend_cells2.append("p").attr("class","legend_field");
+                  p2.append("span").attr("class","legend_color_line").style("background",function(d,i) { return color_lines(i) } );
+                  p2.insert("text").text(function(d,i) { return "Calls "+d } );
+
+                  // --------------------------------------------------------------------------------------------
+
+                  //p1.append("span").attr("class","legend_color_line").style("background", "orange");
+                  //p1.insert("text").text("Calls for "+ subgroups[0]);
+
+                  //p1.insert("text").text(function(d,i) { return d } );
+
+                  // var p2 = legend_cells.append("p").attr("class","legend_field");
+                  // var legend2 = d3.select('#d3_www_legend').selectAll("legend")
+                  //     .data(subgroups);
+                  //
+                  // var legend_cells2 = legend2.enter().append("div")
+                  //   .attr("class","legend");
+                  //
+                  // var p2 = legend_cells2.append("p").attr("class","legend_field");
+                  // p2.append("span").attr("class","legend_color_line").style("background","red" } );
+                  // p2.insert("text").text(function(d,i) { return "Calls " + d } );
+
                   // text label for the y axis
                   svg1.append("text")
                       .attr("transform", "rotate(-90)")
@@ -917,9 +961,11 @@ $diff = abs($diff);
                         .attr("y",width - 40)
                         .attr("x",0 - (height / 2))
                         .attr("dy", "1em")
-                        .style("fill", "red")
+                        .style("fill", "#F17F2B")
                         .style("text-anchor", "middle")
                         .text("Call volume");
+
+
 
                 </script>
                  <details class="details-chart">
@@ -930,18 +976,21 @@ $diff = abs($diff);
                             <thead>
                               <th data-i18n="date">Date (<?=$d3DateRanges[0]?>)</th>
                               <th data-i18n="visits">Visits</th>
+                              <th data-i18n="calls">Calls</th>
                             </thead>
                             <tbody>
 
                               <?php
-                                  foreach ($aaTrendLastWeek as $trend)
+                                  //foreach ($aaTrendLastWeek as $trend)
+                                  foreach ($aaTrendLastWeek as $key=>$value)
                                   {
 
                                   ?>
 
                                           <tr>
-                                            <td><?=$trend['value'] ?></td>
-                                            <td><?=number_format($trend['data'][1]) ?></td>
+                                            <td><?=$value['value'] ?></td>
+                                            <td><?=number_format($value['data'][1]) ?></td>
+                                            <td><?=number_format($data_array2[$key][$d3DateRanges[0]]) ?></td>
                                           </tr>
 
                                           <?php
@@ -958,18 +1007,21 @@ $diff = abs($diff);
                             <thead>
                               <th data-i18n="date">Date (<?=$d3DateRanges[1]?>)</th>
                               <th data-i18n="visits">Visits</th>
+                              <th data-i18n="calls">Calls</th>
                             </thead>
                             <tbody>
 
                               <?php
-                                  foreach ($aaTrendWeek as $trend)
+                                  //foreach ($aaTrendWeek as $trend)
+                                  foreach ($aaTrendWeek as $key=>$value)
                                   {
 
                                   ?>
 
                                           <tr>
-                                            <td><?=$trend['value'] ?></td>
-                                            <td><?=number_format($trend['data'][1]) ?></td>
+                                            <td><?=$value['value'] ?></td>
+                                            <td><?=number_format($value['data'][1]) ?></td>
+                                            <td><?=number_format($data_array2[$key][$d3DateRanges[1]]) ?></td>
                                           </tr>
 
                                           <?php
@@ -979,6 +1031,7 @@ $diff = abs($diff);
 
                             </tbody>
                           </table>
+
                     </details>
           </div>
         </div>

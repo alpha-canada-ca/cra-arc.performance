@@ -24,6 +24,8 @@ COPY overview_calldrivers.php /var/www/html/overview_calldrivers.php
 COPY overview_pagefeedback.php /var/www/html/overview_pagefeedback.php
 COPY overview_searchanalytics.php /var/www/html/overview_searchanalytics.php
 COPY overview_webtraffic.php /var/www/html/overview_webtraffic.php
+COPY test_en.php /var/www/html/test_en.php
+COPY test_fr.php /var/www/html/test_fr.php
 
 RUN curl -sS https://getcomposer.org/installer | php
 RUN mv composer.phar /var/www/html/composer.phar
