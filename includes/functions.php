@@ -388,6 +388,19 @@ function getMonthRanges($start, $end) {
    return $out;
 }
 
+/* **************************************  */
+// Get Page Title from URL
+/* **************************************  */
+function getSiteTitle( $url ){
+   $doc = new DOMDocument();
+   @$doc->loadHTML(file_get_contents($url));
+   $title = $doc->getElementsByTagName('title')->item(0)->nodeValue;
+
+   $pageTitle = trim(substr($title, 0, -12));
+
+   return $pageTitle;
+}
+
 
 
 ?>
