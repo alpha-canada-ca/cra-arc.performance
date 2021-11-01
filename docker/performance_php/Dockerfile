@@ -26,6 +26,9 @@ COPY overview_searchanalytics.php /var/www/html/overview_searchanalytics.php
 COPY overview_webtraffic.php /var/www/html/overview_webtraffic.php
 COPY test_en.php /var/www/html/test_en.php
 COPY test_fr.php /var/www/html/test_fr.php
+COPY pages_home.php /var/www/html/pages_home.php
+COPY pages_summary.php /var/www/html/pages_summary.php
+COPY pages_pagefeedback.php /var/www/html/pages_pagefeedback.php
 
 RUN curl -sS https://getcomposer.org/installer | php
 RUN mv composer.phar /var/www/html/composer.phar
