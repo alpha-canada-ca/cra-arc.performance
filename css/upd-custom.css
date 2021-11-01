@@ -406,3 +406,31 @@ stroke: #ddd;
 .axisRed text {
   fill: #F17F2B !important;
 }
+
+#categoryFilter {
+  margin-left:25px;
+}
+
+#pages_dt2_filter_filter {
+  display: flex;
+}
+
+.back_link {
+margin: 25px 0px 25px 0px;
+}
+
+/* .back_link span {
+margin: 0px 20px 0px 20px;
+} */
+
+/* .page_header .material-icons:not(:first-child) {
+  margin-left:30px;
+} */
+
+.page_header span:not(:first-child) {
+  margin-left:30px;
+}
+
+.page_header span {
+  cursor: pointer !important;
+}
