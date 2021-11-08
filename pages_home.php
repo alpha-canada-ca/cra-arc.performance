@@ -132,39 +132,41 @@ if ($succ === 1)
 
     <div class="row mb-4 mt-1">
 
-      <div class="col-9">
-        <div class="input-group mb-3">
-          <!-- <div class="input-group-prepend">
-            <span class="input-group-text" id="basic-addon3">https://example.com/users/</span>
+      <form action="pages_summary.php" method="GET" class="row">
+          <div class="col-10">
+            <!-- <div class="input-group mb-3"> -->
+              <!-- <div class="input-group-prepend">
+                <span class="input-group-text" id="basic-addon3">https://example.com/users/</span>
+              </div> -->
+              <input type="text" class="form-control" id="basic-url" name="url" placeholder="Search by URL" aria-label="Search by URL" aria-describedby="basic-addon3">
+              <!-- <ul class="dropdown-menu" aria-labelledby="basic-url" style="">
+                <li><a class="dropdown-item active" href="#" aria-current="true" data-i18n="dr-lastweek">Last week</a></li>
+                <li><a class="dropdown-item" href="#" data-i18n="dr-lastmonth">Last month</a></li>
+              </ul> -->
+            <!-- </div> -->
+          </div>
+
+          <!-- <div class="col">
+            <div class="dropdown">
+              <button type="button" class="btn bg-white border border-1 dropdown-toggle" id="range-button" data-bs-toggle="dropdown" aria-expanded="false"><span class="material-icons align-top">calendar_today</span> <span data-i18n="dr-lastweek">Last week</span></button>
+              <ul class="dropdown-menu" aria-labelledby="range-button" style="">
+                <li><a class="dropdown-item active" href="#" aria-current="true" data-i18n="dr-lastweek">Last week</a></li>
+                <li><a class="dropdown-item" href="#" data-i18n="dr-lastmonth">Last month</a></li>
+              </ul>
+
+            </div>
           </div> -->
-          <input type="text" class="form-control" id="basic-url" placeholder="Search by URL" aria-label="Search by URL" aria-describedby="basic-addon3">
-          <!-- <ul class="dropdown-menu" aria-labelledby="basic-url" style="">
-            <li><a class="dropdown-item active" href="#" aria-current="true" data-i18n="dr-lastweek">Last week</a></li>
-            <li><a class="dropdown-item" href="#" data-i18n="dr-lastmonth">Last month</a></li>
-          </ul> -->
 
-        </div>
+          <div class="col">
+            <!-- <button type="button" class="btn btn-primary btn-block col-12">Search</button> -->
+            <input type="submit" value="Search" class="btn btn-primary btn-block col-12">
 
-      </div>
+          </div>
 
-      <div class="col">
-        <div class="dropdown">
-          <button type="button" class="btn bg-white border border-1 dropdown-toggle" id="range-button" data-bs-toggle="dropdown" aria-expanded="false"><span class="material-icons align-top">calendar_today</span> <span data-i18n="dr-lastweek">Last week</span></button>
-          <ul class="dropdown-menu" aria-labelledby="range-button" style="">
-            <li><a class="dropdown-item active" href="#" aria-current="true" data-i18n="dr-lastweek">Last week</a></li>
-            <li><a class="dropdown-item" href="#" data-i18n="dr-lastmonth">Last month</a></li>
-          </ul>
+          <!-- <input type="text" class="form-control col-10" id="basic-url" name="url" placeholder="Search by URL" aria-label="Search by URL" aria-describedby="basic-addon3">
+          <input type="submit" value="Search" class="btn btn-primary btn-block col-2"> -->
 
-        </div>
-      </div>
-
-      <div class="col">
-        <button type="button" class="btn btn-primary btn-block col-12">Search</button>
-
-      </div>
-
-
-
+      </form>
 
     </div>
 
