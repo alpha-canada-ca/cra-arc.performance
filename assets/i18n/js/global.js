@@ -21,7 +21,9 @@ jQuery(function($) {
    // );
    }
 
-
+ $('#view_url').click(function(e) {
+ $('.page_url').toggleClass('hidden');
+ });
 
  $.i18n().load({
    'en': './assets/i18n/languages/en.json',
@@ -32,6 +34,7 @@ jQuery(function($) {
  //console.log($(this).data('locale'));
  $.i18n().locale = $(this).data('locale');
  $('.list-inline-item').toggle();
+ $('.dates-header').toggle();
  translate_funct();
  });
  translate_funct();
