@@ -169,7 +169,7 @@ $relatedProjects = $fullArray[0]['fields']['Projects'];
 
     <div class="tabs sticky">
       <ul>
-        <li <?php if ($tab=="summary") {echo "class='is-active'";} ?>><a href="./pages_summary.php?url=<?=$url?>" data-i18n="tab-summary">Summary</a></li>
+        <li <?php if ($tab=="summary") {echo "class='is-active'";} ?>><a href="./pages_summary.php?url=<?=$url?>" data-i18n="tab-summary">Summary</a> </li>
         <li <?php if ($tab=="webtraffic") {echo "class='is-active'";} ?>><a href="#" data-i18n="tab-webtraffic">Web traffic</a></li>
         <li <?php if ($tab=="searchanalytics") {echo "class='is-active'";} ?>><a href="./pages_searchanalytics.php?url=<?=$url?>" data-i18n="tab-searchanalytics">Search analytics</a></li>
         <li <?php if ($tab=="pagefeedback") {echo "class='is-active'";} ?>><a href="./pages_pagefeedback.php?url=<?=$url?>" data-i18n="tab-pagefeedback">Page feedback</a></li>
