@@ -31,6 +31,7 @@ COPY pages_summary.php /var/www/html/pages_summary.php
 COPY pages_pagefeedback.php /var/www/html/pages_pagefeedback.php
 COPY projects_home.php /var/www/html/projects_home.php
 COPY pages_webtraffic.php /var/www/html/pages_webtraffic.php
+COPY pages_searchanalytics.php /var/www/html/pages_searchanalytics.php
 
 RUN curl -sS https://getcomposer.org/installer | php
 RUN mv composer.phar /var/www/html/composer.phar
