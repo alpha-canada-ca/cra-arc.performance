@@ -11,6 +11,15 @@
 <script type="text/javascript" src="js/bootstrap.bundle.min.js"></script>
 <script type="text/javascript" src="js/jquery-3.3.1.min.js"></script>
 <script type="text/javascript" src="js/datatables.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.0.1/js/dataTables.buttons.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.0.1/js/buttons.html5.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.0.1/js/buttons.print.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.0.1/js/buttons.colVis.min.js"></script>
+
+
 <script type="text/javascript" src="js/sidebar.js"></script>
 
 <script>
@@ -35,6 +44,36 @@
       $("#pages_dt").DataTable({
         "searching": true
       });
+
+      // EXPORT BUTTONS ON DATA TABLE
+      var tbl_buttons =  $('.datatables-with-buttons').DataTable( {
+        //dom: 'Bfrtip',
+        //dom: '<"btn">Bt',
+        dom: 'Bt',
+        //dom: '<"btn btn-outline-dark"B>t',
+        // buttons: [
+        //     //'copy', 'csv', 'excel', 'pdf', 'print'
+        //     'csv', 'excel', 'pdf', 'print'
+        // ],
+        buttons: [
+            //{ extend: 'copy', className: 'btn btn-outline-primary glyphicon glyphicon-duplicate' },
+            { extend: 'csv', className: 'btn btn-outline-primary glyphicon glyphicon-save-file' },
+            { extend: 'excel', className: 'btn btn-outline-primary glyphicon glyphicon-list-alt' },
+            { extend: 'pdf', className: 'btn btn-outline-primary glyphicon glyphicon-file' },
+            { extend: 'print', className: 'btn btn-outline-primary glyphicon glyphicon-print' },
+            // for the column visibility one, add (create) a class that will affect the unordered list in teh dropdown...
+            //{ extend: 'colvis', className: 'btn btn-outline-primary' },
+        ],
+        // initComplete: function () {
+        //     var btns = $('.dt-button');
+        //     btns.addClass('btn btn-outline-primary');
+        //     btns.removeClass('dt-button');
+        //
+        // }
+      } );
+
+      // tbl_buttons.buttons().container()
+      //   .appendTo( '#example_wrapper .col-md-6:eq(0)' );
 
       // $("#pages_dt").DataTable();
 
