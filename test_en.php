@@ -688,7 +688,7 @@ $diff = abs($diff);
 
                  if (count($qry) > 0) { ?>
                    <div class="table-responsive">
-                     <table class="table table-striped dataTable no-footer" id="toptask2" data="" role="grid">
+                     <table class="table table-striped dataTable no-footer datatables-with-buttons" id="toptask2" data="" role="grid">
                        <thead>
                          <tr>
                            <th class="sorting" aria-controls="toptask" aria-label="Change: activate to sort column" data-i18n="search-terms" >Search term</th>
@@ -793,7 +793,7 @@ $diff = abs($diff);
 
              if (count($qry) > 0) { ?>
                <div class="table-responsive">
-                 <table class="table table-striped dataTable no-footer" id="toptask2" data="" role="grid">
+                 <table class="table table-striped dataTable no-footer datatables-with-buttons" id="toptask2" data="" role="grid">
                    <thead>
                      <tr>
                        <th class="sorting" aria-controls="toptask" aria-label="Change: activate to sort column" data-i18n="search-terms" >Search term</th>
