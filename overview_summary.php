@@ -423,7 +423,7 @@ $diff = abs($diff);
                     do
                     {
                         $response2 = $request2->getResponse();
-                        $fullArray2 = array_merge($fullArray2, ($response2->records));
+                        $fullArray2[] = ($response2->records);  // append instead of using array_merge
                     }
                     while ($request2 = $response2->next());
 
