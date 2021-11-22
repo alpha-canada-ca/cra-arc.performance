@@ -233,7 +233,8 @@ if ($succ === 1)
                 $weekEnd
             ) , $json);
             //$result = api_post($config[0]['ADOBE_API_KEY'], $config[0]['COMPANY_ID'], $_SESSION['token'], $api);
-            $result[] = $r->requestEntity($json);
+//            $result[] = $r->requestEntity($json);
+            $result[] = get_aa_data($json, $r);
             $j[] = $json;
 
         }

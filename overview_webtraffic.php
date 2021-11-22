@@ -68,6 +68,7 @@ if ($succ === 1)
 {
 
     require_once ('./php/api_post.php');
+    require_once ('./php/get_aa_data.php');
     $config = include ('./php/config-aa.php');
     $data = include ('./php/data-aa.php');
 
@@ -303,7 +304,8 @@ if ($succ === 1)
                     ) , $json);
             }
             //$result = api_post($config[0]['ADOBE_API_KEY'], $config[0]['COMPANY_ID'], $_SESSION['token'], $api);
-            $result[] = $r->requestEntity($json);
+//            $result[] = $r->requestEntity($json);
+            $result[] = get_aa_data($json, $r);
             $j[] = $json;
 
         }
