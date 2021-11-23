@@ -206,6 +206,7 @@ if ($succ === 1)
 {
 
     require_once ('./php/api_post.php');
+    require_once ('./php/get_aa_data.php');
     $config = include ('./php/config-aa.php');
     $data = include ('./php/data-aa.php');
 
