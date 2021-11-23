@@ -12,7 +12,6 @@ function check_cache($cache_files) {
     $max_age = 40; // in days
 
     // create a file to keep track of the last cache check- to avoid having to do it on each API call
-    //  the metadata of each file in the directory
     if (!in_array($lastChecked_path, $cache_files)) {
         // The file will contain an integer representing the unix timestamp of the last cache check
         file_put_contents($lastChecked_path, 0);
