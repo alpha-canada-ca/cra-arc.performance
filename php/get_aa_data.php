@@ -42,9 +42,15 @@ function get_aa_data($json, $apiClient) {
         return file_get_contents($cache_path . $json_hash);
     }
 
-    $data = $apiClient->requestEntity($json);
+    try {
+        $data = $apiClient->requestEntity($json);
 
-    file_put_contents($cache_path . $json_hash, $data);
+        if ($apiClient->getResponseCode() == 200) {
+            file_put_contents($cache_path . $json_hash, $data);
+        }
 
-    return $data;
+        return $data;
+    } catch (Exception $e) {
+        throw $e;
+    }
 }
