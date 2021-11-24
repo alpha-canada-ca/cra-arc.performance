@@ -65,6 +65,10 @@ class ApiClient
         return $request;
     }
 
+    public function getResponseCode() {
+        return curl_getinfo($this->ch, CURLINFO_RESPONSE_CODE);
+    }
+
     public function __destruct()
     {
         curl_close($this->ch);
