@@ -28,13 +28,14 @@
 
 //echo $url;
 
-if (isset($_GET['prj'])) {
-$prj = $_GET['prj'];
+if (isset($_GET['task'])) {
+$tsk = $_GET['task'];
 }
 else {
 //$url = "https://www.canada.ca/en/revenue-agency/services/benefits/recovery-benefit/crb-how-apply.html";
 //$prj = "Task Performance Indicators - (May 2021)";
-$prj = "CEWS Spreadsheet ";
+//$tsk = "Claim a GST/HST rebate";
+$tsk = "Confirm payment";
 //$prj = "CRB - Post-launch test ";
 
 }
@@ -53,6 +54,24 @@ else {
 $lang = "en";
 }
 
+//$start = microtime(true);
+// function getSiteTitle( $url ){
+//     $doc = new DOMDocument();
+//     @$doc->loadHTML(file_get_contents($url));
+//     //$res['title'] = $doc->getElementsByTagName('title')->item(0)->nodeValue;
+//     $title = $doc->getElementsByTagName('title')->item(0)->nodeValue;
+//
+//     $pageTitle = trim(substr($title, 0, -12));
+//     // foreach ($doc->getElementsByTagName('meta') as $m){
+//     //     $tag = $m->getAttribute('name') ?: $m->getAttribute('property');
+//     //     if(in_array($tag,['description','keywords']) || strpos($tag,'og:')===0) $res[str_replace('og:','',$tag)] = $m->getAttribute('content');
+//     // }
+//     return $pageTitle;
+// }
+
+// echo "<pre>";
+// print_r(getSiteOG($url));
+// echo "</pre>";
 
 // $time_elapsed_secs = microtime(true) - $start;
 // echo "<p>Time taken: " . number_format($time_elapsed_secs, 2) . " seconds</p>";
@@ -72,8 +91,8 @@ $airtable = new Airtable(array(
 
 //echo $prj;
 
-$params =  array( "filterByFormula" => "( {UX Research Project Title} = '$prj' )" );
-$table = "User Testing";
+$params =  array( "filterByFormula" => "( {Task} = '$tsk' )" );
+$table = "Tasks";
 
 $fullArray = [];
 
@@ -106,36 +125,117 @@ $fullArray = $weeklyRe;
 // echo "</pre>";
 
  //$prjStatus = $fullArray[0]['fields']['Status'];//['records'];
+// $prjTasks = array_column_recursive($weeklyRe,"Lookup_Tasks");
+// $prjPages = array_column_recursive($weeklyRe,"Lookup_Pages");
 
 // // use array_values to re-index the array
-$prjTasks = array_values(array_unique(array_flatten(array_column_recursive($weeklyRe,"Lookup_Tasks"))));
-$prjPages = array_values(array_unique(array_flatten(array_column_recursive($weeklyRe,"Lookup_Pages"))));
-$prjStatus = array_values(array_unique(array_flatten(array_column_recursive($weeklyRe,"Status"))));
+//$prjTasks = array_values(array_unique(array_flatten(array_column_recursive($weeklyRe,"Lookup_Tasks"))));
+$tskPages = array_values(array_unique(array_flatten(array_column_recursive($weeklyRe,"Lookup_Pages"))));
+
+$relatedProjects = array_values(array_unique(array_flatten(array_column_recursive($weeklyRe,"Lookup_UserTestingProjects"))));
+//$relatedProjects = $fullArray[0]['fields']['Lookup_UserTestingProjects'];
+//$prjStatus = array_values(array_unique(array_flatten(array_column_recursive($weeklyRe,"Status"))));
+// $relatedTasks = $fullArray[0]['fields']['Lookup_Tasks'];//['records'];
+// $relatedProjects = $fullArray[0]['fields']['Projects'];
+
+// echo "All Tasks<pre>";
+// print_r($prjTasks);
+// echo "</pre>";
+//
+
+
+// echo "All Pages<pre>";
+// print_r($relatedProjects);
+// echo "</pre>";
+
+
+
+// //
+// echo "FLATTEN - All Pages<pre>";
+// print_r(array_flatten($tskPages));
+// echo "</pre>";
+//
+// echo "FLATTEN UNIQUE - All Pages <pre>";
+
+// print_r(array_values(array_unique(array_flatten($tskPages))));
+// echo "</pre>";
+
+
+
+// echo "Projects<pre>";
+// print_r($relatedProjects);
+// echo "</pre>";
+
+// if ($relatedProjects == null) {echo "null projects";}
+// else {echo $relatedProjects; }
 
 
 ?>
 
 <h1 class="visually-hidden">Usability Performance Dashboard</h1>
-    <div class="back_link"><span class="material-icons align-top">west</span> <a href="./projects_home.php" alt="Back to Projects home page">Projects</a></div>
+    <div class="back_link"><span class="material-icons align-top">west</span> <a href="./tasks_home.php" alt="Back to Tasks home page">Tasks</a></div>
 
-    <h2 class="h3 pt-2 pb-2" data-i18n=""><?=$prj?> <span class="badge rounded-pill bg-primary" style="margin-left:30px; font-weight:lighter"><?=$prjStatus[0];?></span></h2>
+    <h2 class="h3 pt-2 pb-2" data-i18n=""><?=$tsk?></h2>
+
+    <div class="page_header back_link">
+        <span id="page_project">
+          <?php if ($relatedProjects != null) { ?>
+              <span class="material-icons align-top">folder</span>
+                  <?php
+                    if (is_array($relatedProjects)) {
+                        //echo implode(", ",$relatedProjects);
+                        echo implode(", ", array_map(function($project) {
+                            return '<a href="./projects_pagefeedback.php?prj='.$project.'" alt="Project: '.$project.'" target="_blank">' . $project . '</a>';
+                            //SWITCH TO THIS line after the summary page is done
+                            //return '<a href="./projects_summary.php?prj='.$project.'" alt="Project: '.$project.'">' . $project . '</a>';
+                        }, $relatedProjects));
+                    }
+                    else {
+                      echo $relatedProjects;
+                    }
+                  ?>
+             </span>
+          <?php } ?>
+          <!-- <span id="view_url"><span class="material-icons align-top">link</span> View URL </span>
+          <span id="copy_url" onclick="copy_to_clipboard()"><span class="material-icons align-top">content_copy</span> Copy URL</span> -->
+    </div>
 
     <div class="tabs sticky">
       <ul>
-        <li <?php if ($tab=="summary") {echo "class='is-active'";} ?>><a href="./projects_summary.php?prj=<?=$prj?>" data-i18n="tab-summary">Summary</a></li>
-        <li <?php if ($tab=="webtraffic") {echo "class='is-active'";} ?>><a href="./projects_webtraffic.php?prj=<?=$prj?>" data-i18n="tab-webtraffic">Web traffic</a></li>
-        <li <?php if ($tab=="searchanalytics") {echo "class='is-active'";} ?>><a href="./projects_searchanalytics.php?prj=<?=$prj?>" data-i18n="tab-searchanalytics">Search analytics</a></li>
+        <li <?php if ($tab=="summary") {echo "class='is-active'";} ?>><a href="./tasks_summary.php?task=<?=$tsk?>" data-i18n="tab-summary">Summary</a></li>
+        <li <?php if ($tab=="webtraffic") {echo "class='is-active'";} ?>><a href="./tasks_webtraffic.php?task=<?=$tsk?>" data-i18n="tab-webtraffic">Web traffic</a></li>
+        <li <?php if ($tab=="searchanalytics") {echo "class='is-active'";} ?>><a href="./tasks_searchanalytics.php?task=<?=$tsk?>" data-i18n="tab-searchanalytics">Search analytics</a></li>
         <li <?php if ($tab=="pagefeedback") {echo "class='is-active'";} ?>><a href="#" data-i18n="tab-pagefeedback">Page feedback</a></li>
-        <li <?php if ($tab=="calldrivers") {echo "class='is-active'";} ?>><a href="./projects_calldrivers.php?prj=<?=$prj?>" data-i18n="tab-calldrivers">Call drivers</a></li>
-        <li <?php if ($tab=="uxtests") {echo "class='is-active'";} ?>><a href="./projects_uxtests.php?prj=<?=$prj?>" data-i18n="tab-uxtests">UX tests</a></li>
-        <li <?php if ($tab=="details") {echo "class='is-active'";} ?>><a href="./projects_details.php?prj=<?=$prj?>" data-i18n="tab-details">Details</a></li>
+        <li <?php if ($tab=="calldrivers") {echo "class='is-active'";} ?>><a href="./tasks_calldrivers.php?task=<?=$tsk?>" data-i18n="tab-calldrivers">Call drivers</a></li>
+        <li <?php if ($tab=="uxtests") {echo "class='is-active'";} ?>><a href="./tasks_uxtests.php?task=<?=$tsk?>" data-i18n="tab-uxtests">UX tests</a></li>
       </ul>
     </div>
 
  <?php
 
 
+// if ($url == null) {
+// 	$url = "https://www.canada.ca/en/revenue-agency/services/benefits/recovery-benefit/crb-how-apply.html";
+// }
 
+//$url_components = parse_url($url);
+// echo "<pre>";
+// print_r($url_components);
+// echo "</pre>";
+// echo $url;
+// echo "<br>".$dr;
+// echo "<br>".$lang;
+
+ // Use parse_str() function to parse the string passed via URL
+//parse_str($url_components['query'], $params);
+
+// Display result
+// echo "<pre>";
+// print_r($params);
+// echo "</pre>";
+
+// require 'vendor/autoload.php';
+// use TANIOS\Airtable\Airtable;
 
 // Adobe Analytics
 $time = microtime(true);
@@ -245,7 +345,18 @@ if ($succ === 1)
 
 
         <?php
+        //$urls = "";
+        //$url = "";
+        // if (substr($url, 0, 8) == "https://")
+        // {
+        //     $urls = substr($url, 8, strlen($url));
+        // }
+        // else
+        // {
+        //     $urls = $url;
+        // }
 
+        //echo "URLS is ".$urls;
 
         $r = new ApiClient($config[0]['ADOBE_API_KEY'], $config[0]['COMPANY_ID'], $_SESSION['token']);
 
@@ -257,12 +368,12 @@ if ($succ === 1)
         $allAPI = array();
         $allj = array();
 
-        //echo count($prjPages);
+        //echo count($tskPages);
 
         foreach ($temp as $t)
         {
 
-          foreach ($prjPages as $page)
+          foreach ($tskPages as $page)
           {
 
                   $json = $data[$t];
@@ -306,13 +417,46 @@ if ($succ === 1)
 
         }
 
+        // //CALCULATE WUERY TIME EXECUTION
+        // $time_elapsed_secs = microtime(true) - $time;
+        // echo "<p>Time taken for the queries - ".count($tskPages)." pages: " . number_format($time_elapsed_secs, 2) . " seconds</p>";
+
+
+
+
+
+        // echo count($allj);
+        // echo "________<br>";
+        // echo count($allAPI);
+        // echo "<pre>";
+        // print_r($allAPI);
+        // //var_dump($allAPI);
+        // echo "</pre>";
 
         $result = $allAPI;
+
+        // $rst = json_decode($allAPI[0]["www.canada.ca/en/revenue-agency/services/subsidy/temporary-wage-subsidy.html"], true);
+        // $m = $rst["summaryData"]["filteredTotals"];
+        // echo "<pre>";
+        // //print_r($allAPI[0]["www.canada.ca/en/revenue-agency/services/subsidy/temporary-wage-subsidy.html"]["summaryData"]["filteredTotals"][8]);
+        // print_r($m[9]);
+        // echo "</pre>";
+
+        //echo var_dump($result[0]);
+
+        // echo "<pre>";
+        // print_r($result);
+        // echo "</pre>";
 
         foreach ($result as $r)
         {
 
         }
+
+        //$test = json_decode($result[0], true);
+        // echo "<pre>";
+        // print_r($test);
+        // echo "</pre>";
 
 
         // -----------------------------------------------------------------------
@@ -323,11 +467,20 @@ if ($succ === 1)
 
         $metrics = array_column_recursive($result[0], "filteredTotals");
 
+        // echo "Metrics all for query 1";
+        // echo "<pre>";
+        // print_r($result[0]);
+        // echo "</pre>";
+
         $sum_metrics=array();
         //to address the "undefined offset notice" ,tried to use array_fill
         //$sum_metrics = array_fill(0, count($metrics), 0);
 
         for ($i = 0; $i < count($metrics); $i++) {
+
+          // echo "metrics: ".$i."<pre>";
+          // print_r($metrics[$i]);
+          // echo "</pre>";
 
             for ($k = 0; $k < count($metrics[$i]); $k++) {
 
@@ -381,20 +534,26 @@ if ($succ === 1)
 
                 $sum_metrics2[$k]+=$metrics2[$i][$k];
                 //$sum_metrics2[$k]+=isset($metrics2[$i][$k]) ? $metrics2[$i][$k] : null;
-                $sum_metrics2[$k]+=$k;
+                //$sum_metrics2[$k]+=$k;
 
               }
         }
-
+        //
         // echo "Metrics 2";
         // echo "<pre>";
         // print_r($sum_metrics2);
         // echo "</pre>";
 
 
+        // echo "<pre>";
+        // print_r($metrics2);
+        // echo "</pre>";
+
+
+
         //DOES THIS PAGE HAS PAGE FEEDBACK TOOL OR NOT
         if (empty($tmp)) {
-          echo "None of the pages for this Project have a Page feedback tool!";
+          echo "None of the pages for this Task have a Page feedback tool!";
         }
         else {
 
@@ -402,7 +561,21 @@ if ($succ === 1)
                 $metrics = $sum_metrics;
                 $metrics2 = $sum_metrics2;
 
+                // echo "<pre>";
+                // print_r($metrics);
+                // echo "</pre>";
 
+                // $res2 = json_decode($result[1], true);
+                // $metrics2 = $res2["summaryData"]["filteredTotals"];
+
+                // $aaTasks = json_decode($result[2], true);
+                // $aaTasksStats = $aaTasks["rows"];
+                //
+                // $taskArray = array();
+                // foreach ($aaTasksStats as $task)
+                // {
+                //     $taskArray[] = $task['value'];
+                // }
 
                 $fwylfYes = 0;
                 $fwylfNo = 4;
@@ -529,7 +702,7 @@ if ($succ === 1)
                 // GET DATA FROM "Page Feedback" (CRA view) table filtered by date range - last two weekStart
                 // -----------------------------------------------------------------------------------------------
 
-                foreach ($prjPages as $page) {
+                foreach ($tskPages as $page) {
                   $listOfPages[] = "(URL = 'https://$page')";
                 }
                 // echo count($listOfPages);
@@ -561,6 +734,12 @@ if ($succ === 1)
 
                 $allData = ( json_decode(json_encode($fullArray), true));//['records'];
 
+                // echo "<pre>";
+                // print_r($paramPages);
+                // echo "</pre>";
+                // echo "ALL DATA<pre>";
+                // print_r($allData);
+                // echo "</pre>";
 
                 // if there's data (record exist)
                 if ( count( $allData ) > 0 ) {
@@ -607,6 +786,11 @@ if ($succ === 1)
                             foreach ( $all_fieldsPW as &$item ) {
                               $item["Tag"] = implode($item['Lookup_tags']);
                             }
+
+                            // echo count($all_fields);
+                            // echo "<br><br><pre>";
+                            // print_r($all_fields);
+                            // echo "</pre><br></br>";
 
 
                             $fieldsByGroupTag = group_by('Tag', $all_fields);

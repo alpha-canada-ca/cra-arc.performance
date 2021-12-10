@@ -3,7 +3,7 @@
 <?php include "./includes/upd_sidebar.php"; ?>
 <?php include "./includes/date-ranges.php"; ?>
 <?php include "./includes/functions.php"; ?>
-<?php //ini_set('display_errors', 1);
+<?php ini_set('display_errors', 0);
  ?>
 
 <!--Translation Code start-->
@@ -27,12 +27,12 @@
 
     <?php
 
-          ini_set('display_errors', 1);
+          //ini_set('display_errors', 1);
           require 'vendor/autoload.php';
           use TANIOS\Airtable\Airtable;
 
           // Adobe Analytics
-          //$time = microtime(true);
+          // $time = microtime(true);
           $succ = 0;
 
           // Get Date for AA
@@ -393,6 +393,7 @@
 
                 if (count($qry) > 0) { ?>
                   <div class="table-responsive">
+                    <!-- <table class="table table-striped dataTable no-footer" id="pages_dt"> -->
                     <table class="table table-striped dataTable no-footer">
                       <thead>
                         <tr>
@@ -406,7 +407,7 @@
                       <tbody>
                     <?php foreach ($qry as $row) { ?>
                         <tr>
-                          <td><?=$row[0]['UX Research Project Title'];?></td>
+                          <td><a href="./projects_pagefeedback.php?prj=<?= $row[0]['UX Research Project Title'] ?>" alt="<?=$row[0]['UX Research Project Title'];?>"><?=$row[0]['UX Research Project Title'];?></a></td>
                           <td><span><?=array_key_exists('COPS', $row[0]) ? "COPS" : "N/A";     //echo ($row[0]['COPS']==1) ? "COPS" : "N/A";           //$row[0]['COPS'];?></span></td>
                           <td><span><?=$row[0]['Status'];             //$row[0]['Date'];?></span></td>
                           <td><span><?=array_key_exists('Date', $row[0]) ? date('m/Y',strtotime($row[0]['Date'])) : "";             //$row[0]['Date'];?></span></td>
