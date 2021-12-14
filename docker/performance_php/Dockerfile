@@ -32,6 +32,10 @@ COPY pages_pagefeedback.php /var/www/html/pages_pagefeedback.php
 COPY projects_home.php /var/www/html/projects_home.php
 COPY pages_webtraffic.php /var/www/html/pages_webtraffic.php
 COPY pages_searchanalytics.php /var/www/html/pages_searchanalytics.php
+COPY projects_pagefeedback.php /var/www/html/projects_pagefeedback.php
+COPY projects_details.php /var/www/html/projects_details.php
+COPY tasks_home.php /var/www/html/tasks_home.php
+COPY tasks_pagefeedback.php /var/www/html/tasks_pagefeedback.php
 
 RUN curl -sS https://getcomposer.org/installer | php
 RUN mv composer.phar /var/www/html/composer.phar
