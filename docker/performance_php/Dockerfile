@@ -32,6 +32,7 @@ COPY pages_pagefeedback.php /var/www/html/pages_pagefeedback.php
 COPY projects_home.php /var/www/html/projects_home.php
 COPY pages_webtraffic.php /var/www/html/pages_webtraffic.php
 COPY pages_searchanalytics.php /var/www/html/pages_searchanalytics.php
+COPY projects_summary.php /var/www/html/projects_summary.php
 COPY projects_pagefeedback.php /var/www/html/projects_pagefeedback.php
 COPY projects_details.php /var/www/html/projects_details.php
 COPY tasks_home.php /var/www/html/tasks_home.php

@@ -407,7 +407,7 @@
                       <tbody>
                     <?php foreach ($qry as $row) { ?>
                         <tr>
-                          <td><a href="./projects_pagefeedback.php?prj=<?= $row[0]['UX Research Project Title'] ?>" alt="<?=$row[0]['UX Research Project Title'];?>"><?=$row[0]['UX Research Project Title'];?></a></td>
+                          <td><a href="./projects_summary.php?prj=<?= $row[0]['UX Research Project Title'] ?>" alt="<?=$row[0]['UX Research Project Title'];?>"><?=$row[0]['UX Research Project Title'];?></a></td>
                           <td><span><?=array_key_exists('COPS', $row[0]) ? "COPS" : "N/A";     //echo ($row[0]['COPS']==1) ? "COPS" : "N/A";           //$row[0]['COPS'];?></span></td>
                           <td><span><?=$row[0]['Status'];             //$row[0]['Date'];?></span></td>
                           <td><span><?=array_key_exists('Date', $row[0]) ? date('m/Y',strtotime($row[0]['Date'])) : "";             //$row[0]['Date'];?></span></td>
