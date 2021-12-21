@@ -570,10 +570,11 @@ for ($i = 0; $i < count($metrics2); $i++) {
 
 //DOES THIS PAGE HAS PAGE FEEDBACK TOOL OR NOT
 if (empty($tmp)) {
-  echo "None of the pages for this Project have a Page feedback tool!";
+  $pageFeedbackOnPages = 0;
+  //echo "None of the pages for this Project have a Page feedback tool!";
 }
 else {
-
+        $pageFeedbackOnPages = 1;
         //REMOVE AFTER Testing
         $metrics = $sum_metrics;
         $metrics2 = $sum_metrics2;
@@ -661,131 +662,131 @@ else {
         // Monthly date ranges for the Header
         $datesHeaderMonth = [[$previousMonthStartHeader, $previousMonthEndHeader], [$monthStartHeader, $monthEndHeader]];
 
+    } //if empty($tmp)
 
-
-        // AIRTABLE CONNECTION - SETUP REUQEST AND PARSE RESPONSE
-        //--------------------------------------------------------------
-        $s = $startLastGSC;
-        $e = $endLastGSC;
-        $s1 = $startGSC;
-        $e1 = $endGSC;
-
-
-        $config = include ('./php/config-at.php');
-        $airtable = new Airtable($config['feedback']);
-
-        // -----------------------------------------------------------------------------------------------
-        // GET DATA FROM "Page Feedback" (CRA view) table filtered by date range - last two weekStart
-        // -----------------------------------------------------------------------------------------------
-
-        foreach ($prjPages as $page) {
-          $listOfPages[] = "(URL = 'https://$page')";
-        }
-        // echo count($listOfPages);
-        // var_dump(implode(",", $listOfPages));
-
-        $paramPages = implode(",", $listOfPages);
-        //$paramPages = "(URL = 'https://www.canada.ca/fr/agence-revenu/services/prestations/prestation-relance-economique.html'),(URL = 'https://www.canada.ca/en/revenue-agency/services/benefits/recovery-benefit/crb-periods-apply.html')";
-
-        //echo $url;
-        $params = array(
-            //"filterByFormula" => "AND(IS_AFTER({Date}, DATEADD('$s',-1,'days')), IS_BEFORE({Date}, DATEADD('$e1',1,'days')))",
-            //"filterByFormula" => "AND(IS_AFTER({Date}, DATEADD('$s',-1,'days')), IS_BEFORE({Date}, DATEADD('$e1',1,'days')), (URL = 'https://www.canada.ca/en/revenue-agency/services/benefits/recovery-benefit/crb-how-apply.html'))",
-            //"filterByFormula" => "AND(IS_AFTER({Date}, DATEADD('$s',-1,'days')), IS_BEFORE({Date}, DATEADD('$e1',1,'days')), (URL = '$url'))",
-            // for get multiple url's or Projects from Airtable listOfPages
-            //"filterByFormula" => "AND(IS_AFTER({Date}, DATEADD('$s',-1,'days')), IS_BEFORE({Date}, DATEADD('$e1',1,'days')), OR((URL = '$url'),(URL = 'https://www.canada.ca/en/revenue-agency/services/benefits/recovery-benefit/crb-how-much.html')))",
-            "filterByFormula" => "AND(IS_AFTER({Date}, DATEADD('$s',-1,'days')), IS_BEFORE({Date}, DATEADD('$e1',1,'days')), OR($paramPages))",
-            "view" => "CRA"
-        );
-        $table = 'Page feedback';
-
-        $fullArray = [];
-        $request = $airtable->getContent($table, $params);
-        do
-        {
-            $response = $request->getResponse();
-            $fullArray = array_merge($fullArray, ($response->records));
-        }
-        while ($request = $response->next());
-
-        $allData = ( json_decode(json_encode($fullArray), true));//['records'];
-
-        // echo "ALL DATA<pre>";
-        // print_r($allData);
-        // echo "</pre>";
-
-        // if there's data (record exist)
-        if ( count( $allData ) > 0 ) {
-              // do things here
-              // echo "total pagefedbacks for this page: ";
-              // echo count($allData);
-              $re = $allData;
-
-
-              //weekly data range
-              $rangeStartW = strtotime($s1);
-              $rangeEndW = strtotime($e1);
-              //previous week range
-              $rangeStartPW = strtotime($s);
-              $rangeEndPW = strtotime($e);
-
-              //filter array by date ranges
-              $WeeklyData = array_filter( $re, function($var) use ($rangeStartW, $rangeEndW) {
-                 $utime = strtotime($var['fields']['Date']);
-                 return $utime <= $rangeEndW && $utime >= $rangeStartW;
-              });
-
-              $PWeeklyData = array_filter( $re, function($var) use ($rangeStartPW, $rangeEndPW) {
-                 $utime = strtotime($var['fields']['Date']);
-                 return $utime <= $rangeEndPW && $utime >= $rangeStartPW;
-              });
-
-
-              if (( count( $WeeklyData ) > 0 ) && ( count( $PWeeklyData ) > 0 )) {
-
-                    // Get just the ['fields'] array of each record -  as a separate array - $all_fields
-                    $all_fields = array_column_recursive($WeeklyData, 'fields');
-                    $all_fieldsPW = array_column_recursive($PWeeklyData, 'fields');
-
-                    //we are grouping the pages by URL instead of Page Title, cause some pages might not have titles listes in the table
-                    //stil, the main idea is to group the pages by some unique page element
-
-                    foreach ( $all_fields as &$item ) {
-                      $item["Tag"] = implode($item['Lookup_tags']);
-                    }
-
-                    foreach ( $all_fieldsPW as &$item ) {
-                      $item["Tag"] = implode($item['Lookup_tags']);
-                    }
-
-                    // echo count($all_fields);
-                    // echo "<br><br><pre>";
-                    // print_r($all_fields);
-                    // echo "</pre><br></br>";
-
-
-                    $fieldsByGroupTag = group_by('Tag', $all_fields);
-                    $fieldsByGroupTagPW = group_by('Tag', $all_fieldsPW);
-
-                    //
-
-                    foreach ( $fieldsByGroupTagPW as &$item ) {
-                      $item["Total tag comments"] = count($item);
-                    }
-                    foreach ( $fieldsByGroupTag as &$item ) {
-                      $item["Total tag comments"] = count($item);
-                    }
-
-                    $d3TotalFeedbackByPageSuccess = 1;
-
-              } //if (( count( $WeeklyData ) > 0 ) && ( count( $PWeeklyData ) > 0 ))
-
-
-        } //if count($allData) > 0
-
-        else {
-          $d3TotalFeedbackByPageSuccess = 0;
-        }
+        // // AIRTABLE CONNECTION - SETUP REUQEST AND PARSE RESPONSE
+        // //--------------------------------------------------------------
+        // $s = $startLastGSC;
+        // $e = $endLastGSC;
+        // $s1 = $startGSC;
+        // $e1 = $endGSC;
+        //
+        //
+        // $config = include ('./php/config-at.php');
+        // $airtable = new Airtable($config['feedback']);
+        //
+        // // -----------------------------------------------------------------------------------------------
+        // // GET DATA FROM "Page Feedback" (CRA view) table filtered by date range - last two weekStart
+        // // -----------------------------------------------------------------------------------------------
+        //
+        // foreach ($prjPages as $page) {
+        //   $listOfPages[] = "(URL = 'https://$page')";
+        // }
+        // // echo count($listOfPages);
+        // // var_dump(implode(",", $listOfPages));
+        //
+        // $paramPages = implode(",", $listOfPages);
+        // //$paramPages = "(URL = 'https://www.canada.ca/fr/agence-revenu/services/prestations/prestation-relance-economique.html'),(URL = 'https://www.canada.ca/en/revenue-agency/services/benefits/recovery-benefit/crb-periods-apply.html')";
+        //
+        // //echo $url;
+        // $params = array(
+        //     //"filterByFormula" => "AND(IS_AFTER({Date}, DATEADD('$s',-1,'days')), IS_BEFORE({Date}, DATEADD('$e1',1,'days')))",
+        //     //"filterByFormula" => "AND(IS_AFTER({Date}, DATEADD('$s',-1,'days')), IS_BEFORE({Date}, DATEADD('$e1',1,'days')), (URL = 'https://www.canada.ca/en/revenue-agency/services/benefits/recovery-benefit/crb-how-apply.html'))",
+        //     //"filterByFormula" => "AND(IS_AFTER({Date}, DATEADD('$s',-1,'days')), IS_BEFORE({Date}, DATEADD('$e1',1,'days')), (URL = '$url'))",
+        //     // for get multiple url's or Projects from Airtable listOfPages
+        //     //"filterByFormula" => "AND(IS_AFTER({Date}, DATEADD('$s',-1,'days')), IS_BEFORE({Date}, DATEADD('$e1',1,'days')), OR((URL = '$url'),(URL = 'https://www.canada.ca/en/revenue-agency/services/benefits/recovery-benefit/crb-how-much.html')))",
+        //     "filterByFormula" => "AND(IS_AFTER({Date}, DATEADD('$s',-1,'days')), IS_BEFORE({Date}, DATEADD('$e1',1,'days')), OR($paramPages))",
+        //     "view" => "CRA"
+        // );
+        // $table = 'Page feedback';
+        //
+        // $fullArray = [];
+        // $request = $airtable->getContent($table, $params);
+        // do
+        // {
+        //     $response = $request->getResponse();
+        //     $fullArray = array_merge($fullArray, ($response->records));
+        // }
+        // while ($request = $response->next());
+        //
+        // $allData = ( json_decode(json_encode($fullArray), true));//['records'];
+        //
+        // // echo "ALL DATA<pre>";
+        // // print_r($allData);
+        // // echo "</pre>";
+        //
+        // // if there's data (record exist)
+        // if ( count( $allData ) > 0 ) {
+        //       // do things here
+        //       // echo "total pagefedbacks for this page: ";
+        //       // echo count($allData);
+        //       $re = $allData;
+        //
+        //
+        //       //weekly data range
+        //       $rangeStartW = strtotime($s1);
+        //       $rangeEndW = strtotime($e1);
+        //       //previous week range
+        //       $rangeStartPW = strtotime($s);
+        //       $rangeEndPW = strtotime($e);
+        //
+        //       //filter array by date ranges
+        //       $WeeklyData = array_filter( $re, function($var) use ($rangeStartW, $rangeEndW) {
+        //          $utime = strtotime($var['fields']['Date']);
+        //          return $utime <= $rangeEndW && $utime >= $rangeStartW;
+        //       });
+        //
+        //       $PWeeklyData = array_filter( $re, function($var) use ($rangeStartPW, $rangeEndPW) {
+        //          $utime = strtotime($var['fields']['Date']);
+        //          return $utime <= $rangeEndPW && $utime >= $rangeStartPW;
+        //       });
+        //
+        //
+        //       if (( count( $WeeklyData ) > 0 ) && ( count( $PWeeklyData ) > 0 )) {
+        //
+        //             // Get just the ['fields'] array of each record -  as a separate array - $all_fields
+        //             $all_fields = array_column_recursive($WeeklyData, 'fields');
+        //             $all_fieldsPW = array_column_recursive($PWeeklyData, 'fields');
+        //
+        //             //we are grouping the pages by URL instead of Page Title, cause some pages might not have titles listes in the table
+        //             //stil, the main idea is to group the pages by some unique page element
+        //
+        //             foreach ( $all_fields as &$item ) {
+        //               $item["Tag"] = implode($item['Lookup_tags']);
+        //             }
+        //
+        //             foreach ( $all_fieldsPW as &$item ) {
+        //               $item["Tag"] = implode($item['Lookup_tags']);
+        //             }
+        //
+        //             // echo count($all_fields);
+        //             // echo "<br><br><pre>";
+        //             // print_r($all_fields);
+        //             // echo "</pre><br></br>";
+        //
+        //
+        //             $fieldsByGroupTag = group_by('Tag', $all_fields);
+        //             $fieldsByGroupTagPW = group_by('Tag', $all_fieldsPW);
+        //
+        //             //
+        //
+        //             foreach ( $fieldsByGroupTagPW as &$item ) {
+        //               $item["Total tag comments"] = count($item);
+        //             }
+        //             foreach ( $fieldsByGroupTag as &$item ) {
+        //               $item["Total tag comments"] = count($item);
+        //             }
+        //
+        //             $d3TotalFeedbackByPageSuccess = 1;
+        //
+        //       } //if (( count( $WeeklyData ) > 0 ) && ( count( $PWeeklyData ) > 0 ))
+        //
+        //
+        // } //if count($allData) > 0
+        //
+        // else {
+        //   $d3TotalFeedbackByPageSuccess = 0;
+        // }
 
 
 // end of ADOBE ANALYTICS API QUERIES PROCESSING
@@ -938,183 +939,191 @@ $kpi_pieces = explode(":", $kpi_pos);
                 <!-- Did you find what you werel looking - D3 100% Stacked Bar chart -->
                 <?php
 
-                  $d3Data_DYFWYWLF_DateRanges = array($datesHeaderMonth[0][0].'-'.$datesHeaderMonth[0][1],$datesHeaderMonth[1][0].'-'.$datesHeaderMonth[1][1],$datesHeader[0][0].'-'.$datesHeader[0][1],$datesHeader[1][0].'-'.$datesHeader[1][1]); // previous $a1
-                  $d3Data_DYFWYWLF_subgroups =  array("Yes","Yes","Yes","Yes","No","No","No","No"); // previous $b1
-                  $d3Data_DYFWYWLF_data = array_slice($metrics, 0, 8); // previous $c1
+                if ($pageFeedbackOnPages) {
 
-                  for ($i = 0; $i < 4; ++$i) {
-                    $final_array["dateRange"] = $d3Data_DYFWYWLF_DateRanges[$i];
-                    $final_array["Yes"] = $d3Data_DYFWYWLF_data[$i];
-                    $final_array["No"] = $d3Data_DYFWYWLF_data[$i+4];
-                    $new_array[]=$final_array;
-                  }
-                  //$mydata = json_encode($new_array);
-                  //just present the Weekly date range data - index 2 and 3 from new_array
-                  $mydata = json_encode(array_slice($new_array, 2)); ;
+                        $d3Data_DYFWYWLF_DateRanges = array($datesHeaderMonth[0][0].'-'.$datesHeaderMonth[0][1],$datesHeaderMonth[1][0].'-'.$datesHeaderMonth[1][1],$datesHeader[0][0].'-'.$datesHeader[0][1],$datesHeader[1][0].'-'.$datesHeader[1][1]); // previous $a1
+                        $d3Data_DYFWYWLF_subgroups =  array("Yes","Yes","Yes","Yes","No","No","No","No"); // previous $b1
+                        $d3Data_DYFWYWLF_data = array_slice($metrics, 0, 8); // previous $c1
 
-                  $subgroups = json_encode(array("Yes", "No"));
+                        for ($i = 0; $i < 4; ++$i) {
+                          $final_array["dateRange"] = $d3Data_DYFWYWLF_DateRanges[$i];
+                          $final_array["Yes"] = $d3Data_DYFWYWLF_data[$i];
+                          $final_array["No"] = $d3Data_DYFWYWLF_data[$i+4];
+                          $new_array[]=$final_array;
+                        }
+                        //$mydata = json_encode($new_array);
+                        //just present the Weekly date range data - index 2 and 3 from new_array
+                        $mydata = json_encode(array_slice($new_array, 2)); ;
 
-                  //$groups = json_encode(array_unique($d3Data_DYFWYWLF_DateRanges));
-                  //just present the Weekly date ranges
-                  $groups = json_encode(array($d3Data_DYFWYWLF_DateRanges[2],$d3Data_DYFWYWLF_DateRanges[3]));
+                        $subgroups = json_encode(array("Yes", "No"));
 
-                  ?>
-                  <script>
+                        //$groups = json_encode(array_unique($d3Data_DYFWYWLF_DateRanges));
+                        //just present the Weekly date ranges
+                        $groups = json_encode(array($d3Data_DYFWYWLF_DateRanges[2],$d3Data_DYFWYWLF_DateRanges[3]));
 
-                  // set the dimensions and margins of the graph
-                  width = parseInt(d3.select('#d3_dyfwywlf_barchart').style('width'), 10)
-                  height = width / 1.5;
-                  //alert("hellp");
-                  var margin = {top: 10, right: 30, bottom: 30, left: 30},
-                      width = width - margin.left - margin.right,
-                      height = height - margin.top - margin.bottom,
-                      legendHeight = 40;
+                        ?>
+                        <script>
 
-                  // append the svg object to the body of the page
-                  var svg_new = d3.select("#d3_dyfwywlf_barchart")
-                    .append("svg")
-                      .attr("width", width + margin.left + margin.right)
-                      .attr("height", height + margin.top + margin.bottom + legendHeight)
-                    .append("g")
-                      .attr("transform",
-                            "translate(" + margin.left + "," + margin.top + ")");
+                        // set the dimensions and margins of the graph
+                        width = parseInt(d3.select('#d3_dyfwywlf_barchart').style('width'), 10)
+                        height = width / 1.5;
+                        //alert("hellp");
+                        var margin = {top: 10, right: 30, bottom: 30, left: 30},
+                            width = width - margin.left - margin.right,
+                            height = height - margin.top - margin.bottom,
+                            legendHeight = 40;
 
-                  // Parse the Data
-                    var data = <?=$mydata?>;
+                        // append the svg object to the body of the page
+                        var svg_new = d3.select("#d3_dyfwywlf_barchart")
+                          .append("svg")
+                            .attr("width", width + margin.left + margin.right)
+                            .attr("height", height + margin.top + margin.bottom + legendHeight)
+                          .append("g")
+                            .attr("transform",
+                                  "translate(" + margin.left + "," + margin.top + ")");
 
-                    //console.log(data)
-                    //console.log(typeof data)
-                    // List of subgroups = header of the csv files = soil condition here
-                    //var subgroups = data.columns.slice(1)
-                    var subgroups = <?=$subgroups?>;
-                    //console.log(subgroups)
-                    //console.log(typeof subgroups)
+                        // Parse the Data
+                          var data = <?=$mydata?>;
 
-                    // List of groups = species here = value of the first column called group -> I show them on the X axis
-                    //var groups = d3.map(data, function(d){return(d.group)}).keys()
-                    var groups = <?=$groups?>;
-                    //console.log(groups)
-                    //console.log(typeof groups)
+                          //console.log(data)
+                          //console.log(typeof data)
+                          // List of subgroups = header of the csv files = soil condition here
+                          //var subgroups = data.columns.slice(1)
+                          var subgroups = <?=$subgroups?>;
+                          //console.log(subgroups)
+                          //console.log(typeof subgroups)
 
-                    // Add X axis
-                    var x = d3.scaleBand()
-                        .domain(groups)
-                        .range([0, width])
-                        .padding([0.5]);
-                    svg_new.append("g")
-                      .attr("transform", "translate(0," + height + ")")
-                      .call(d3.axisBottom(x).tickSizeOuter(0));
+                          // List of groups = species here = value of the first column called group -> I show them on the X axis
+                          //var groups = d3.map(data, function(d){return(d.group)}).keys()
+                          var groups = <?=$groups?>;
+                          //console.log(groups)
+                          //console.log(typeof groups)
 
-                    // Add Y axis
-                    var y = d3.scaleLinear()
-                      .domain([0, 100])
-                      .range([ height, 0 ]);
+                          // Add X axis
+                          var x = d3.scaleBand()
+                              .domain(groups)
+                              .range([0, width])
+                              .padding([0.5]);
+                          svg_new.append("g")
+                            .attr("transform", "translate(0," + height + ")")
+                            .call(d3.axisBottom(x).tickSizeOuter(0));
 
-                    // grid lines on Y axis
-                    var yGrid = d3.axisLeft(y).tickSize(-width).tickFormat('').ticks(5);
+                          // Add Y axis
+                          var y = d3.scaleLinear()
+                            .domain([0, 100])
+                            .range([ height, 0 ]);
 
-                    //create  yGrid
-                    svg_new.append('g')
-                      .attr('class', 'axis-grid')
-                      .call(yGrid);
+                          // grid lines on Y axis
+                          var yGrid = d3.axisLeft(y).tickSize(-width).tickFormat('').ticks(5);
 
-                    //create Y axis
-                    svg_new.append("g")
-                      .call(d3.axisLeft(y).ticks(5));
+                          //create  yGrid
+                          svg_new.append('g')
+                            .attr('class', 'axis-grid')
+                            .call(yGrid);
 
-                    // color palette = one color per subgroup
-                    var color = d3.scaleOrdinal()
-                      .domain(subgroups)
-                      .range(['#345EA5','#F17F2B']);
+                          //create Y axis
+                          svg_new.append("g")
+                            .call(d3.axisLeft(y).ticks(5));
 
-                    // Normalize the data -> sum of each group must be 100!
-                    dataNormalized = [];
-                    data.forEach(function(d){
-                      // Compute the total
-                      tot = 0
-                      for (i in subgroups){ name=subgroups[i] ; tot += +d[name]; }
-                      // Now normalize
-                      for (i in subgroups){ name=subgroups[i] ; d[name] = d[name] / tot * 100; }
-                    });
+                          // color palette = one color per subgroup
+                          var color = d3.scaleOrdinal()
+                            .domain(subgroups)
+                            .range(['#345EA5','#F17F2B']);
 
-                    //stack the data? --> stack per subgroup
-                    var stackedData = d3.stack()
-                      .keys(subgroups)
-                      (data);
-                    //console.log(stackedData)
-                    // Show the bars
-                    svg_new.append("g")
-                      .selectAll("g")
-                      // Enter in the stack data = loop key per key = group per group
-                      .data(stackedData)
-                      .enter().append("g")
-                        .attr("fill", function(d) { return color(d.key); })
-                        .selectAll("rect")
-                        // enter a second time = loop subgroup per subgroup to add all rectangles
-                        .data(function(d) { return d; })
-                        .enter().append("rect")
-                          .attr("x", function(d) { return x(d.data.dateRange); })
-                          .attr("y", function(d) { return y(d[1]); })
-                          .attr("height", function(d) { return y(d[0]) - y(d[1]); })
-                          .attr("width",x.bandwidth());
+                          // Normalize the data -> sum of each group must be 100!
+                          dataNormalized = [];
+                          data.forEach(function(d){
+                            // Compute the total
+                            tot = 0
+                            for (i in subgroups){ name=subgroups[i] ; tot += +d[name]; }
+                            // Now normalize
+                            for (i in subgroups){ name=subgroups[i] ; d[name] = d[name] / tot * 100; }
+                          });
 
-                    svg_new.selectAll(".tick text")
-                         .style("font-size","14px")
-                         .style("fill","#666");
+                          //stack the data? --> stack per subgroup
+                          var stackedData = d3.stack()
+                            .keys(subgroups)
+                            (data);
+                          //console.log(stackedData)
+                          // Show the bars
+                          svg_new.append("g")
+                            .selectAll("g")
+                            // Enter in the stack data = loop key per key = group per group
+                            .data(stackedData)
+                            .enter().append("g")
+                              .attr("fill", function(d) { return color(d.key); })
+                              .selectAll("rect")
+                              // enter a second time = loop subgroup per subgroup to add all rectangles
+                              .data(function(d) { return d; })
+                              .enter().append("rect")
+                                .attr("x", function(d) { return x(d.data.dateRange); })
+                                .attr("y", function(d) { return y(d[1]); })
+                                .attr("height", function(d) { return y(d[0]) - y(d[1]); })
+                                .attr("width",x.bandwidth());
 
-                    // D3 legend
-                    //color.domain(d3.keys(data[0]).filter(function(key) { return key !== "dateRange"; }));
-                    svg_new.append("g")
-                       .attr("class", "legendOrdinal")
-                       .attr("transform", "translate(0,"+(height+45)+")");
+                          svg_new.selectAll(".tick text")
+                               .style("font-size","14px")
+                               .style("fill","#666");
 
-                    var legendOrdinal = d3.legendColor()
-                     .shape("rect")
-                     .shapePadding(100)
-                     .orient('horizontal')
-                     .labelAlign("start")
-                     .scale(color);
+                          // D3 legend
+                          //color.domain(d3.keys(data[0]).filter(function(key) { return key !== "dateRange"; }));
+                          svg_new.append("g")
+                             .attr("class", "legendOrdinal")
+                             .attr("transform", "translate(0,"+(height+45)+")");
 
-                    svg_new.select(".legendOrdinal")
-                       .call(legendOrdinal);
+                          var legendOrdinal = d3.legendColor()
+                           .shape("rect")
+                           .shapePadding(100)
+                           .orient('horizontal')
+                           .labelAlign("start")
+                           .scale(color);
 
-                  </script>
+                          svg_new.select(".legendOrdinal")
+                             .call(legendOrdinal);
+
+                        </script>
 
 
 
-                  <details class="details-chart">
-                    <summary data-i18n="view-data-table">View table data</summary>
-                    <div class="table-responsive">
-                      <table class="table">
-                        <thead>
-                          <th>Metrics</th>
-                          <th>Previous Month</th>
-                          <th>Month</th>
-                          <th>Previous Week</th>
-                          <th>Week</th>
-                        </thead>
-                        <tbody>
+                        <details class="details-chart">
+                          <summary data-i18n="view-data-table">View table data</summary>
+                          <div class="table-responsive">
+                            <table class="table">
+                              <thead>
+                                <th>Metrics</th>
+                                <th>Previous Month</th>
+                                <th>Month</th>
+                                <th>Previous Week</th>
+                                <th>Week</th>
+                              </thead>
+                              <tbody>
 
-                          <tr>
-                            <td>FWYLF - Yes</td>
-                            <td><?=number_format($metrics[$fwylfYes + 0]) ?></td>
-                            <td><?=number_format($metrics[$fwylfYes + 1]) ?></td>
-                            <td><?=number_format($metrics[$fwylfYes + 2]) ?></td>
-                            <td><?=number_format($metrics[$fwylfYes + 3]) ?></td>
-                          </tr>
+                                <tr>
+                                  <td>FWYLF - Yes</td>
+                                  <td><?=number_format($metrics[$fwylfYes + 0]) ?></td>
+                                  <td><?=number_format($metrics[$fwylfYes + 1]) ?></td>
+                                  <td><?=number_format($metrics[$fwylfYes + 2]) ?></td>
+                                  <td><?=number_format($metrics[$fwylfYes + 3]) ?></td>
+                                </tr>
 
-                          <tr>
-                            <td>FWYLF - No</td>
-                            <td><?=number_format($metrics[$fwylfNo + 0]) ?></td>
-                            <td><?=number_format($metrics[$fwylfNo + 1]) ?></td>
-                            <td><?=number_format($metrics[$fwylfNo + 2]) ?></td>
-                            <td><?=number_format($metrics[$fwylfNo + 3]) ?></td>
-                          </tr>
+                                <tr>
+                                  <td>FWYLF - No</td>
+                                  <td><?=number_format($metrics[$fwylfNo + 0]) ?></td>
+                                  <td><?=number_format($metrics[$fwylfNo + 1]) ?></td>
+                                  <td><?=number_format($metrics[$fwylfNo + 2]) ?></td>
+                                  <td><?=number_format($metrics[$fwylfNo + 3]) ?></td>
+                                </tr>
 
-                        </tbody>
-                      </table>
-                    </div>
-                  </details>
+                              </tbody>
+                            </table>
+                          </div>
+                        </details>
+                <?php  }
+
+                else {
+                  echo "None of the pages for this Project have a Page feedback tool!";
+                }
+                ?>
           </div>
         </div>
       </div>
@@ -1127,209 +1136,218 @@ $kpi_pieces = explode(":", $kpi_pos);
                 <!-- Did you find what you werel looking - WHAT WAS WRONG D3 100% Stacked Bar chart -->
                 <?php
 
-                $d3Data_DYFWYWLF_DateRanges = array($datesHeaderMonth[0][0].'-'.$datesHeaderMonth[0][1],$datesHeaderMonth[1][0].'-'.$datesHeaderMonth[1][1],$datesHeader[0][0].'-'.$datesHeader[0][1],$datesHeader[1][0].'-'.$datesHeader[1][1]); // previous $a1
-                $d3Data_WWW_subgroups =  array("Yes","Yes","Yes","Yes","No","No","No","No"); // previous $b1
-                $d3Data_WWW_data = $metrics2; // previous $c1
+                    if ($pageFeedbackOnPages) {
 
-                for ($i = 0; $i < 4; ++$i) {
-                  $final_www_array["dateRange"] = $d3Data_DYFWYWLF_DateRanges[$i];
-                  $final_www_array["I can't find the info"] = $d3Data_WWW_data[$i];
-                  $final_www_array["Other reason"] = $d3Data_WWW_data[$i+4];
-                  $final_www_array["Info is hard to understand"] = $d3Data_WWW_data[$i+8];
-                  $final_www_array["Error/something didn't work"] = $d3Data_WWW_data[$i+12];
-                  $new_www_array[]=$final_www_array;
+                          $d3Data_DYFWYWLF_DateRanges = array($datesHeaderMonth[0][0].'-'.$datesHeaderMonth[0][1],$datesHeaderMonth[1][0].'-'.$datesHeaderMonth[1][1],$datesHeader[0][0].'-'.$datesHeader[0][1],$datesHeader[1][0].'-'.$datesHeader[1][1]); // previous $a1
+                          $d3Data_WWW_subgroups =  array("Yes","Yes","Yes","Yes","No","No","No","No"); // previous $b1
+                          $d3Data_WWW_data = $metrics2; // previous $c1
 
-                }
-                //$my_www_data = json_encode($new_www_array);
-                //just present the Weekly date range data - index 2 and 3 from new_array
-                $my_www_data = json_encode(array_slice($new_www_array, 2));
+                          for ($i = 0; $i < 4; ++$i) {
+                            $final_www_array["dateRange"] = $d3Data_DYFWYWLF_DateRanges[$i];
+                            $final_www_array["I can't find the info"] = $d3Data_WWW_data[$i];
+                            $final_www_array["Other reason"] = $d3Data_WWW_data[$i+4];
+                            $final_www_array["Info is hard to understand"] = $d3Data_WWW_data[$i+8];
+                            $final_www_array["Error/something didn't work"] = $d3Data_WWW_data[$i+12];
+                            $new_www_array[]=$final_www_array;
 
-                $subgroups_www = json_encode(array("I can't find the info", "Other reason","Info is hard to understand","Error/something didn't work"));
+                          }
+                          //$my_www_data = json_encode($new_www_array);
+                          //just present the Weekly date range data - index 2 and 3 from new_array
+                          $my_www_data = json_encode(array_slice($new_www_array, 2));
 
-                //$groups_www = json_encode(array_unique($d3Data_DYFWYWLF_DateRanges));
-                //just present the Weekly date ranges
-                $groups_www = json_encode(array($d3Data_DYFWYWLF_DateRanges[2],$d3Data_DYFWYWLF_DateRanges[3]));
+                          $subgroups_www = json_encode(array("I can't find the info", "Other reason","Info is hard to understand","Error/something didn't work"));
 
-                ?>
-                <script>
+                          //$groups_www = json_encode(array_unique($d3Data_DYFWYWLF_DateRanges));
+                          //just present the Weekly date ranges
+                          $groups_www = json_encode(array($d3Data_DYFWYWLF_DateRanges[2],$d3Data_DYFWYWLF_DateRanges[3]));
 
-                // set the dimensions and margins of the graph
-                width = parseInt(d3.select('#d3_www_barchart').style('width'), 10)
-                height = width / 1.5;
-                //alert("hellp");
-                var margin = {top: 10, right: 30, bottom: 30, left: 30},
-                    width = width - margin.left - margin.right,
-                    height = height - margin.top - margin.bottom,
-                    //legendHeight = 40;
-                    //legeng height on WWW legend
-                    legendHeight = 0;
+                          ?>
+                          <script>
 
-                // append the svg object to the body of the page
-                var svg = d3.select("#d3_www_barchart")
-                  .append("svg")
-                    .attr("width", width + margin.left + margin.right)
-                    .attr("height", height + margin.top + margin.bottom + legendHeight)
-                  .append("g")
-                    .attr("transform",
-                          "translate(" + margin.left + "," + margin.top + ")");
+                          // set the dimensions and margins of the graph
+                          width = parseInt(d3.select('#d3_www_barchart').style('width'), 10)
+                          height = width / 1.5;
+                          //alert("hellp");
+                          var margin = {top: 10, right: 30, bottom: 30, left: 30},
+                              width = width - margin.left - margin.right,
+                              height = height - margin.top - margin.bottom,
+                              //legendHeight = 40;
+                              //legeng height on WWW legend
+                              legendHeight = 0;
 
-
-                  var data = <?=$my_www_data?>;
-
-                  console.log("www data:")
-                  console.log(data)
-                  console.log(typeof data)
-                  // List of subgroups = header of the csv files = soil condition here
-                  //var subgroups = data.columns.slice(1)
-                  //var subgroups = data.columns.slice(1)
-                  var subgroups = <?=$subgroups_www?>;
-                  console.log("www subgroups:")
-                  console.log(subgroups)
-                  console.log(typeof subgroups)
-
-                  // List of groups = species here = value of the first column called group -> I show them on the X axis
-                  //var groups = d3.map(data, function(d){return(d.group)}).keys()
-                  var groups = <?=$groups_www?>;
-                  console.log("www groups:")
-                  console.log(groups)
-                  console.log(typeof groups)
-
-                  // Add X axis
-                  var x = d3.scaleBand()
-                      .domain(groups)
-                      .range([0, width])
-                      .padding([0.5])
-                  svg.append("g")
-                    //.attr("class", "axis_labels")
-                    .attr("transform", "translate(0," + height + ")")
-                    .call(d3.axisBottom(x).tickSizeOuter(0));
-
-                  // Add Y axis
-                  var y = d3.scaleLinear()
-                    .domain([0, 100])
-                    .range([ height, 0 ]);
-
-                  // grid lines on Y axis
-                  var yGrid = d3.axisLeft(y).tickSize(-width).tickFormat('').ticks(5);
-
-                  //create  yGrid
-                  svg.append('g')
-                    .attr('class', 'axis-grid')
-                    //.attr('transform', 'translate(0,' + height + ')')
-                    .call(yGrid);
-
-                  // create Y axis
-                  svg.append("g")
-                    //.attr("class", "axis_labels")
-                    .call(d3.axisLeft(y).ticks(5));
+                          // append the svg object to the body of the page
+                          var svg = d3.select("#d3_www_barchart")
+                            .append("svg")
+                              .attr("width", width + margin.left + margin.right)
+                              .attr("height", height + margin.top + margin.bottom + legendHeight)
+                            .append("g")
+                              .attr("transform",
+                                    "translate(" + margin.left + "," + margin.top + ")");
 
 
+                            var data = <?=$my_www_data?>;
 
-                  // color palette = one color per subgroup
-                  var color = d3.scaleOrdinal()
-                    .domain(subgroups)
-                    .range(['#345EA5','#6CB5F3','#36A69A','#F8C040'])
+                            console.log("www data:")
+                            console.log(data)
+                            console.log(typeof data)
+                            // List of subgroups = header of the csv files = soil condition here
+                            //var subgroups = data.columns.slice(1)
+                            //var subgroups = data.columns.slice(1)
+                            var subgroups = <?=$subgroups_www?>;
+                            console.log("www subgroups:")
+                            console.log(subgroups)
+                            console.log(typeof subgroups)
 
-                  // Normalize the data -> sum of each group must be 100!
+                            // List of groups = species here = value of the first column called group -> I show them on the X axis
+                            //var groups = d3.map(data, function(d){return(d.group)}).keys()
+                            var groups = <?=$groups_www?>;
+                            console.log("www groups:")
+                            console.log(groups)
+                            console.log(typeof groups)
 
-                  dataNormalized = []
-                  data.forEach(function(d){
-                    // Compute the total
-                    tot = 0
-                    for (i in subgroups){ name=subgroups[i] ; tot += +d[name]; }
-                    // Now normalize
-                    for (i in subgroups){ name=subgroups[i] ; d[name] = d[name] / tot * 100; }
-                  })
+                            // Add X axis
+                            var x = d3.scaleBand()
+                                .domain(groups)
+                                .range([0, width])
+                                .padding([0.5])
+                            svg.append("g")
+                              //.attr("class", "axis_labels")
+                              .attr("transform", "translate(0," + height + ")")
+                              .call(d3.axisBottom(x).tickSizeOuter(0));
 
-                  //stack the data? --> stack per subgroup
-                  var stackedData = d3.stack()
-                    .keys(subgroups)
-                    (data)
-                  //console.log(stackedData)
-                  // Show the bars
-                  svg.append("g")
-                    .selectAll("g")
-                    // Enter in the stack data = loop key per key = group per group
-                    .data(stackedData)
-                    .enter().append("g")
-                      .attr("fill", function(d) { return color(d.key); })
-                      .selectAll("rect")
-                      // enter a second time = loop subgroup per subgroup to add all rectangles
-                      .data(function(d) { return d; })
-                      .enter().append("rect")
-                        .attr("x", function(d) { return x(d.data.dateRange); })
-                        .attr("y", function(d) { return y(d[1]); })
-                        .attr("height", function(d) { return y(d[0]) - y(d[1]); })
-                        .attr("width",x.bandwidth())
+                            // Add Y axis
+                            var y = d3.scaleLinear()
+                              .domain([0, 100])
+                              .range([ height, 0 ]);
 
-                  svg.selectAll(".tick text")
-                   //.attr("class","axis_labels")
-                   .style("font-size","14px")
-                   .style("fill","#666");
+                            // grid lines on Y axis
+                            var yGrid = d3.axisLeft(y).tickSize(-width).tickFormat('').ticks(5);
 
-                    // New D3 legend (if the legend labels are long and wont fit in a single line)
-                    var legend = d3.select('#d3_www_legend').selectAll("legend")
-                        .data(subgroups);
+                            //create  yGrid
+                            svg.append('g')
+                              .attr('class', 'axis-grid')
+                              //.attr('transform', 'translate(0,' + height + ')')
+                              .call(yGrid);
 
-                    var legend_cells = legend.enter().append("div")
-                      .attr("class","legend");
-
-                    var p1 = legend_cells.append("p").attr("class","legend_field");
-                    p1.append("span").attr("class","legend_color").style("background",function(d,i) { return color(i) } );
-                    p1.insert("text").text(function(d,i) { return d } );
+                            // create Y axis
+                            svg.append("g")
+                              //.attr("class", "axis_labels")
+                              .call(d3.axisLeft(y).ticks(5));
 
 
-                </script>
 
-            <details class="details-chart">
-              <summary data-i18n="view-data-table">View table data</summary>
-                <div class="table-responsive">
-                    <table class="table">
-                      <thead>
-                        <th>Metrics</th>
-                        <th>Previous Month</th>
-                        <th>Month</th>
-                        <th>Previous Week</th>
-                        <th>Week</th>
-                      </thead>
-                      <tbody>
-                        <tr>
-                          <td>FWYLF - I can't find the information</td>
-                          <td><?=number_format($metrics2[$fwylfICantFindTheInfo + 0]) ?></td>
-                          <td><?=number_format($metrics2[$fwylfICantFindTheInfo + 1]) ?></td>
-                          <td><?=number_format($metrics2[$fwylfICantFindTheInfo + 2]) ?></td>
-                          <td><?=number_format($metrics2[$fwylfICantFindTheInfo + 3]) ?></td>
-                        </tr>
+                            // color palette = one color per subgroup
+                            var color = d3.scaleOrdinal()
+                              .domain(subgroups)
+                              .range(['#345EA5','#6CB5F3','#36A69A','#F8C040'])
 
-                        <tr>
-                          <td>FWYLF - Other reason</td>
-                          <td><?=number_format($metrics2[$fwylfOtherReason + 0]) ?></td>
-                          <td><?=number_format($metrics2[$fwylfOtherReason + 1]) ?></td>
-                          <td><?=number_format($metrics2[$fwylfOtherReason + 2]) ?></td>
-                          <td><?=number_format($metrics2[$fwylfOtherReason + 3]) ?></td>
-                        </tr>
+                            // Normalize the data -> sum of each group must be 100!
 
-                        <tr>
-                          <td>FWYLF - Information hard to understand</td>
-                          <td><?=number_format($metrics2[$fwylfInfoHardToUnderstand + 0]) ?></td>
-                          <td><?=number_format($metrics2[$fwylfInfoHardToUnderstand + 1]) ?></td>
-                          <td><?=number_format($metrics2[$fwylfInfoHardToUnderstand + 2]) ?></td>
-                          <td><?=number_format($metrics2[$fwylfInfoHardToUnderstand + 3]) ?></td>
-                        </tr>
+                            dataNormalized = []
+                            data.forEach(function(d){
+                              // Compute the total
+                              tot = 0
+                              for (i in subgroups){ name=subgroups[i] ; tot += +d[name]; }
+                              // Now normalize
+                              for (i in subgroups){ name=subgroups[i] ; d[name] = d[name] / tot * 100; }
+                            })
 
-                        <tr>
-                          <td>FWYLF - Error/something didn't work</td>
-                          <td><?=number_format($metrics2[$fwylfError + 0]) ?></td>
-                          <td><?=number_format($metrics2[$fwylfError + 1]) ?></td>
-                          <td><?=number_format($metrics2[$fwylfError + 2]) ?></td>
-                          <td><?=number_format($metrics2[$fwylfError + 3]) ?></td>
-                        </tr>
+                            //stack the data? --> stack per subgroup
+                            var stackedData = d3.stack()
+                              .keys(subgroups)
+                              (data)
+                            //console.log(stackedData)
+                            // Show the bars
+                            svg.append("g")
+                              .selectAll("g")
+                              // Enter in the stack data = loop key per key = group per group
+                              .data(stackedData)
+                              .enter().append("g")
+                                .attr("fill", function(d) { return color(d.key); })
+                                .selectAll("rect")
+                                // enter a second time = loop subgroup per subgroup to add all rectangles
+                                .data(function(d) { return d; })
+                                .enter().append("rect")
+                                  .attr("x", function(d) { return x(d.data.dateRange); })
+                                  .attr("y", function(d) { return y(d[1]); })
+                                  .attr("height", function(d) { return y(d[0]) - y(d[1]); })
+                                  .attr("width",x.bandwidth())
 
-                      </tbody>
-                    </table>
+                            svg.selectAll(".tick text")
+                             //.attr("class","axis_labels")
+                             .style("font-size","14px")
+                             .style("fill","#666");
 
-              </div>
-            </details>
+                              // New D3 legend (if the legend labels are long and wont fit in a single line)
+                              var legend = d3.select('#d3_www_legend').selectAll("legend")
+                                  .data(subgroups);
+
+                              var legend_cells = legend.enter().append("div")
+                                .attr("class","legend");
+
+                              var p1 = legend_cells.append("p").attr("class","legend_field");
+                              p1.append("span").attr("class","legend_color").style("background",function(d,i) { return color(i) } );
+                              p1.insert("text").text(function(d,i) { return d } );
+
+
+                          </script>
+
+                      <details class="details-chart">
+                        <summary data-i18n="view-data-table">View table data</summary>
+                          <div class="table-responsive">
+                              <table class="table">
+                                <thead>
+                                  <th>Metrics</th>
+                                  <th>Previous Month</th>
+                                  <th>Month</th>
+                                  <th>Previous Week</th>
+                                  <th>Week</th>
+                                </thead>
+                                <tbody>
+                                  <tr>
+                                    <td>FWYLF - I can't find the information</td>
+                                    <td><?=number_format($metrics2[$fwylfICantFindTheInfo + 0]) ?></td>
+                                    <td><?=number_format($metrics2[$fwylfICantFindTheInfo + 1]) ?></td>
+                                    <td><?=number_format($metrics2[$fwylfICantFindTheInfo + 2]) ?></td>
+                                    <td><?=number_format($metrics2[$fwylfICantFindTheInfo + 3]) ?></td>
+                                  </tr>
+
+                                  <tr>
+                                    <td>FWYLF - Other reason</td>
+                                    <td><?=number_format($metrics2[$fwylfOtherReason + 0]) ?></td>
+                                    <td><?=number_format($metrics2[$fwylfOtherReason + 1]) ?></td>
+                                    <td><?=number_format($metrics2[$fwylfOtherReason + 2]) ?></td>
+                                    <td><?=number_format($metrics2[$fwylfOtherReason + 3]) ?></td>
+                                  </tr>
+
+                                  <tr>
+                                    <td>FWYLF - Information hard to understand</td>
+                                    <td><?=number_format($metrics2[$fwylfInfoHardToUnderstand + 0]) ?></td>
+                                    <td><?=number_format($metrics2[$fwylfInfoHardToUnderstand + 1]) ?></td>
+                                    <td><?=number_format($metrics2[$fwylfInfoHardToUnderstand + 2]) ?></td>
+                                    <td><?=number_format($metrics2[$fwylfInfoHardToUnderstand + 3]) ?></td>
+                                  </tr>
+
+                                  <tr>
+                                    <td>FWYLF - Error/something didn't work</td>
+                                    <td><?=number_format($metrics2[$fwylfError + 0]) ?></td>
+                                    <td><?=number_format($metrics2[$fwylfError + 1]) ?></td>
+                                    <td><?=number_format($metrics2[$fwylfError + 2]) ?></td>
+                                    <td><?=number_format($metrics2[$fwylfError + 3]) ?></td>
+                                  </tr>
+
+                                </tbody>
+                              </table>
+
+                        </div>
+                      </details>
+
+                    <?php  }
+
+                    else {
+                      echo "None of the pages for this Project have a Page feedback tool!";
+                    }
+                    ?>
           </div>
         </div>
       </div>
@@ -1337,6 +1355,6 @@ $kpi_pieces = explode(":", $kpi_pos);
 
 
 
-      <?php  } //if (empty($tmp))  ?>
+      <?php  //} //if (empty($tmp))  ?>
 <!--Main content end-->
 <?php include "includes/upd_footer.php"; ?>
