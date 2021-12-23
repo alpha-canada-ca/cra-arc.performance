@@ -241,17 +241,17 @@ if ($succ === 1)
 
     $dates = [[$startLastGSC, $endLastGSC], [$startGSC, $endGSC]];
 
-    $monthStart = (new DateTime("first day of last month midnight"))->format($iso);
-    $monthEnd = (new DateTime("last day of last month midnight"))->format($iso);
+    $monthStartGSC = (new DateTime("first day of last month midnight"))->format($iso);
+    $monthEndGSC = (new DateTime("last day of last month midnight"))->format($iso);
 
-    $previousMonthStart = (new DateTime("first day of -2 month midnight"))->format($iso);
-    $previousMonthEnd = (new DateTime("last day of -2 month midnight"))->format($iso);
+    $previousMonthStartGSC = (new DateTime("first day of -2 month midnight"))->format($iso);
+    $previousMonthEndGSC = (new DateTime("last day of -2 month midnight"))->format($iso);
 
     // echo "<pre>";
     // print_r($monthStart);
     // echo "</pre>";
 
-    $alldates = [[$startLastGSC, $endLastGSC], [$startGSC, $endGSC],[$previousMonthStart,$previousMonthEnd],[$monthStart, $monthEnd]];
+    $alldates = [[$startLastGSC, $endLastGSC], [$startGSC, $endGSC],[$previousMonthStartGSC,$previousMonthEndGSC],[$monthStartGSC, $monthEndGSC]];
     // echo "<pre>";
     // print_r($alldates);
     // echo "</pre>";
@@ -313,7 +313,7 @@ if ($succ === 1)
 
         $r = new ApiClient($config[0]['ADOBE_API_KEY'], $config[0]['COMPANY_ID'], $_SESSION['token']);
 
-        $temp = ['pages-referrer-type' ]; //, 'fwylf' ];
+        $temp = ['pages-referrer-type', 'pages-internal-search' ]; //, 'fwylf' ];
         //$temp = ['aa-pages-smmry-metrics', 'aa-pages-smmry-fwylf', 'aa-pages-smmry-trnd', 'aa-ovrvw-smmry-tsks', 'prvs']; //, 'fwylf' ];
         $result = array();
         $j = array();
@@ -324,6 +324,12 @@ if ($succ === 1)
         {
 
             $json = $data[$t];
+
+            if ( $t == 'pages-referrer-type' ) {
+                $json = sprintf($json, $urls);
+            } else if ( $t == 'pages-internal-search' ) {
+                $json = sprintf($json, ( 'https://' . $urls ));
+            }
 
             // if ($t == "activityMap2") {
             //     $pgTitle = getSiteTitle($url);
@@ -355,6 +361,8 @@ if ($succ === 1)
                 $weekEnd
             ) , $json);
 
+            //echo $json;
+
             //echo ++$tt;
             //$time_elapsed_secs1 = microtime(true) - $start1;
             //echo "<p>Time for query ".++$tt." taken: " . number_format($time_elapsed_secs1 , 2) . " seconds</p>";
@@ -365,6 +373,7 @@ if ($succ === 1)
             //$result = api_post($config[0]['ADOBE_API_KEY'], $config[0]['COMPANY_ID'], $_SESSION['token'], $api);
 //            $result[] = $r->requestEntity($json);
             $result[] = get_aa_data($json, $r);
+            //var_dump($result);
             $j[] = $json;
 
             // $time_elapsed_secs = microtime(true) - $time;
@@ -386,11 +395,22 @@ if ($succ === 1)
 
         $ref = json_decode($result[0], true);
         $referrerType = $ref["rows"];
+        //var_dump($referrerType);
 
-        // $weeks_index = date("M j, Y", strtotime($previousWeekStart));
-        // //echo $weeks_index;
-        // $value_date = array_column($aaMetricsTrend, 'value');
-        // $index_key = array_search($weeks_index, $value_date);
+        $ref = json_decode($result[1], true);
+        $internalSearch = $ref["rows"];
+
+        //var_dump($internalSearch);
+
+        $value_date = array_column($referrerType, 'value');
+        $pMonth= array_column($referrerType, 'data')[0];
+        $month= array_column($referrerType, 'data')[1];
+        $pWeek= array_column($referrerType, 'data')[2];
+        $week= array_column($referrerType, 'data')[3];
+
+
+        // $aaTrendWeeks = array_slice($aaMetricsTrend, -14);
+
         //
         // //$aaTrendWeeks = array_slice($aaMetricsTrend, -14);
         // $aaTrendWeeks = array_slice($aaMetricsTrend, $index_key, 14);
@@ -825,6 +845,49 @@ if ($succ === 1)
             <h3 class="card-title"><span class="card-tooltip h6" data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-placement="right" data-bs-content="" data-bs-original-title="" title="" data-i18n="">Search terms from Canada.ca</span></h3>
             <div id="toptask_wrapper" class="dataTables_wrapper dt-bootstrap5 no-footer"><div class="row"><div class="col-sm-12 col-md-6"></div><div class="col-sm-12 col-md-6"></div></div><div class="row"><div class="col-sm-12">
 
+                  <div class="table-responsive">
+                             <table class="table table-striped dataTable no-footer" id="toptask2" data="" role="grid"> <!-- id="pages_dt" -->
+                               <thead>
+                                 <tr>
+                                   <th class="sorting" aria-controls="toptask" aria-label="Change: activate to sort column" data-i18n="search-terms" >Search term</th>
+                                   <th class="sorting ascending" aria-controls="toptask" aria-label="Change: activate to sort column" data-i18n="clicks" >Clicks</th>
+                                   <th class="sorting" aria-controls="toptask" aria-label="Change: activate to sort column" data-i18n="comparison" >Comparison</th>
+                                 </tr>
+                               </thead>
+                               <tbody>
+                                <?php
+                                  //foreach ($aaTrendWeek as $trend)
+                                  foreach ($internalSearch as $key=>$value)
+                                  {
+                                    // don't display the values with 0's
+                                    if ( $value['data'][3] != 0 ) {
+
+                                    $diff = differ($value['data'][2], $value['data'][3]);
+                                    $pos = posOrNeg2($diff);
+                                    $pieces = explode(":", $pos);
+
+                                    $diff = abs($diff);
+
+                                  ?>
+
+                                          <tr>
+                                            <td><?=$value['value'] ?></td>
+                                            <td><?=number_format($value['data'][3]) ?></td>
+                                            <td><span class="<?=$pieces[0] ?> text-nowrap"><span class="material-icons"><?=$pieces[1] ?></span> <?=percent($diff) ?></span></td>
+                                          </tr>
+
+                                          <?php
+                                  }
+                              }
+
+                                  ?>
+
+                                 </tr>
+                               </tbody>
+                             </table>
+                           </div>
+
+
             </div></div><div class="row"><div class="col-sm-12 col-md-5"></div><div class="col-sm-12 col-md-7"></div></div></div>
           </div>
         </div>
@@ -837,6 +900,50 @@ if ($succ === 1)
           <div class="card-body pt-2">
             <h3 class="card-title"><span class="card-tooltip h6" data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-placement="right" data-bs-content="" data-bs-original-title="" title="" data-i18n="">Referrer Type</span></h3>
             <div id="toptask_wrapper" class="dataTables_wrapper dt-bootstrap5 no-footer"><div class="row"><div class="col-sm-12 col-md-6"></div><div class="col-sm-12 col-md-6"></div></div><div class="row"><div class="col-sm-12">
+
+
+                           <div class="table-responsive">
+                             <table class="table table-striped dataTable no-footer" id="toptask2" data="" role="grid"> <!-- id="pages_dt" -->
+                               <thead>
+                                 <tr>
+                                   <th class="sorting" aria-controls="toptask" aria-label="Change: activate to sort column" data-i18n="type" >Type</th>
+                                   <th class="sorting ascending" aria-controls="toptask" aria-label="Change: activate to sort column" data-i18n="visits" >Visits</th>
+                                   <th class="sorting" aria-controls="toptask" aria-label="Change: activate to sort column" data-i18n="comparison" >Comparison</th>
+                                 </tr>
+                               </thead>
+                               <tbody>
+                                <?php
+                                  //foreach ($aaTrendWeek as $trend)
+                                  foreach ($referrerType as $key=>$value)
+                                  {
+
+                                    // don't display the values with 0's
+                                    if ( $value['data'][3] != 0 ) {
+
+                                    $diff = differ($value['data'][2], $value['data'][3]);
+                                    $pos = posOrNeg2($diff);
+                                    $pieces = explode(":", $pos);
+
+                                    $diff = abs($diff);
+
+                                  ?>
+
+                                          <tr>
+                                            <td><?=$value['value'] ?></td>
+                                            <td><?=number_format($value['data'][3]) ?></td>
+                                            <td><span class="<?=$pieces[0] ?> text-nowrap"><span class="material-icons"><?=$pieces[1] ?></span> <?=percent($diff) ?></span></td>
+                                          </tr>
+
+                                          <?php
+                                  }
+                              }
+
+                                  ?>
+
+                               
+                               </tbody>
+                             </table>
+                           </div>
 
             </div></div><div class="row"><div class="col-sm-12 col-md-5"></div><div class="col-sm-12 col-md-7"></div></div></div>
           </div>
