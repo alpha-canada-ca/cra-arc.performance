@@ -397,27 +397,37 @@ if ($succ === 1)
 $r = new ApiClient($config[0]['ADOBE_API_KEY'], $config[0]['COMPANY_ID'], $_SESSION['token']);
 
 //$temp = ['aa-pages-smmry-metrics', 'aa-pages-smmry-fwylf', 'aa-ovrvw-smmry-trnd', 'aa-ovrvw-smmry-tsks']; //, 'fwylf' ];
-$temp = ['aa-pages-smmry-metrics', 'aa-pages-smmry-fwylf']; //, 'fwylf' ];
+$temp = ['aa-pages-smmry-metrics-v2', 'aa-pages-smmry-fwylf-v2']; //, 'fwylf' ];
 //$temp = ['aa-pages-smmry-metrics']; //, 'fwylf' ];
 $result = array();
 $j = array();
 $allAPI = array();
 $allj = array();
 
+//var_dump($prjPages );
+
+$cont = '';
+
+foreach ( $prjPages as $indx => $val ) {
+     if ($indx === array_key_last($prjPages)) {
+        $cont .= sprintf( "( CONTAINS '%s' )", $val);
+     } else {
+        $cont .= sprintf( "( CONTAINS '%s' ) OR ", $val );
+     }
+}
+
 //echo count($prjPages);
 
 foreach ($temp as $t)
 {
 
-  foreach ($prjPages as $page)
-  {
 
           $json = $data[$t];
 
           // echo $urls;
           // echo $page;
           // echo "----------";
-          $json = sprintf($json, $page);
+          $json = sprintf($json, $cont);
 
           $json = str_replace(array(
               "*previousMonthStart*",
@@ -441,10 +451,9 @@ foreach ($temp as $t)
           //$result = api_post($config[0]['ADOBE_API_KEY'], $config[0]['COMPANY_ID'], $_SESSION['token'], $api);
           //$result[$page] = $r->requestEntity($json);
           $response = $r->requestEntity($json);
-          $result[$page] = json_decode($response,true);
+          $result[] = $response;
           $j[] = $json;
 
-  }
   // delay the API calls for 2 seconds fr every query
   //sleep(1);
 
@@ -452,6 +461,9 @@ foreach ($temp as $t)
   $allj[$t] = $j;
 
 }
+
+
+   // var_dump( $result );
 
 // //CALCULATE WUERY TIME EXECUTION
 // $time_elapsed_secs = microtime(true) - $time;
@@ -463,7 +475,9 @@ foreach ($temp as $t)
 // echo "</pre>";
 
 
-$result = $allAPI;
+//$result = $allAPI;
+
+//var_dump($allAPI);
 
 // $rst = json_decode($allAPI[0]["www.canada.ca/en/revenue-agency/services/subsidy/temporary-wage-subsidy.html"], true);
 // $m = $rst["summaryData"]["filteredTotals"];
@@ -478,6 +492,9 @@ foreach ($result as $r)
 
 }
 
+$metrics = json_decode($result[0], true);
+$sum_metrics = $metrics["summaryData"]["filteredTotals"];
+
 // -----------------------------------------------------------------------
 // METRICS query (Visit metrics and DYFWYWLF- Yes and No answers)
 // -----------------------------------------------------------------------
@@ -488,7 +505,7 @@ foreach ($result as $r)
 // print_r($result);
 // echo "</pre>";
 
-
+/*
 $metrics = array_column_recursive($result[0], "filteredTotals");
 
 $sum_metrics=array();
@@ -509,6 +526,7 @@ for ($i = 0; $i < count($metrics); $i++) {
 // echo "<pre>";
 // print_r($sum_metrics);
 // echo "</pre>";
+*/
 
 $tmp = array_filter(array_slice($sum_metrics, 0, 8));
 
@@ -546,6 +564,10 @@ $totalCompVisitsPM = $sum_metrics[16];
 // -----------------------------------------------------------------------
 
 
+$fwylf = json_decode($result[1], true);
+$sum_fwylf = $fwylf["summaryData"]["filteredTotals"];
+
+/*
 $metrics2 = array_column_recursive($result[1], "filteredTotals");
 
 $sum_metrics2=array();
@@ -561,6 +583,7 @@ for ($i = 0; $i < count($metrics2); $i++) {
 
       }
 }
+*/
 
 // echo "Metrics 2";
 // echo "<pre>";
@@ -577,7 +600,7 @@ else {
         $pageFeedbackOnPages = 1;
         //REMOVE AFTER Testing
         $metrics = $sum_metrics;
-        $metrics2 = $sum_metrics2;
+        $metrics2 = $sum_fwylf;
 
         // echo "<pre>";
         // print_r($metrics);
