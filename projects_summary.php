@@ -293,89 +293,66 @@ if (isset($_SESSION["token"]))
 
 $r = new ApiClient($config[0]['ADOBE_API_KEY'], $config[0]['COMPANY_ID'], $_SESSION['token']);
 
-$temp = ['aa-pages-smmry-metrics', 'aa-pages-smmry-fwylf'];
+$temp = ['aa-pages-smmry-metrics-v2', 'aa-pages-smmry-fwylf-v2'];
+
 $result = array();
-$j = array();
-$allAPI = array();
-$allj = array();
+
+$cont = '';
+
+foreach ( $prjPages as $indx => $val ) {
+     if ($indx === array_key_last($projectUrls)) {
+        $cont .= sprintf( "( CONTAINS '%s' )", $val);
+     } else {
+        $cont .= sprintf( "( CONTAINS '%s' ) OR ", $val );
+     }
+}
 
 foreach ($temp as $t)
 {
+    $json = $data[$t];
 
-    foreach ($projectUrls as $page)
-    {
+    $json = sprintf($json, $cont);
 
-        $json = $data[$t];
+    $json = str_replace(array(
+        "*previousMonthStart*",
+        "*previousMonthEnd*",
+        "*monthStart*",
+        "*monthEnd*",
+        "*previousWeekStart*",
+        "*previousWeekEnd*",
+        "*weekStart*",
+        "*weekEnd*"
+    ) , array(
+        $previousMonthStart,
+        $previousMonthEnd,
+        $monthStart,
+        $monthEnd,
+        $previousWeekStart,
+        $previousWeekEnd,
+        $weekStart,
+        $weekEnd
+    ) , $json);
 
-        $json = sprintf($json, $page);
-
-        $json = str_replace(array(
-            "*previousMonthStart*",
-            "*previousMonthEnd*",
-            "*monthStart*",
-            "*monthEnd*",
-            "*previousWeekStart*",
-            "*previousWeekEnd*",
-            "*weekStart*",
-            "*weekEnd*"
-        ) , array(
-            $previousMonthStart,
-            $previousMonthEnd,
-            $monthStart,
-            $monthEnd,
-            $previousWeekStart,
-            $previousWeekEnd,
-            $weekStart,
-            $weekEnd
-        ) , $json);
-
-        $response = get_aa_data($json, $r);
-        $result[$page] = json_decode($response,true);
-        $j[] = $json;
-
-    }
-
-
-    $allAPI[] = $result;
-    $allj[$t] = $j;
-
+    $response = get_aa_data($json, $r);
+    $result[] = $response;
 }
 
-$result = $allAPI;
 
 // -----------------------------------------------------------------------
 // METRICS query (Visit metrics and DYFWYWLF- Yes and No answers)
 // -----------------------------------------------------------------------
 
-$metrics = array_column_recursive($result[0], "filteredTotals");
-
-$sum_metrics = array_reduce($metrics, function($sums, $row) {
-    for ($i = 0; $i < count($row); $i++) {
-        $row[$i] = $row[$i] + $sums[$i];
-    }
-
-    return $row;
-}, array_map(fn($item) => 0, $metrics[0] ?? []));
+$metrics = json_decode($result[0], true);
+$sum_metrics = $metrics["summaryData"]["filteredTotals"];
 
 $tmp = array_filter(array_slice($sum_metrics, 0, 8));
-
-
 
 // -----------------------------------------------------------------------
 // DYFWYWLF query (What went wrong answers)
 // -----------------------------------------------------------------------
 
-
-$metrics2 = array_column_recursive($result[1], "filteredTotals");
-
-$sum_metrics2 = array_reduce($metrics2, function($sums, $row) {
-    for ($i = 0; $i < count($row); $i++) {
-        $row[$i] = $row[$i] + $sums[$i];
-    }
-
-    return $row;
-}, array_map(fn($item) => 0, $metrics2[0] ?? []));
-
+$fwylf = json_decode($result[1], true);
+$sum_fwylf = $fwylf["summaryData"]["filteredTotals"];
 
 //DOES THIS PAGE HAS PAGE FEEDBACK TOOL OR NOT
 if (empty($tmp)) {
@@ -384,8 +361,7 @@ if (empty($tmp)) {
     $pageFeedbackOnPages = 1;
     //REMOVE AFTER Testing
     $metrics = $sum_metrics;
-    $metrics2 = $sum_metrics2;
-
+    $metrics2 = $sum_fwylf;
 
     $fwylfYes = 0;
     $fwylfNo = 4;
