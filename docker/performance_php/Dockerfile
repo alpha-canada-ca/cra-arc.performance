@@ -1,4 +1,4 @@
-FROM dtobtn/performance_base:latest
+FROM lega0208/performance_base:latest
 COPY docker/performance_php/php.ini /usr/local/etc/php/php.ini
 COPY docker/performance_php/www.conf /usr/local/etc/php-fpm.d
 COPY includes/ /var/www/html/includes/
@@ -35,8 +35,11 @@ COPY pages_searchanalytics.php /var/www/html/pages_searchanalytics.php
 COPY projects_summary.php /var/www/html/projects_summary.php
 COPY projects_pagefeedback.php /var/www/html/projects_pagefeedback.php
 COPY projects_details.php /var/www/html/projects_details.php
+COPY projects_webtraffic.php /var/www/html/projects_webtraffic.php
 COPY tasks_home.php /var/www/html/tasks_home.php
 COPY tasks_pagefeedback.php /var/www/html/tasks_pagefeedback.php
+COPY tasks_summary.php /var/www/html/tasks_summary.php
+COPY tasks_webtraffic.php /var/www/html/tasks_webtraffic.php
 
 RUN curl -sS https://getcomposer.org/installer | php
 RUN mv composer.phar /var/www/html/composer.phar
