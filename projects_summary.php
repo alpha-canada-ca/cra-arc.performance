@@ -299,7 +299,7 @@ $result = array();
 
 $cont = '';
 
-foreach ( $prjPages as $indx => $val ) {
+foreach ($projectUrls as $indx => $val) {
      if ($indx === array_key_last($projectUrls)) {
         $cont .= sprintf( "( CONTAINS '%s' )", $val);
      } else {
