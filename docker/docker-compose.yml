@@ -13,7 +13,7 @@ services:
     restart: always
     container_name: performance_nginx
     volumes:
-      - /home/cra-arc-user/cra-arc.performance:/var/www/html
+      - "../:/var/www/html"
   web:
     image: "cra-arc/performance_php:latest"
     build:
@@ -27,15 +27,5 @@ services:
     ports:
       - "9000"
     container_name: performance_web
-    depends_on:
-      - mongodb
     volumes:
-            - /home/cra-arc-user/cra-arc.performance/js:/var/www/html/js
-  mongodb:
-    image: mongo:latest
-    ports:
-      - 27017:27017
-    volumes:
-      - mongodb_data_container:/data/db
-volumes:
-  mongodb_data_container:
+            - "/js:/var/www/html/js"
