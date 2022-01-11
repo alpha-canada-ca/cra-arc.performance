@@ -1,5 +1,7 @@
 <?php
-
+use Google\Service\Webmasters\ApiDimensionFilterGroup;
+use Google\Service\Webmasters\SearchAnalyticsQueryRequest;
+use Google\Service\Webmasters\ApiDimensionFilter;
 
      /**
 * Initializes an Analytics Reporting API V4 service object.
@@ -402,5 +404,158 @@ function getSiteTitle( $url ){
 }
 
 
+class SearchConsoleQueryBuilder
+{
+    private SearchAnalyticsQueryRequest $queryRequest;
+    private array $filterGroups;
+    private ApiDimensionFilterGroup $filterGroup;
+    private array $filterGroupFilters;
+    private ApiDimensionFilter $urlFilter;
+
+    public function __construct($requestParams = array()) {
+        $this->queryRequest = new SearchAnalyticsQueryRequest($requestParams);
+        $this->filterGroup = new ApiDimensionFilterGroup();
+        $this->filterGroups = array($this->filterGroup);
+        $this->filterGroupFilters = array();
+        $this->urlFilter = new ApiDimensionFilter();
+
+        $this->queryRequest->setSearchType('web');
+
+        // default params
+        if (!array_key_exists('rowLimit', $requestParams)) {
+            $this->setRowLimit(15);
+        }
+
+        if (!array_key_exists('dimensions', $requestParams)) {
+            $this->setDimensions(['query']);
+        }
+    }
+
+    public function setStartDate($startDate) {
+        $this->queryRequest->setStartDate($startDate);
+        return $this;
+    }
+
+    public function setEndDate($startDate) {
+        $this->queryRequest->setEndDate($startDate);
+        return $this;
+    }
+
+    public function setDimensions($dimensions) {
+        $this->queryRequest->setDimensions($dimensions);
+        return $this;
+    }
+
+    public function setRowLimit($rowLimit) {
+        $this->queryRequest->setRowLimit($rowLimit);
+        return $this;
+    }
+
+    public function setAggregationType($aggregationType) {
+        $this->queryRequest->setAggregationType($aggregationType);
+        return $this;
+    }
+
+    public function addDeviceFilter($device, $operator = 'equals') {
+        $filter = new Google\Service\Webmasters\ApiDimensionFilter();
+
+        $filter->setDimension('device');
+        $filter->setOperator($operator);
+        $filter->setExpression($device);
+
+        $this->filterGroupFilters[] = $filter;
+
+        return $this;
+    }
+    public function setUrlFilter($url, $operator = 'equals') {
+        $this->urlFilter->setDimension('page');
+        $this->urlFilter->setOperator($operator);
+        $this->urlFilter->setExpression($url);
+
+        return $this;
+    }
+
+    public function addFilter($dimension, $operator, $expression) {
+        $filter = new Google\Service\Webmasters\ApiDimensionFilter();
+
+        $filter->setDimension($dimension);
+        $filter->setOperator($operator);
+        $filter->setExpression($expression);
+
+        $this->filterGroupFilters[] = $filter;
+
+        return $filter;
+    }
+
+
+    public function build(): SearchAnalyticsQueryRequest {
+        // a little funky, but this is to avoid mutating the filterGroupFilters array, that way we can keep the
+        //      internal state while still being able to change the url.
+        $this->filterGroup->setFilters(array_merge($this->filterGroupFilters, array($this->urlFilter)));
+        $this->queryRequest->setDimensionFilterGroups($this->filterGroups);
+
+        return $this->queryRequest;
+    }
+}
+
+class SearchConsoleInterface
+{
+    private Google\Client $client;
+    private Google\Service\Webmasters $service;
+    private Google\Http\Batch $batch;
+    private SearchConsoleQueryBuilder $queryBuilder;
+
+    public function __construct() {
+        // Use the developers console and download your service account
+        // credentials in JSON format. Place them in this directory or
+        // change the key file location if necessary.
+        $KEY_FILE_LOCATION = './php/service-account-credentials.json';
+
+        // Create and configure a new client object.
+        $this->client = new Google\Client();
+        $this->client->setAuthConfig($KEY_FILE_LOCATION);
+        $this->client->setScopes(['https://www.googleapis.com/auth/webmasters.readonly']);
+
+        $this->service = new Google\Service\Webmasters($this->client);
+        $this->queryBuilder = new SearchConsoleQueryBuilder();
+
+        $this->batch = $this->service->createBatch();
+    }
+
+    public function queryConfig(): SearchConsoleQueryBuilder
+    {
+        return $this->queryBuilder;
+    }
+
+    public function clearQuery() {
+        $this->queryBuilder = new SearchConsoleQueryBuilder();
+    }
+
+    public function executeBatchQuery($urls = array()): ?array
+    {
+        $this->client->setUseBatch(true);
+        foreach ($urls as $url) {
+            $queryRequest = $this->queryBuilder->setUrlFilter($url)->build();
+            $request = $this->service->searchanalytics->query('https://www.canada.ca/', $queryRequest);
+            $this->batch->add($request, $url);
+        }
+
+        $results = $this->batch->execute();
+        $this->client->setUseBatch(false);
+
+        return $results;
+    }
+
+    public function executeQuery() {
+        $queryRequest = $this->queryBuilder->build();
+
+        return $this->service->searchanalytics->query('https://www.canada.ca/', $queryRequest);
+    }
+
+    public function getBatch(): \Google\Http\Batch
+    {
+        return $this->batch;
+    }
+}
 
 ?>
