@@ -346,4 +346,54 @@ class DataInterface
 
         return $results;
     }
+
+    public function getUxTestsByTaskId($taskId, $selectedFields = []): array
+    {
+        $fields = '';
+
+        if (count($selectedFields) > 0) {
+            $fields = ',' . implode(',', $selectedFields);
+        }
+
+        $query = $this->queryBuilder
+            ->select('id' . $fields)
+            ->where('task_id', '=', $taskId)
+            ->join('tasks_tests', 'id = tasks_tests.test_id')
+            ->get('ux_tests');
+
+        $results = [];
+
+        while ($row = $query->fetchArray(1)) {
+            if (is_array($row)) {
+                $results[] = $row;
+            }
+        }
+
+        return $results;
+    }
+
+    public function getTaskByUxTestId($testId, $selectedFields = []): array
+    {
+        $fields = '';
+
+        if (count($selectedFields) > 0) {
+            $fields = ',' . implode(',', $selectedFields);
+        }
+
+        $query = $this->queryBuilder
+            ->select('id' . $fields)
+            ->where('test_id', '=', $testId)
+            ->join('tasks_tests', 'id = tasks_tests.task_id')
+            ->get('tasks');
+
+        $results = [];
+
+        while ($row = $query->fetchArray(1)) {
+            if (is_array($row)) {
+                $results[] = $row;
+            }
+        }
+
+        return $results;
+    }
 }
