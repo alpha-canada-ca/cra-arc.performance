@@ -40,6 +40,12 @@ COPY tasks_home.php /var/www/html/tasks_home.php
 COPY tasks_pagefeedback.php /var/www/html/tasks_pagefeedback.php
 COPY tasks_summary.php /var/www/html/tasks_summary.php
 COPY tasks_webtraffic.php /var/www/html/tasks_webtraffic.php
+COPY tasks_searchanalytics.php /var/www/html/tasks_searchanalytics.php
+COPY tasks_uxtests.php /var/www/html/tasks_uxtests.php
+COPY tasks_calldrivers.php /var/www/html/tasks_calldrivers.php
+COPY projects_searchanalytics.php /var/www/html/projects_searchanalytics.php
+COPY projects_uxtests.php /var/www/html/projects_uxtests.php
+COPY projects_calldrivers.php /var/www/html/projects_calldrivers.php
 
 RUN curl -sS https://getcomposer.org/installer | php
 RUN mv composer.phar /var/www/html/composer.phar
