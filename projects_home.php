@@ -167,7 +167,7 @@ $weeklyDatesHeader = $dateUtils->getWeeklyDates('header');
                                         <tbody>
                                         <?php foreach ($projectsData as $row) { ?>
                                             <tr>
-                                                <td><a href="/projects_summary.php?projectId=<?=$row['id']?>"><?=$row['title']?></a></td>
+                                                <td><a href="./projects_summary.php?projectId=<?=$row['id']?>"><?=$row['title']?></a></td>
                                                 <td><span class="badge bg-primary"><?=$row['COPS'] === 1 ? 'COPS' : ''?></span></td>
                                                 <td><?=$projectStatusBadges[$row['project_status']]?></td>
                                                 <td><?=$row['start_date'] ?? ''?></td>
