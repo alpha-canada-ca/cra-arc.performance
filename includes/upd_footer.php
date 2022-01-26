@@ -47,6 +47,12 @@
 
       // EXPORT BUTTONS ON DATA TABLE
       var tbl_buttons =  $('.datatables-with-buttons').DataTable( {
+        "paging":   false,
+        //"ordering": true //default value
+        //"order": [[ 1, "asc" ]],
+        "order": [],
+        "searching": false,
+        "info": false,
         //dom: 'Bfrtip',
         //dom: '<"btn">Bt',
         dom: 'Bt',
