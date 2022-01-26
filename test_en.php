@@ -298,7 +298,8 @@ require 'vendor/autoload.php';
         function posOrNeg($num)
         {
             if ($num > 0) return 'text-success:arrow_upward';
-            else if ($num == 0) return 'text-warning:horizontal_rule';
+            //else if ($num == 0) return 'text-warning:horizontal_rule';
+            else if ($num == 0) return 'text-warning:';
             else return 'text-danger:arrow_downward';
         }
 
@@ -657,7 +658,8 @@ $diff = abs($diff);
         <div class="card">
           <div class="card-body pt-2">
             <h3 class="card-title"><span class="card-tooltip h6" data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-placement="right" data-bs-content="Top 10 most used search terms in Google to access CRA pages." data-bs-original-title="" title="" data-i18n="top10-terms-google">Top 10 search terms from Google</span></h3>
-            <div id="toptask_wrapper" class="dataTables_wrapper dt-bootstrap5 no-footer"><div class="row"><div class="col-sm-12 col-md-6"></div><div class="col-sm-12 col-md-6"></div></div><div class="row"><div class="col-sm-12">
+            <!-- <div id="toptask_wrapper" class="dataTables_wrapper dt-bootstrap5 no-footer"><div class="row"><div class="col-sm-12 col-md-6"></div><div class="col-sm-12 col-md-6"></div></div><div class="row"><div class="col-sm-12"> -->
+            <div class="dataTables_wrapper dt-bootstrap5 no-footer"><div class="row"><div class="col-sm-12 col-md-6"></div><div class="col-sm-12 col-md-6"></div></div><div class="row"><div class="col-sm-12">
 
               <?php
 
@@ -688,15 +690,16 @@ $diff = abs($diff);
 
                  if (count($qry) > 0) { ?>
                    <div class="table-responsive">
-                     <table class="table table-striped dataTable no-footer datatables-with-buttons" id="toptask2" data="" role="grid">
+                     <table class="table table-striped dataTable no-footer datatables-with-buttons" id="top_task1" data="" role="grid">
+                       <caption>Top 10 most used search terms in Google to access CRA pages.</caption>
                        <thead>
                          <tr>
-                           <th class="sorting" aria-controls="toptask" aria-label="Change: activate to sort column" data-i18n="search-terms" >Search term</th>
-                           <th class="sorting text-md-end ascending" aria-controls="toptask" aria-label="Change: activate to sort column" data-i18n="clicks" >Clicks</th>
-                           <th class="sorting text-md-end" aria-controls="toptask" aria-label="Change: activate to sort column" data-i18n="comparison" >Comparison</th>
-                           <th class="sorting text-md-end" aria-controls="toptask" aria-label="Change: activate to sort column" data-i18n="impressions" >Impressions</th>
-                           <th class="sorting text-md-end" aria-controls="toptask" aria-label="Change: activate to sort column" data-i18n="ctr" >Click through rate (CTR)</th>
-                           <th class="sorting text-md-end" aria-controls="toptask" aria-label="Change: activate to sort column" data-i18n="position" >Position</th>
+                           <th class="sorting" aria-controls="top_task1" aria-label="Change: activate to sort column" data-i18n="search-terms" scope="col" >Search term</th>
+                           <th class="sorting text-md-end ascending" aria-controls="top_task1" aria-label="Change: activate to sort column" data-i18n="clicks" scope="col" >Clicks</th>
+                           <th class="sorting text-md-end" aria-controls="top_task1" aria-label="Change: activate to sort column" data-i18n="comparison" scope="col" >Comparison</th>
+                           <th class="sorting text-md-end" aria-controls="top_task1" aria-label="Change: activate to sort column" data-i18n="impressions" scope="col" >Impressions</th>
+                           <th class="sorting text-md-end" aria-controls="top_task1" aria-label="Change: activate to sort column" data-i18n="ctr" scope="col" >Click through rate (CTR)</th>
+                           <th class="sorting text-md-end" aria-controls="top_task1" aria-label="Change: activate to sort column" data-i18n="position" scope="col" >Position</th>
                          </tr>
                        </thead>
                        <tbody>
@@ -762,7 +765,8 @@ $diff = abs($diff);
     <div class="card">
       <div class="card-body pt-2">
         <h3 class="card-title"><span class="card-tooltip h6" data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-placement="right" data-bs-content="Top 10 most used search terms in Google to access CRA pages." data-bs-original-title="" title="" data-i18n="top10-terms-google">Top 10 search terms from Google</span></h3>
-        <div id="toptask_wrapper" class="dataTables_wrapper dt-bootstrap5 no-footer"><div class="row"><div class="col-sm-12 col-md-6"></div><div class="col-sm-12 col-md-6"></div></div><div class="row"><div class="col-sm-12">
+        <!-- <div id="toptask_wrapper" class="dataTables_wrapper dt-bootstrap5 no-footer"><div class="row"><div class="col-sm-12 col-md-6"></div><div class="col-sm-12 col-md-6"></div></div><div class="row"><div class="col-sm-12"> -->
+        <div class="dataTables_wrapper dt-bootstrap5 no-footer"><div class="row"><div class="col-sm-12 col-md-6"></div><div class="col-sm-12 col-md-6"></div></div><div class="row"><div class="col-sm-12">
 
           <?php
 
@@ -793,15 +797,16 @@ $diff = abs($diff);
 
              if (count($qry) > 0) { ?>
                <div class="table-responsive">
-                 <table class="table table-striped dataTable no-footer datatables-with-buttons" id="toptask2" data="" role="grid">
+                 <table class="table table-striped dataTable no-footer datatables-with-buttons" id="top_task2" data="" role="grid">
+                   <caption>Top 10 most used search terms in Google to access CRA pages.</caption>
                    <thead>
                      <tr>
-                       <th class="sorting" aria-controls="toptask" aria-label="Change: activate to sort column" data-i18n="search-terms" >Search term</th>
-                       <th class="sorting text-md-end ascending" aria-controls="toptask" aria-label="Change: activate to sort column" data-i18n="clicks" >Clicks</th>
-                       <th class="sorting text-md-end" aria-controls="toptask" aria-label="Change: activate to sort column" data-i18n="comparison" >Comparison</th>
-                       <th class="sorting text-md-end" aria-controls="toptask" aria-label="Change: activate to sort column" data-i18n="impressions" >Impressions</th>
-                       <th class="sorting text-md-end" aria-controls="toptask" aria-label="Change: activate to sort column" data-i18n="ctr" >Click through rate (CTR)</th>
-                       <th class="sorting text-md-end" aria-controls="toptask" aria-label="Change: activate to sort column" data-i18n="position" >Position</th>
+                       <th class="sorting" aria-controls="top_task2" aria-label="Change: activate to sort column" data-i18n="search-terms"  scope="col" >Search term</th>
+                       <th class="sorting text-md-end ascending" aria-controls="top_task2" aria-label="Change: activate to sort column" data-i18n="clicks" scope="col" >Clicks</th>
+                       <th class="sorting text-md-end" aria-controls="top_task2" aria-label="Change: activate to sort column" data-i18n="comparison" scope="col" >Comparison</th>
+                       <th class="sorting text-md-end" aria-controls="top_task2" aria-label="Change: activate to sort column" data-i18n="impressions" scope="col" >Impressions</th>
+                       <th class="sorting text-md-end" aria-controls="top_task2" aria-label="Change: activate to sort column" data-i18n="ctr" scope="col" >Click through rate (CTR)</th>
+                       <th class="sorting text-md-end" aria-controls="top_task2" aria-label="Change: activate to sort column" data-i18n="position" scope="col" >Position</th>
                      </tr>
                    </thead>
                    <tbody>
