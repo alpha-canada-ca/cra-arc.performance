@@ -434,3 +434,8 @@ margin: 0px 20px 0px 20px;
 .page_header span {
   cursor: pointer !important;
 }
+
+/* Updated text-warning colour from orange/yellow to black */
+.text-warning {
+  color:#000 !important;
+}

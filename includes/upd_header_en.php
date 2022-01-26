@@ -37,7 +37,7 @@
     <header id="header">
       <div class="row">
         <div class="col-lg-3 col-md-4 col-sm-6 col-6 text-start"><img class="img-fluid fip-colour" src="./assets/img/CRA-FIP-9pt-e.png" alt="Government of Canada"></div>
-        <div class="col-lg-9 col-md-8 col-sm-6 col-6 text-end lang-toggle" class="locale-switcher"> <ul class="list-inline">
+        <div class="col-lg-9 col-md-8 col-sm-6 col-6 text-end lang-toggle locale-switcher"> <ul class="list-inline">
         <li class="list-inline-item hidden"><a href="test_en.php" data-locale="en">English</a></li>
         <li class="list-inline-item"><a href="test_fr.php" data-locale="fr">Français</a></li>
         </ul> <!-- <a href="#" data-locale="en">English</a> | <a href="#" data-locale="fr">Français</a> -->
