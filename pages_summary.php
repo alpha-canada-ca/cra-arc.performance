@@ -3,7 +3,7 @@
 <?php include "./includes/upd_sidebar.php"; ?>
 <?php include "./includes/date-ranges.php"; ?>
 <?php include "./includes/functions.php"; ?>
-<?php ini_set('display_errors', 1);
+<?php ini_set('display_errors', 0);
  ?>
 
 <!--Translation Code start-->
@@ -571,92 +571,92 @@ $diff = abs($diff);
               <!-- Total calls by Enquiry_line D3 bar chart -->
               <?php
 
-                // $s = $startLastGSC;
-                // $e = $endLastGSC;
-                // $s1 = $startGSC;
-                // $e1 = $endGSC;
+                $s = $startLastGSC;
+                $e = $endLastGSC;
+                $s1 = $startGSC;
+                $e1 = $endGSC;
 
-                // //echo $s;
-                // //echo gettype($e1);
+                //echo $s;
+                //echo gettype($e1);
 
-                // $s = date("M d", strtotime($s));
-                // $e = date("M d", strtotime($e));
-                // $s1 = date("M d", strtotime($s1));
-                // $e1 = date("M d", strtotime($e1));
-
-
-
-
-                // $days = array('Sunday', 'Monday', 'Tuesday', 'Wednesday','Thursday','Friday', 'Saturday');
-                // $d3DateRanges = array($s.'-'.$e,$s1.'-'.$e1); // previous $a1
-                // //$dates = [[$startLastGSC, $endLastGSC], [$startGSC, $endGSC]];
-                // //$dataPW = $aaTrendLastWeek;
-                // //$dataW = $aaTrendWeek;
-
-                // for ($i = 0; $i < 7; ++$i) {
-                //   $final_array1["day"] = $days[$i];
-                //   $final_array1[$d3DateRanges[0]] = $aaTrendLastWeek[$i]['data'][1];
-                //   $final_array1[$d3DateRanges[1]] = $aaTrendWeek[$i]['data'][1];
-                //   $data_array[]=$final_array1;
-                // }
-
-                // //$s = $startLastGSC;
-                // //$e = $endLastGSC;
-                // //$s1 = $startGSC;
-                // //$e1 = $endGSC;
-                // //For loop for the call volume data
-
-                // $pwDays = [];
-                // $wDays = [];
-
-                // for ($i = 0; $i < 7; ++$i) {
-                //   $pwDays[] = date("Y-m-d", strtotime($startLastGSC. " +".$i."days"));
-                //   $wDays[] = date("Y-m-d", strtotime($startGSC. " +".$i."days"));
-                // }
-
-
-                // for ($i = 0; $i < 7; ++$i) {
-                //   $final_array2["day"] = $days[$i];
-                //   // get the key from the fieldsByGroupDate and fieldsByGroupDatePW arrays
-                //   // convert the value to
-                //   // $fieldsByGroupDatePW
-                //   // $fieldsByGroupDate
-
-                //   // foreach ($fieldsByGroupDatePW as $trend)
-                //   // {
-                //   if (array_key_exists($pwDays[$i], $fieldsByGroupDatePW)){
-                //         $final_array2[$d3DateRanges[0]] = $fieldsByGroupDatePW[$pwDays[$i]]['Total calls per day'];
-                //   }
-                //   else {
-                //         $final_array2[$d3DateRanges[0]] = 0;
-                //   }
-                //   if (array_key_exists($wDays[$i], $fieldsByGroupDate)){
-                //         $final_array2[$d3DateRanges[1]] = $fieldsByGroupDate[$wDays[$i]]['Total calls per day'];
-                //   }
-                //   else {
-                //         $final_array2[$d3DateRanges[1]] = 0;
-                //   }
-
-
-                //   //$final_array2[$d3DateRanges[1]] = $fieldsByGroupDate['Total calls per day'];
-
-                //   $data_array2[]=$final_array2;
-                // }
-
-                // // echo count($data_array2);
-                // // echo "<pre>";
-                // // print_r($data_array2);
-                // // echo "</pre>";
+                $s = date("M d", strtotime($s));
+                $e = date("M d", strtotime($e));
+                $s1 = date("M d", strtotime($s1));
+                $e1 = date("M d", strtotime($e1));
 
 
 
-                // $subgroups = json_encode($d3DateRanges);
 
-                // $groups = json_encode($days);
+                $days = array('Sunday', 'Monday', 'Tuesday', 'Wednesday','Thursday','Friday', 'Saturday');
+                $d3DateRanges = array($s.'-'.$e,$s1.'-'.$e1); // previous $a1
+                //$dates = [[$startLastGSC, $endLastGSC], [$startGSC, $endGSC]];
+                //$dataPW = $aaTrendLastWeek;
+                //$dataW = $aaTrendWeek;
 
-                // $mydata = json_encode($data_array);
+                for ($i = 0; $i < 7; ++$i) {
+                  $final_array1["day"] = $days[$i];
+                  $final_array1[$d3DateRanges[0]] = $aaTrendLastWeek[$i]['data'][1];
+                  $final_array1[$d3DateRanges[1]] = $aaTrendWeek[$i]['data'][1];
+                  $data_array[]=$final_array1;
+                }
 
-                // $mydataCalls = json_encode($data_array2);
+                //$s = $startLastGSC;
+                //$e = $endLastGSC;
+                //$s1 = $startGSC;
+                //$e1 = $endGSC;
+                //For loop for the call volume data
+
+                $pwDays = [];
+                $wDays = [];
+
+                for ($i = 0; $i < 7; ++$i) {
+                  $pwDays[] = date("Y-m-d", strtotime($startLastGSC. " +".$i."days"));
+                  $wDays[] = date("Y-m-d", strtotime($startGSC. " +".$i."days"));
+                }
+
+
+                for ($i = 0; $i < 7; ++$i) {
+                  $final_array2["day"] = $days[$i];
+                  // get the key from the fieldsByGroupDate and fieldsByGroupDatePW arrays
+                  // convert the value to
+                  // $fieldsByGroupDatePW
+                  // $fieldsByGroupDate
+
+                  // foreach ($fieldsByGroupDatePW as $trend)
+                  // {
+                  if (array_key_exists($pwDays[$i], $fieldsByGroupDatePW)){
+                        $final_array2[$d3DateRanges[0]] = $fieldsByGroupDatePW[$pwDays[$i]]['Total calls per day'];
+                  }
+                  else {
+                        $final_array2[$d3DateRanges[0]] = 0;
+                  }
+                  if (array_key_exists($wDays[$i], $fieldsByGroupDate)){
+                        $final_array2[$d3DateRanges[1]] = $fieldsByGroupDate[$wDays[$i]]['Total calls per day'];
+                  }
+                  else {
+                        $final_array2[$d3DateRanges[1]] = 0;
+                  }
+
+
+                  //$final_array2[$d3DateRanges[1]] = $fieldsByGroupDate['Total calls per day'];
+
+                  $data_array2[]=$final_array2;
+                }
+
+                // echo count($data_array2);
+                // echo "<pre>";
+                // print_r($data_array2);
+                // echo "</pre>";
+
+
+
+                $subgroups = json_encode($d3DateRanges);
+
+                $groups = json_encode($days);
+
+                $mydata = json_encode($data_array);
+
+                $mydataCalls = json_encode($data_array2);
 
                 // echo "<pre>";
                 // print_r($data_array2);
