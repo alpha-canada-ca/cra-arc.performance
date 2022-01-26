@@ -3,7 +3,7 @@
 <?php include "./includes/upd_sidebar.php"; ?>
 <?php include "./includes/date-ranges.php"; ?>
 <?php include "./includes/functions.php"; ?>
-<?php ini_set('display_errors', 0);
+<?php ini_set('display_errors', 1);
  ?>
 
 <!--Translation Code start-->
@@ -298,7 +298,7 @@ if ($succ === 1)
 
         $r = new ApiClient($config[0]['ADOBE_API_KEY'], $config[0]['COMPANY_ID'], $_SESSION['token']);
 
-        $temp = ['aa-pages-smmry-metrics', 'aa-pages-smmry-trnd', 'metrics-new-pages' ]; //, 'fwylf' ];
+        $temp = ['aa-pages-smmry-metrics', 'aa-pages-smmry-trnd', 'metrics-new-pages', 'pages-internal-search' ]; //, 'fwylf' ];
         //$temp = ['aa-pages-smmry-metrics', 'aa-pages-smmry-fwylf', 'aa-pages-smmry-trnd', 'aa-ovrvw-smmry-tsks', 'prvs']; //, 'fwylf' ];
         $result = array();
         $j = array();
@@ -309,7 +309,11 @@ if ($succ === 1)
         {
 
             $json = $data[$t];
-            $json = sprintf($json, $urls);
+            if ( $t == 'pages-internal-search' ) {
+                $json = sprintf($json, ( 'https://' . $urls ));
+            } else {
+                $json = sprintf($json, $urls);
+            }
 
             $json = str_replace(array(
                 "*previousMonthStart*",
@@ -362,6 +366,26 @@ if ($succ === 1)
 
         $aaResultTrend = json_decode($result[1], true);
         $aaMetricsTrend = $aaResultTrend["rows"];
+
+        $res = json_decode($result[3], true);
+        $internalSearch = $res["rows"];
+        $internalSearchTotal = $res["summaryData"]["filteredTotals"];
+
+        $internalSearchTop = array();
+        $internalSearchBottom = array();
+
+          //foreach ($aaTrendWeek as $trend)
+          foreach ($internalSearch as $key=>$value) {
+            // don't display the values with 0's
+            if ( $value['data'][3] != 0 ) {
+                $diff = differ($value['data'][2], $value['data'][3]);
+                if ( $diff > 0 && $value['data'][3] != 1 ) { $internalSearchTop[] = [ 'value'=>$value['value'], 'data'=> $value['data'][3], 'comparison' => $diff ]; }
+                else if ( $diff < 0 ) { $internalSearchBottom[] = [ 'value'=>$value['value'], 'data'=> $value['data'][3], 'comparison' => $diff ]; }
+            }
+          }
+
+          usort($internalSearchTop, function($a, $b) { return $b['comparison'] > $a['comparison'] ;});
+          usort($internalSearchBottom, function($a, $b) { return $b['comparison'] < $a['comparison'] ;});
 
         $weeks_index = date("M j, Y", strtotime($previousWeekStart));
         //echo $weeks_index;
@@ -547,92 +571,92 @@ $diff = abs($diff);
               <!-- Total calls by Enquiry_line D3 bar chart -->
               <?php
 
-                $s = $startLastGSC;
-                $e = $endLastGSC;
-                $s1 = $startGSC;
-                $e1 = $endGSC;
+                // $s = $startLastGSC;
+                // $e = $endLastGSC;
+                // $s1 = $startGSC;
+                // $e1 = $endGSC;
 
-                //echo $s;
-                //echo gettype($e1);
+                // //echo $s;
+                // //echo gettype($e1);
 
-                $s = date("M d", strtotime($s));
-                $e = date("M d", strtotime($e));
-                $s1 = date("M d", strtotime($s1));
-                $e1 = date("M d", strtotime($e1));
-
-
-
-
-                $days = array('Sunday', 'Monday', 'Tuesday', 'Wednesday','Thursday','Friday', 'Saturday');
-                $d3DateRanges = array($s.'-'.$e,$s1.'-'.$e1); // previous $a1
-                //$dates = [[$startLastGSC, $endLastGSC], [$startGSC, $endGSC]];
-                //$dataPW = $aaTrendLastWeek;
-                //$dataW = $aaTrendWeek;
-
-                for ($i = 0; $i < 7; ++$i) {
-                  $final_array1["day"] = $days[$i];
-                  $final_array1[$d3DateRanges[0]] = $aaTrendLastWeek[$i]['data'][1];
-                  $final_array1[$d3DateRanges[1]] = $aaTrendWeek[$i]['data'][1];
-                  $data_array[]=$final_array1;
-                }
-
-                //$s = $startLastGSC;
-                //$e = $endLastGSC;
-                //$s1 = $startGSC;
-                //$e1 = $endGSC;
-                //For loop for the call volume data
-
-                $pwDays = [];
-                $wDays = [];
-
-                for ($i = 0; $i < 7; ++$i) {
-                  $pwDays[] = date("Y-m-d", strtotime($startLastGSC. " +".$i."days"));
-                  $wDays[] = date("Y-m-d", strtotime($startGSC. " +".$i."days"));
-                }
-
-
-                for ($i = 0; $i < 7; ++$i) {
-                  $final_array2["day"] = $days[$i];
-                  // get the key from the fieldsByGroupDate and fieldsByGroupDatePW arrays
-                  // convert the value to
-                  // $fieldsByGroupDatePW
-                  // $fieldsByGroupDate
-
-                  // foreach ($fieldsByGroupDatePW as $trend)
-                  // {
-                  if (array_key_exists($pwDays[$i], $fieldsByGroupDatePW)){
-                        $final_array2[$d3DateRanges[0]] = $fieldsByGroupDatePW[$pwDays[$i]]['Total calls per day'];
-                  }
-                  else {
-                        $final_array2[$d3DateRanges[0]] = 0;
-                  }
-                  if (array_key_exists($wDays[$i], $fieldsByGroupDate)){
-                        $final_array2[$d3DateRanges[1]] = $fieldsByGroupDate[$wDays[$i]]['Total calls per day'];
-                  }
-                  else {
-                        $final_array2[$d3DateRanges[1]] = 0;
-                  }
-
-
-                  //$final_array2[$d3DateRanges[1]] = $fieldsByGroupDate['Total calls per day'];
-
-                  $data_array2[]=$final_array2;
-                }
-
-                // echo count($data_array2);
-                // echo "<pre>";
-                // print_r($data_array2);
-                // echo "</pre>";
+                // $s = date("M d", strtotime($s));
+                // $e = date("M d", strtotime($e));
+                // $s1 = date("M d", strtotime($s1));
+                // $e1 = date("M d", strtotime($e1));
 
 
 
-                $subgroups = json_encode($d3DateRanges);
 
-                $groups = json_encode($days);
+                // $days = array('Sunday', 'Monday', 'Tuesday', 'Wednesday','Thursday','Friday', 'Saturday');
+                // $d3DateRanges = array($s.'-'.$e,$s1.'-'.$e1); // previous $a1
+                // //$dates = [[$startLastGSC, $endLastGSC], [$startGSC, $endGSC]];
+                // //$dataPW = $aaTrendLastWeek;
+                // //$dataW = $aaTrendWeek;
 
-                $mydata = json_encode($data_array);
+                // for ($i = 0; $i < 7; ++$i) {
+                //   $final_array1["day"] = $days[$i];
+                //   $final_array1[$d3DateRanges[0]] = $aaTrendLastWeek[$i]['data'][1];
+                //   $final_array1[$d3DateRanges[1]] = $aaTrendWeek[$i]['data'][1];
+                //   $data_array[]=$final_array1;
+                // }
 
-                $mydataCalls = json_encode($data_array2);
+                // //$s = $startLastGSC;
+                // //$e = $endLastGSC;
+                // //$s1 = $startGSC;
+                // //$e1 = $endGSC;
+                // //For loop for the call volume data
+
+                // $pwDays = [];
+                // $wDays = [];
+
+                // for ($i = 0; $i < 7; ++$i) {
+                //   $pwDays[] = date("Y-m-d", strtotime($startLastGSC. " +".$i."days"));
+                //   $wDays[] = date("Y-m-d", strtotime($startGSC. " +".$i."days"));
+                // }
+
+
+                // for ($i = 0; $i < 7; ++$i) {
+                //   $final_array2["day"] = $days[$i];
+                //   // get the key from the fieldsByGroupDate and fieldsByGroupDatePW arrays
+                //   // convert the value to
+                //   // $fieldsByGroupDatePW
+                //   // $fieldsByGroupDate
+
+                //   // foreach ($fieldsByGroupDatePW as $trend)
+                //   // {
+                //   if (array_key_exists($pwDays[$i], $fieldsByGroupDatePW)){
+                //         $final_array2[$d3DateRanges[0]] = $fieldsByGroupDatePW[$pwDays[$i]]['Total calls per day'];
+                //   }
+                //   else {
+                //         $final_array2[$d3DateRanges[0]] = 0;
+                //   }
+                //   if (array_key_exists($wDays[$i], $fieldsByGroupDate)){
+                //         $final_array2[$d3DateRanges[1]] = $fieldsByGroupDate[$wDays[$i]]['Total calls per day'];
+                //   }
+                //   else {
+                //         $final_array2[$d3DateRanges[1]] = 0;
+                //   }
+
+
+                //   //$final_array2[$d3DateRanges[1]] = $fieldsByGroupDate['Total calls per day'];
+
+                //   $data_array2[]=$final_array2;
+                // }
+
+                // // echo count($data_array2);
+                // // echo "<pre>";
+                // // print_r($data_array2);
+                // // echo "</pre>";
+
+
+
+                // $subgroups = json_encode($d3DateRanges);
+
+                // $groups = json_encode($days);
+
+                // $mydata = json_encode($data_array);
+
+                // $mydataCalls = json_encode($data_array2);
 
                 // echo "<pre>";
                 // print_r($data_array2);
@@ -1046,9 +1070,9 @@ $diff = abs($diff);
           <div class="col-lg-6 col-md-6 col-sm-12">
             <div class="card">
               <div class="card-body card-pad pt-2">
-                <h3 class="card-title"><span class="card-tooltip h6" data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-placement="right" data-bs-content="Average number of searches on Canada.ca" data-i18n="">Average number of searches on Canada.ca</span></h3>
+                <h3 class="card-title"><span class="card-tooltip h6" data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-placement="right" data-bs-content="Average number of searches on Canada.ca" data-i18n="">Total number of searches on Canada.ca</span></h3>
                   <div class="row">
-                    <div class="col-lg-8 col-md-8 col-sm-8"><span class="h3 text-nowrap"><?//=number_format($imp) ?></span><span class="small"><?//=number_format($lastImp) ?></span></div>
+                    <div class="col-lg-8 col-md-8 col-sm-8"><span class="h3 text-nowrap"><?=number_format($internalSearchTotal[3]) ?></span><span class="small"><?//=number_format($lastImp) ?></span></div>
                     <div class="col-lg-4 col-md-4 col-sm-4 text-end"><span class="h3 <?//=$pieces[0] ?> text-nowrap"><span class="material-icons"><?//=$pieces[1] ?></span> <?//=percent($diff) ?></span></div>
                 </div>
               </div>
@@ -1174,6 +1198,48 @@ $diff = abs($diff);
           <div class="card-body pt-2">
             <h3 class="card-title"><span class="card-tooltip h6" data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-placement="right" data-bs-content="" data-bs-original-title="" title="" data-i18n="">Top 5 search terms saw an increase</span></h3>
             <div id="toptask_wrapper" class="dataTables_wrapper dt-bootstrap5 no-footer"><div class="row"><div class="col-sm-12 col-md-6"></div><div class="col-sm-12 col-md-6"></div></div><div class="row"><div class="col-sm-12">
+                 <div class="table-responsive">
+                             <table class="table table-striped dataTable no-footer" id="toptask2" data="" role="grid"> <!-- id="pages_dt" -->
+                               <thead>
+                                 <tr>
+                                   <th class="sorting" aria-controls="toptask" aria-label="Change: activate to sort column" data-i18n="search-terms" >Search term</th>
+                                   <th class="sorting ascending" aria-controls="toptask" aria-label="Change: activate to sort column" data-i18n="clicks" >Clicks</th>
+                                   <th class="sorting" aria-controls="toptask" aria-label="Change: activate to sort column" data-i18n="comparison" >Comparison</th>
+                                 </tr>
+                               </thead>
+                               <tbody>
+                                <?php
+                                  //foreach ($aaTrendWeek as $trend)
+                                  foreach ($internalSearchTop as $key=>$value)
+                                  {
+                                    // don't display the values with 0's
+                                    if ( $value['data'] != 0 && $key < 5) {
+
+                                    $diff = $value['comparison'];
+                                    $pos = posOrNeg2($diff);
+                                    $pieces = explode(":", $pos);
+
+                                    $diff = abs($diff);
+
+                                  ?>
+
+                                          <tr>
+                                            <td><?=$value['value'] ?></td>
+                                            <td><?=number_format($value['data']) ?></td>
+                                            <td><span class="<?=$pieces[0] ?> text-nowrap"><span class="material-icons"><?=$pieces[1] ?></span> <?=percent($diff) ?></span></td>
+                                          </tr>
+
+                                          <?php
+                                  }
+                              }
+
+                                  ?>
+
+                                 </tr>
+                               </tbody>
+                             </table>
+                           </div>
+
 
             </div></div><div class="row"><div class="col-sm-12 col-md-5"></div><div class="col-sm-12 col-md-7"></div></div></div>
           </div>
@@ -1187,6 +1253,50 @@ $diff = abs($diff);
           <div class="card-body pt-2">
             <h3 class="card-title"><span class="card-tooltip h6" data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-placement="right" data-bs-content="" data-bs-original-title="" title="" data-i18n="">Top 5 search terms saw a decrease</span></h3>
             <div id="toptask_wrapper" class="dataTables_wrapper dt-bootstrap5 no-footer"><div class="row"><div class="col-sm-12 col-md-6"></div><div class="col-sm-12 col-md-6"></div></div><div class="row"><div class="col-sm-12">
+
+                 <div class="table-responsive">
+                             <table class="table table-striped dataTable no-footer" id="toptask2" data="" role="grid"> <!-- id="pages_dt" -->
+                               <thead>
+                                 <tr>
+                                   <th class="sorting" aria-controls="toptask" aria-label="Change: activate to sort column" data-i18n="search-terms" >Search term</th>
+                                   <th class="sorting ascending" aria-controls="toptask" aria-label="Change: activate to sort column" data-i18n="clicks" >Clicks</th>
+                                   <th class="sorting" aria-controls="toptask" aria-label="Change: activate to sort column" data-i18n="comparison" >Comparison</th>
+                                 </tr>
+                               </thead>
+                               <tbody>
+                                <?php
+                                  //foreach ($aaTrendWeek as $trend)
+                                  foreach ($internalSearchBottom as $key=>$value)
+                                  {
+                                    // don't display the values with 0's
+                                    if ( $value['data'] != 0 && $key < 5) {
+
+                                    $diff = $value['comparison'];
+                                    $pos = posOrNeg2($diff);
+                                    $pieces = explode(":", $pos);
+
+                                    $diff = abs($diff);
+
+                                  ?>
+
+                                          <tr>
+                                            <td><?=$value['value'] ?></td>
+                                            <td><?=number_format($value['data']) ?></td>
+                                            <td><span class="<?=$pieces[0] ?> text-nowrap"><span class="material-icons"><?=$pieces[1] ?></span> <?=percent($diff) ?></span></td>
+                                          </tr>
+
+                                          <?php
+                                  }
+                              }
+
+                                  ?>
+
+
+                                 </tr>
+                               </tbody>
+                             </table>
+                           </div>
+
 
             </div></div><div class="row"><div class="col-sm-12 col-md-5"></div><div class="col-sm-12 col-md-7"></div></div></div>
           </div>

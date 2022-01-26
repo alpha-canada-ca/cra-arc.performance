@@ -2,6 +2,7 @@
 
 return array(
     'qryAll' => '{"startDate":"%s","endDate":"%s","dimensions":["query"],"dimensionFilterGroups":[{"filters":[{"dimension":"page","operator":"equals","expression":"%s"}]}],"searchType":"web","rowLimit":%d}',
+    'qryAllRegex' => '{"startDate":"%s","endDate":"%s","dimensions":["query"],"dimensionFilterGroups":[{"filters":[{"dimension":"page","operator":"includingRegex","expression":"%s"}]}],"searchType":"web","rowLimit":%d}',
     'qryMobile' => '{"startDate":"%s","endDate":"%s","dimensions":["query"],"dimensionFilterGroups":[{"filters":[{"dimension":"page","operator":"equals","expression":"%s"},{"dimension": "device","expression": "mobile"}]}],"searchType":"web","rowLimit":%d}',
     'qryDesktop' => '{"startDate":"%s","endDate":"%s","dimensions":["query"],"dimensionFilterGroups":[{"filters":[{"dimension":"page","operator":"equals","expression":"%s"},{"dimension": "device","expression": "desktop"}]}],"searchType":"web","rowLimit":%d}',
     'qryTablet' => '{"startDate":"%s","endDate":"%s","dimensions":["query"],"dimensionFilterGroups":[{"filters":[{"dimension":"page","operator":"equals","expression":"%s"},{"dimension": "device","expression": "tablet"}]}],"searchType":"web","rowLimit":%d}',
@@ -10,7 +11,10 @@ return array(
     'cntry' => '{"startDate":"%s","endDate":"%s","dimensions":["country"],"dimensionFilterGroups":[{"filters":[{"dimension":"page","operator":"equals","expression":"%s"}]}],"searchType":"web","rowLimit":%d}',
     'totalDateTest' => '{"startDate":"%s","endDate":"%s","dimensions":["date"],"dimensionFilterGroups":[{"filters":[{"dimension":"page","operator":"equals","expression":"%s"}]}],"searchType":"web","rowLimit":%d}',
     'ovrvw-smmry-totals' => '{"startDate":"%s","endDate":"%s","searchType":"web","rowLimit":%d}',
+    'ovrvw-smmry-totals-2' => '{"startDate":"%s","endDate":"%s","dimensions":["query"],"dimensionFilterGroups":[{"filters":[{"dimension":"query","operator":"includingRegex","expression":"cra"}]}],"searchType":"web","rowLimit":%d}',
+    'ovrvw-smmry-totalsRegex' => '{"startDate":"%s","endDate":"%s","dimensionFilterGroups":[{"filters":[{"dimension":"page","operator":"includingRegex","expression":"%s"}]}],"searchType":"web","rowLimit":%d}',
     'ovrvw-smmry-qryAll' => '{"startDate":"%s","endDate":"%s","dimensions":["query"],"searchType":"web","rowLimit":%d}',
+    'ovrvw-smmry-qryAllRegex' => '{"startDate":"%s","endDate":"%s","dimensions":["query"],"dimensionFilterGroups":[{"filters":[{"dimension":"page","operator":"includingRegex","expression":"%s"}]}],"searchType":"web","rowLimit":%d}',
     'ovrvw-smmry-qryAllLast' => '{"startDate":"%s","endDate":"%s","dimensions":["query"],"dimensionFilterGroups":[{"filters":[{"dimension":"query","operator":"equals","expression":"cra"}]}],"searchType":"web","rowLimit":%d}',
 );
 
