@@ -41,32 +41,33 @@
 require 'vendor/autoload.php';
 // use TANIOS\Airtable\Airtable;
 //
-// // Adobe Analytics
-// $time = microtime(true);
-// $succ = 0;
-//
-// if (!isset($_SESSION['CREATED']))
-// {
-//     $_SESSION['CREATED'] = time();
-//     require_once ('./php/getToken.php');
-//     $succ = 1;
-// }
-// else if (time() - $_SESSION['CREATED'] > 86400)
-// {
-//     session_regenerate_id(true);
-//     $_SESSION['CREATED'] = time();
-//     require_once ('./php/getToken.php');
-//     $succ = 1;
-// }
-// if (isset($_SESSION["token"]))
-// {
-//     $succ = 1;
-// }
-//
-// if ($succ === 1)
-// {
+// Adobe Analytics
+$time = microtime(true);
+$succ = 0;
+
+if (!isset($_SESSION['CREATED']))
+{
+    $_SESSION['CREATED'] = time();
+    require_once ('./php/getToken.php');
+    $succ = 1;
+}
+else if (time() - $_SESSION['CREATED'] > 86400)
+{
+    session_regenerate_id(true);
+    $_SESSION['CREATED'] = time();
+    require_once ('./php/getToken.php');
+    $succ = 1;
+}
+if (isset($_SESSION["token"]))
+{
+    $succ = 1;
+}
+
+if ($succ === 1)
+{
 
     require_once ('./php/api_post.php');
+    require_once ('./php/get_aa_data.php');
     $config = include ('./php/config-aa.php');
     $data = include ('./php/data-aa.php');
 
@@ -122,8 +123,7 @@ require 'vendor/autoload.php';
 
     // Monthly date ranges for the Header
     $datesHeaderMonth = [[$previousMonthStartHeader, $previousMonthEndHeader], [$monthStartHeader, $monthEndHeader]];
-
-// }
+ }
 
 ?>
 
@@ -179,87 +179,73 @@ require 'vendor/autoload.php';
 
 
         <?php
-        $urls = "";
-        $url = "";
-        // if (substr($url, 0, 8) == "https://")
-        // {
-        //     $urls = substr($url, 8, strlen($url));
-        // }
-        // else
-        // {
-        //     $urls = $url;
-        // }
 
-        // $r = new ApiClient($config[0]['ADOBE_API_KEY'], $config[0]['COMPANY_ID'], $_SESSION['token']);
-        //
-        // $temp = ['aa-ovrvw-smmry-metrics', 'aa-ovrvw-smmry-fwylf', 'aa-ovrvw-smmry-trnd', 'aa-ovrvw-smmry-tsks']; //, 'fwylf' ];
-        // $result = array();
-        // $j = array();
-        //
-        // foreach ($temp as $t)
-        // {
-        //
-        //     $json = $data[$t];
-        //     $json = sprintf($json, $urls);
-        //
-        //     $json = str_replace(array(
-        //         "*previousMonthStart*",
-        //         "*previousMonthEnd*",
-        //         "*monthStart*",
-        //         "*monthEnd*",
-        //         "*previousWeekStart*",
-        //         "*previousWeekEnd*",
-        //         "*weekStart*",
-        //         "*weekEnd*"
-        //     ) , array(
-        //         $previousMonthStart,
-        //         $previousMonthEnd,
-        //         $monthStart,
-        //         $monthEnd,
-        //         $previousWeekStart,
-        //         $previousWeekEnd,
-        //         $weekStart,
-        //         $weekEnd
-        //     ) , $json);
-        //     //$result = api_post($config[0]['ADOBE_API_KEY'], $config[0]['COMPANY_ID'], $_SESSION['token'], $api);
-        //     $result[] = $r->requestEntity($json);
-        //     $j[] = $json;
-        //
-        // }
-        //
-        // //echo var_dump($result[0]);
-        // foreach ($result as $r)
-        // {
-        //
-        // }
+        $r = new ApiClient($config[0]['ADOBE_API_KEY'], $config[0]['COMPANY_ID'], $_SESSION['token']);
+        
+        $temp = ['aa-ovrvw-smmry-internal-search'];
+        $result = array();
+        $j = array();
+        
+        foreach ($temp as $t)
+        {
+        
+            $json = $data[$t];
+            $json = sprintf($json, $urls);
+        
+            $json = str_replace(array(
+                "*previousMonthStart*",
+                "*previousMonthEnd*",
+                "*monthStart*",
+                "*monthEnd*",
+                "*previousWeekStart*",
+                "*previousWeekEnd*",
+                "*weekStart*",
+                "*weekEnd*"
+            ) , array(
+                $previousMonthStart,
+                $previousMonthEnd,
+                $monthStart,
+                $monthEnd,
+                $previousWeekStart,
+                $previousWeekEnd,
+                $weekStart,
+                $weekEnd
+            ) , $json);
+             //echo $json;
 
-        // $res = json_decode($result[0], true);
+            //echo ++$tt;
+            //$time_elapsed_secs1 = microtime(true) - $start1;
+            //echo "<p>Time for query ".++$tt." taken: " . number_format($time_elapsed_secs1 , 2) . " seconds</p>";
+            // echo "<pre>";
+            // print_r($json);
+            // echo "</pre><br>";
+
+            //$result = api_post($config[0]['ADOBE_API_KEY'], $config[0]['COMPANY_ID'], $_SESSION['token'], $api);
+//            $result[] = $r->requestEntity($json);
+            $result[] = get_aa_data($json, $r);
+            //var_dump($result);
+            $j[] = $json;
+
+            // $time_elapsed_secs = microtime(true) - $time;
+            // echo "<p>Time taken: " . number_format($time_elapsed_secs, 2) . " seconds</p>";
+
+        }
+
+        //echo var_dump($result[0]);
+        foreach ($result as $r)
+        {
+
+        }
+
+        //$res = json_decode($result[0], true);
         // $metrics = $res["summaryData"]["filteredTotals"];
-        //
+
         // $res2 = json_decode($result[1], true);
         // $metrics2 = $res2["summaryData"]["filteredTotals"];
-        //
-        // $aaResultTrend = json_decode($result[2], true);
-        // $aaMetricsTrend = $aaResultTrend["rows"];
-        //
-        // $aaTrendWeeks = array_slice($aaMetricsTrend, -14);
-        // $aaTrendLastWeek = array_slice($aaTrendWeeks, 0, 7);
-        // $aaTrendWeek = array_slice($aaTrendWeeks, -7);
-        //
-        // $aaTasks = json_decode($result[3], true);
-        // $aaTasksStats = $aaTasks["rows"];
-        //
-        // $taskArray = array();
-        // foreach ($aaTasksStats as $task)
-        // {
-        //     $taskArray[] = $task['value'];
-        // }
+        //var_dump($referrerType);
 
-        // $fwylfYes = 0;
-        // $fwylfNo = 4;
-        // $pv = 8;
-        // $visitors = 12;
-        // $visits = 16;
+        $ref = json_decode($result[0], true);
+        $internalSearch = $ref["rows"];
 
         function differ($old, $new)
         {
@@ -309,7 +295,9 @@ require 'vendor/autoload.php';
 // GSC
 $data = include ('./php/data-gsc.php');
 
-$type = ['ovrvw-smmry-totals', 'ovrvw-smmry-qryAll'];
+$type = ['ovrvw-smmry-totalsRegex', 'ovrvw-smmry-qryAllRegex'];
+
+$regex = '/en/revenue-agency|/fr/agence-revenu|/en/services/taxes|/fr/services/impots';
 
 $results = 10;
 
@@ -325,19 +313,19 @@ foreach ($type as $t)
     {
 
         $analytics = initializeAnalytics();
-        $response = getReport($d[0], $d[1], $results, $url, $t);
+        $response = getReport($d[0], $d[1], $results, $regex, $t);
         $u = printResults($analytics, $response, $t);
         $u = json_decode($u, true);
 
         $gscArr[] = $u;
-        // echo "<pre>";
-        // print_r($u);
-        // echo "</pre>";
+         //echo "<pre>";
+         //print_r($u);
+         //echo "</pre>";
         $gscResp[] = $response;
-        // echo "<br>";
-        // echo "-----------------------------------<pre>";
-        // print_r($response);
-        // echo "</pre>";
+         //echo "<br>";
+         //echo "-----------------------------------<pre>";
+         //print_r($response);
+         //echo "</pre>";
     }
 }
 
@@ -516,11 +504,11 @@ $diff = abs($diff);
 <?php
 $gscLastTerms = $gscArr[0];
 
-$lastTerm = $gscTerms['rows'][0]['keys'][0];
-$lastClicks = $gscTerms['rows'][0]['clicks'];
-$lastCtr = $gscTerms['rows'][0]['ctr'];
-$lastImp = $gscTerms['rows'][0]['impressions'];
-$lastPos = $gscTerms['rows'][0]['position'];
+$lastTerm = $gscLastTerms['rows'][0]['keys'][0];
+$lastClicks = $gscLastTerms['rows'][0]['clicks'];
+$lastCtr = $gscLastTerms['rows'][0]['ctr'];
+$lastImp = $gscLastTerms['rows'][0]['impressions'];
+$lastPos = $gscLastTerms['rows'][0]['position'];
 
 $gscTerms = $gscArr[1];
 
@@ -642,6 +630,66 @@ $diff = abs($diff);
         </div>
       </div>
     </div>
+
+
+
+        <div class="row mb-4">
+      <div class="col-lg-12 col-md-12">
+        <div class="card">
+          <div class="card-body pt-2">
+            <h3 class="card-title"><span class="card-tooltip h6" data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-placement="right" data-bs-content="" data-bs-original-title="" title="" data-i18n="">Search terms from Canada.ca</span></h3>
+            <div id="toptask_wrapper" class="dataTables_wrapper dt-bootstrap5 no-footer"><div class="row"><div class="col-sm-12 col-md-6"></div><div class="col-sm-12 col-md-6"></div></div><div class="row"><div class="col-sm-12">
+
+                  <div class="table-responsive">
+                             <table class="table table-striped dataTable no-footer" id="toptask2" data="" role="grid"> <!-- id="pages_dt" -->
+                               <thead>
+                                 <tr>
+                                   <th class="sorting" aria-controls="toptask" aria-label="Change: activate to sort column" data-i18n="search-terms" >Search term</th>
+                                   <th class="sorting ascending" aria-controls="toptask" aria-label="Change: activate to sort column" data-i18n="clicks" >Clicks</th>
+                                   <th class="sorting" aria-controls="toptask" aria-label="Change: activate to sort column" data-i18n="comparison" >Comparison</th>
+                                 </tr>
+                               </thead>
+                               <tbody>
+                                <?php
+                                
+                                  //foreach ($aaTrendWeek as $trend)
+                                  foreach ($internalSearch as $key=>$value)
+                                  {
+                                    // don't display the values with 0's
+                                    if ( $value['data'][1] != 0 ) {
+
+                                    $diff = differ($value['data'][0], $value['data'][1]);
+                                    $pos = posOrNeg2($diff);
+                                    $pieces = explode(":", $pos);
+
+                                    $diff = abs($diff);
+
+                                  ?>
+
+                                          <tr>
+                                            <td><?=$value['value'] ?></td>
+                                            <td><?=number_format($value['data'][1]) ?></td>
+                                            <td><span class="<?=$pieces[0] ?> text-nowrap"><span class="material-icons"><?=$pieces[1] ?></span> <?=percent($diff) ?></span></td>
+                                          </tr>
+
+                                          <?php
+                                  }
+                              }
+
+                                  ?>
+
+                                 </tr>
+                               </tbody>
+                             </table>
+                           </div>
+
+
+            </div></div><div class="row"><div class="col-sm-12 col-md-5"></div><div class="col-sm-12 col-md-7"></div></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
 
 
 
