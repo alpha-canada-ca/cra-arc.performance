@@ -285,9 +285,9 @@ if ($succ === 1)
     <div class="row mb-4 mt-1">
       <div class="dropdown">
         <button type="button" class="btn bg-white border border-1 dropdown-toggle" id="range-button" data-bs-toggle="dropdown" aria-expanded="false"><span class="material-icons align-top">calendar_today</span> <span data-i18n="dr-lastweek">Last week</span></button>
-            <span class="text-secondary ps-2 text-nowrap dates-header-week"><?=$datesHeader[1][0] ?> - <?=$datesHeader[1][1] ?></span>
-            <span class="text-secondary ps-2 text-nowrap dates-header-week" data-i18n="compared_to"> compared to </span>
-            <span class="text-secondary ps-2 text-nowrap dates-header-week"><?=$datesHeader[0][0] ?> - <?=$datesHeader[0][1] ?></span>
+            <span class="text-secondary ps-2 text-nowrap dates-header-week"><strong><?=$datesHeader[1][0] ?> - <?=$datesHeader[1][1] ?></strong></span>
+            <span class="text-secondary ps-2 text-nowrap dates-header-week" data-i18n="compared_to">compared to</span>
+            <span class="text-secondary ps-2 text-nowrap dates-header-week"><strong><?=$datesHeader[0][0] ?> - <?=$datesHeader[0][1] ?></strong></span>
 
         <ul class="dropdown-menu" aria-labelledby="range-button" style="">
           <li><a class="dropdown-item active" href="#" aria-current="true" data-i18n="dr-lastweek">Last week</a></li>
@@ -456,7 +456,7 @@ if ($succ === 1)
         function posOrNeg($num)
         {
             if ($num > 0) return 'text-success:arrow_upward';
-            else if ($num == 0) return 'text-warning:horizontal_rule';
+            else if ($num == 0) return 'text-warning:';
             else return 'text-danger:arrow_downward';
         }
 
@@ -736,7 +736,7 @@ if ($succ === 1)
                 <div class="card">
                   <div class="card-body pt-2">
                     <h3 class="card-title"><span class="card-tooltip h6" data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-placement="right" data-bs-content="Top 25 most used search terms in Google to access this page." data-bs-original-title="" title="" data-i18n="">Top 25 search terms from Google</span></h3>
-                    <div id="toptask_wrapper" class="dataTables_wrapper dt-bootstrap5 no-footer"><div class="row"><div class="col-sm-12 col-md-6"></div><div class="col-sm-12 col-md-6"></div></div><div class="row"><div class="col-sm-12">
+                    <div class="dataTables_wrapper dt-bootstrap5 no-footer"><div class="row"><div class="col-sm-12 col-md-6"></div><div class="col-sm-12 col-md-6"></div></div><div class="row"><div class="col-sm-12">
 
                       <?php
 
@@ -767,15 +767,16 @@ if ($succ === 1)
 
                          if (count($qry) > 0) { ?>
                            <div class="table-responsive">
-                             <table class="table table-striped dataTable no-footer" id="toptask2" data="" role="grid"> <!-- id="pages_dt" -->
+                             <table class="table table-striped dataTable no-footer" id="toptask" role="grid"> <!-- id="pages_dt" -->
+                               <caption>Top 25 search terms from Google</caption>
                                <thead>
                                  <tr>
-                                   <th class="sorting" aria-controls="toptask" aria-label="Change: activate to sort column" data-i18n="search-terms" >Search term</th>
-                                   <th class="sorting ascending" aria-controls="toptask" aria-label="Change: activate to sort column" data-i18n="clicks" >Clicks</th>
-                                   <th class="sorting" aria-controls="toptask" aria-label="Change: activate to sort column" data-i18n="comparison" >Comparison</th>
-                                   <th class="sorting" aria-controls="toptask" aria-label="Change: activate to sort column" data-i18n="impressions" >Impressions</th>
-                                   <th class="sorting" aria-controls="toptask" aria-label="Change: activate to sort column" data-i18n="ctr" >Click through rate (CTR)</th>
-                                   <th class="sorting" aria-controls="toptask" aria-label="Change: activate to sort column" data-i18n="position" >Position</th>
+                                   <th class="sorting" aria-controls="toptask" aria-label="Change: activate to sort column" data-i18n="search-terms" scope="col" >Search term</th>
+                                   <th class="sorting ascending" aria-controls="toptask" aria-label="Change: activate to sort column" data-i18n="clicks" scope="col" >Clicks</th>
+                                   <th class="sorting" aria-controls="toptask" aria-label="Change: activate to sort column" data-i18n="comparison" scope="col" >Comparison</th>
+                                   <th class="sorting" aria-controls="toptask" aria-label="Change: activate to sort column" data-i18n="impressions" scope="col" >Impressions</th>
+                                   <th class="sorting" aria-controls="toptask" aria-label="Change: activate to sort column" data-i18n="ctr" scope="col" >Click through rate (CTR)</th>
+                                   <th class="sorting" aria-controls="toptask" aria-label="Change: activate to sort column" data-i18n="position" scope="col" >Position</th>
                                  </tr>
                                </thead>
                                <tbody>
@@ -843,15 +844,16 @@ if ($succ === 1)
         <div class="card">
           <div class="card-body pt-2">
             <h3 class="card-title"><span class="card-tooltip h6" data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-placement="right" data-bs-content="" data-bs-original-title="" title="" data-i18n="">Search terms from Canada.ca</span></h3>
-            <div id="toptask_wrapper" class="dataTables_wrapper dt-bootstrap5 no-footer"><div class="row"><div class="col-sm-12 col-md-6"></div><div class="col-sm-12 col-md-6"></div></div><div class="row"><div class="col-sm-12">
+            <div class="dataTables_wrapper dt-bootstrap5 no-footer"><div class="row"><div class="col-sm-12 col-md-6"></div><div class="col-sm-12 col-md-6"></div></div><div class="row"><div class="col-sm-12">
 
                   <div class="table-responsive">
-                             <table class="table table-striped dataTable no-footer" id="toptask2" data="" role="grid"> <!-- id="pages_dt" -->
+                             <table class="table table-striped dataTable no-footer" id="toptask2" role="grid"> <!-- id="pages_dt" -->
+                               <caption>Search terms from Canada.ca</caption>
                                <thead>
                                  <tr>
-                                   <th class="sorting" aria-controls="toptask" aria-label="Change: activate to sort column" data-i18n="search-terms" >Search term</th>
-                                   <th class="sorting ascending" aria-controls="toptask" aria-label="Change: activate to sort column" data-i18n="clicks" >Clicks</th>
-                                   <th class="sorting" aria-controls="toptask" aria-label="Change: activate to sort column" data-i18n="comparison" >Comparison</th>
+                                   <th class="sorting" aria-controls="toptask2" aria-label="Change: activate to sort column" data-i18n="search-terms" scope="col" >Search term</th>
+                                   <th class="sorting ascending" aria-controls="toptask2" aria-label="Change: activate to sort column" data-i18n="clicks" scope="col" >Clicks</th>
+                                   <th class="sorting" aria-controls="toptask2" aria-label="Change: activate to sort column" data-i18n="comparison" scope="col" >Comparison</th>
                                  </tr>
                                </thead>
                                <tbody>
@@ -899,16 +901,17 @@ if ($succ === 1)
         <div class="card">
           <div class="card-body pt-2">
             <h3 class="card-title"><span class="card-tooltip h6" data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-placement="right" data-bs-content="" data-bs-original-title="" title="" data-i18n="">Referrer Type</span></h3>
-            <div id="toptask_wrapper" class="dataTables_wrapper dt-bootstrap5 no-footer"><div class="row"><div class="col-sm-12 col-md-6"></div><div class="col-sm-12 col-md-6"></div></div><div class="row"><div class="col-sm-12">
+            <div class="dataTables_wrapper dt-bootstrap5 no-footer"><div class="row"><div class="col-sm-12 col-md-6"></div><div class="col-sm-12 col-md-6"></div></div><div class="row"><div class="col-sm-12">
 
 
                            <div class="table-responsive">
-                             <table class="table table-striped dataTable no-footer" id="toptask2" data="" role="grid"> <!-- id="pages_dt" -->
+                             <table class="table table-striped dataTable no-footer" id="toptask3" data="" role="grid"> <!-- id="pages_dt" -->
+                               <caption>Referrer Type</caption>
                                <thead>
                                  <tr>
-                                   <th class="sorting" aria-controls="toptask" aria-label="Change: activate to sort column" data-i18n="type" >Type</th>
-                                   <th class="sorting ascending" aria-controls="toptask" aria-label="Change: activate to sort column" data-i18n="visits" >Visits</th>
-                                   <th class="sorting" aria-controls="toptask" aria-label="Change: activate to sort column" data-i18n="comparison" >Comparison</th>
+                                   <th class="sorting" aria-controls="toptask3" aria-label="Change: activate to sort column" data-i18n="type" scope="col" >Type</th>
+                                   <th class="sorting ascending" aria-controls="toptask3" aria-label="Change: activate to sort column" data-i18n="visits" scope="col" >Visits</th>
+                                   <th class="sorting" aria-controls="toptask3" aria-label="Change: activate to sort column" data-i18n="comparison" scope="col" >Comparison</th>
                                  </tr>
                                </thead>
                                <tbody>
@@ -940,7 +943,7 @@ if ($succ === 1)
 
                                   ?>
 
-                               
+
                                </tbody>
                              </table>
                            </div>
