@@ -178,6 +178,9 @@ $projectStatusBadges = array(
     'Unknown' => '',
     '' => '',
 );
+
+$weeklyDatesHeader = $dateUtils->getWeeklyDates('header');
+
 ?>
 
 <h1 class="visually-hidden">Usability Performance Dashboard</h1>
