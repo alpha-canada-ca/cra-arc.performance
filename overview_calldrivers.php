@@ -3,7 +3,7 @@
 <?php include "./includes/upd_sidebar.php"; ?>
 <?php include "./includes/date-ranges.php"; ?>
 <?php include "./includes/functions.php"; ?>
-<?php ini_set('display_errors', 1);
+<?php ini_set('display_errors', 0);
  ?>
 
 <!--Translation Code start-->
@@ -152,9 +152,9 @@
     <div class="row mb-4 mt-1">
       <div class="dropdown">
         <button type="button" class="btn bg-white border border-1 dropdown-toggle" id="range-button" data-bs-toggle="dropdown" aria-expanded="false"><span class="material-icons align-top">calendar_today</span> <span data-i18n="dr-lastweek">Last week</span></button>
-            <span class="text-secondary ps-2 text-nowrap dates-header-week"><?=$datesHeader[1][0] ?> - <?=$datesHeader[1][1] ?></span>
-            <span class="text-secondary ps-2 text-nowrap dates-header-week" data-i18n="compared_to"> compared to </span>
-            <span class="text-secondary ps-2 text-nowrap dates-header-week"><?=$datesHeader[0][0] ?> - <?=$datesHeader[0][1] ?></span>
+            <span class="text-secondary ps-2 text-nowrap dates-header-week"><strong><?=$datesHeader[1][0] ?> - <?=$datesHeader[1][1] ?></strong></span>
+            <span class="text-secondary ps-2 text-nowrap dates-header-week" data-i18n="compared_to">compared to</span>
+            <span class="text-secondary ps-2 text-nowrap dates-header-week"><strong><?=$datesHeader[0][0] ?> - <?=$datesHeader[0][1] ?></strong></span>
         <?php /*<span class="text-secondary ps-2 text-nowrap dates-header-month d-none"><?=$datesHeaderMonth[1][0] ?> to <?=$datesHeaderMonth[1][1] ?> compared to <?=$datesHeaderMonth[0][0] ?> to <?=$datesHeaderMonth[0][1] ?></span>*/?>
 
         <ul class="dropdown-menu" aria-labelledby="range-button" style="">
@@ -217,7 +217,7 @@
         function posOrNeg($num)
         {
             if ($num > 0) return 'text-success:arrow_upward';
-            else if ($num == 0) return 'text-warning:horizontal_rule';
+            else if ($num == 0) return 'text-warning:';
             else return 'text-danger:arrow_downward';
         }
 
@@ -1016,12 +1016,13 @@
                   <summary data-i18n="view-data-table">View table data</summary>
                   <div class="table-responsive">
                     <table class="table">
+                      <caption>Total calls by inqury line</caption>
                       <thead>
-                        <th data-i18n="">Inquiry line</th>
+                        <th data-i18n="" scope="col">Inquiry line</th>
                         <!-- <th>Previous Month</th>
                         <th>Month</th> -->
-                        <th>Number of calls for <?=$d3DateRanges[0]?><!--two weeks ago--></th>
-                        <th>Number of calls for <?=$d3DateRanges[1]?><!--last week--></th>
+                        <th scope="col">Number of calls for <?=$d3DateRanges[0]?><!--two weeks ago--></th>
+                        <th scope="col">Number of calls for <?=$d3DateRanges[1]?><!--last week--></th>
                       </thead>
                       <tbody>
 
@@ -1049,7 +1050,7 @@
         <div class="card">
           <div class="card-body pt-2">
             <h3 class="card-title"><span class="h6" data-i18n="top5-call-drivers">Top 5 call drivers</span></h3>
-              <div id="toptask_wrapper" class="dataTables_wrapper dt-bootstrap5 no-footer"><div class="row"><div class="col-sm-12 col-md-6"></div><div class="col-sm-12 col-md-6"></div></div><div class="row"><div class="col-sm-12">
+              <div class="dataTables_wrapper dt-bootstrap5 no-footer"><div class="row"><div class="col-sm-12 col-md-6"></div><div class="col-sm-12 col-md-6"></div></div><div class="row"><div class="col-sm-12">
 
                 <?php
 
@@ -1063,13 +1064,15 @@
 
                      if (count($t5t) > 0) { ?>
                        <div class="table-responsive">
-                         <table class="table table-striped dataTable no-footer" id="toptask" data="" role="grid">
+                         <table class="table table-striped dataTable no-footer" id="toptask" role="grid">
+                           <caption>Top 5 call drivers</caption>
                            <thead>
                              <tr>
-                               <th class="sorting" aria-controls="toptask" aria-label="Topic: activate to sort column" data-i18n="topic">Topic</th>
-                               <th class="sorting" aria-controls="toptask" aria-label="Change: activate to sort column" data-i18n="# of calls" >Number of calls</th>
+                               <th class="sorting" aria-controls="toptask" aria-label="Topic: activate to sort column" data-i18n="topic" scope="col">Topic</th>
+                               <th class="sorting" aria-controls="toptask" aria-label="Change: activate to sort column" data-i18n="" scope="col" >Number of calls for <?=$d3DateRanges[1]?></th>
+                               <th class="sorting" aria-controls="toptask" aria-label="Change: activate to sort column" data-i18n="" scope="col" >Number of calls for <?=$d3DateRanges[0]?></th>
                                <!-- <th class="sorting" aria-controls="toptask" aria-label="Change: activate to sort column" data-i18n="" >Prev Week Calls</th> -->
-                               <th data-i18n="change">Change (# of calls)</th>
+                               <th class="sorting" aria-controls="toptask" aria-label="Change: activate to sort column" data-i18n="comparison" scope="col">Comparison (# of calls)</th>
                              </tr>
                            </thead>
                            <tbody>
@@ -1082,6 +1085,7 @@
                              <tr>
                                <td><?= array_key_exists('Topic', $row[0]) ? $row[0]['Topic'] : "N/A (No Topic)";?></td>
                                <td><span><?=array_key_exists('Total topic calls', $row) ? number_format($row['Total topic calls']) : "";?></span></td>
+                               <td><span><?=array_key_exists($row[0]['Topic'], $fieldsByGroupPW) ? number_format($fieldsByGroupPW[$row[0]['Topic']]['Total topic calls']) : "";?></span></td>
                                <?php
                                $diff = differ( $fieldsByGroupPW[$row[0]['Topic']]['Total topic calls'], $row['Total topic calls'] );
                                $posi = posOrNeg2($diff);
@@ -1103,34 +1107,111 @@
       </div>
     </div>
 
+<?php
+
+uasort($fieldsByGroup, function($b, $a) {
+   if ($a["Change"] == $b["Change"]) {
+       return 0;
+   }
+   return ($a["Change"] < $b["Change"]) ? -1 : 1;
+ });
+
+ $top5Increase = array_slice($fieldsByGroup, 0, 5);
+ $top5Decrease = array_reverse(array_slice($fieldsByGroup, -5));
+
+?>
+
+  <!-- TOP 5 CALL DRIVERS- - INCREASE table -->
+    <div class="row mb-4">
+      <div class="col-lg-12 col-md-12">
+        <div class="card">
+          <div class="card-body pt-2">
+            <h3 class="card-title"><span class="h6" data-i18n="top5-call-drivers-increase">Top 5 call drivers with biggest increase over period</span></h3>
+              <div class="dataTables_wrapper dt-bootstrap5 no-footer"><div class="row"><div class="col-sm-12 col-md-6"></div><div class="col-sm-12 col-md-6"></div></div><div class="row"><div class="col-sm-12">
+                <?php
+                if (count($top5Decrease) > 0) { ?>
+                  <div class="table-responsive">
+                    <table class="table table-striped dataTable no-footer" id="toptask3" role="grid">
+                      <caption>Top 5 call drivers with biggest increase over period</caption>
+                      <thead>
+                        <tr>
+                          <th class="sorting ascending" aria-controls="toptask3" aria-label="Topic: activate to sort column ascending" data-i18n="topic" scope="col">Topic</th>
+                          <!-- <th class="sorting" aria-controls="toptask3" aria-label="Change: activate to sort column" data-i18n="# of calls" scope="col" >Number of calls</th> -->
+                          <th class="sorting" aria-controls="toptask3" aria-label="Change: activate to sort column" data-i18n="" scope="col" >Number of calls for <?=$d3DateRanges[1]?></th>
+                          <th class="sorting" aria-controls="toptask3" aria-label="Change: activate to sort column" data-i18n="" scope="col" >Number of calls for <?=$d3DateRanges[0]?></th>
+                          <th class="sorting" aria-controls="toptask3" aria-label="Change: activate to sort column ascending" data-i18n="comparison" scope="col" >Comparison (# of calls)</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                    <?php foreach ($top5Increase as $row) { ?>
+                        <tr>
+                          <td><?= array_key_exists('Topic', $row[0]) ? $row[0]['Topic'] : "N/A (No Topic)";?></td>
+                          <!-- <td><span><?//=array_sum(array_column_recursive($row, "Calls"));?></span></td> -->
+                          <td><span><?=number_format($row['Total topic calls'])?></span></td>
+                           <td><span><?=array_key_exists($row[0]['Topic'], $fieldsByGroupPW) ? number_format($fieldsByGroupPW[$row[0]['Topic']]['Total topic calls']) : "";?></span></td>
+                            <?php
+
+                            // if the key from this week doesnt exist in the previous week data,
+                            // do we make the change value 0% or 100%
+                            // ---------------TO BE DETERMINED ------------------
+                            if (array_key_exists($row[0]['Topic'], $fieldsByGroupPW)){
+                                //$diff = differ( $fieldsByGroupPW[$row[0]['Topic']]['Total topic calls'], $row['Total topic calls'] );
+                                $diff = $row['Change'];
+                                $posi = posOrNeg2($diff);
+                                $pieces = explode(":", $posi);
+                                $diff = abs($diff);
+                            }
+                            else {
+                              $diff = 0;
+                              $pieces = explode(":", 'text-warning:');
+                            }
+                            ?>
+                            <!-- <td><span>--><?//=$fieldsByGroupPW[$row[0]['Topic']]['Total topic calls'];?><!--</span></td> -->
+                          <td><span class="<?=$pieces[0]?>"><?=$pieces[1]?> <?=percent($diff)?></span></td>
+                        </tr>
+                    <?php } ?>
+                      </tbody>
+                    </table>
+                  </div>
+              <?php } ?>
+
+            </div></div><div class="row"><div class="col-sm-12 col-md-5"></div><div class="col-sm-12 col-md-7"></div></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <!-- TOP 5 CALL DRIVERS - DECREASE table -->
     <div class="row mb-4">
       <div class="col-lg-12 col-md-12">
         <div class="card">
           <div class="card-body pt-2">
             <h3 class="card-title"><span class="h6" data-i18n="top5-call-drivers-decrease">Top 5 call drivers with biggest decrease over period</span></h3>
-              <div id="toptask_wrapper" class="dataTables_wrapper dt-bootstrap5 no-footer"><div class="row"><div class="col-sm-12 col-md-6"></div><div class="col-sm-12 col-md-6"></div></div><div class="row"><div class="col-sm-12">
+              <div class="dataTables_wrapper dt-bootstrap5 no-footer"><div class="row"><div class="col-sm-12 col-md-6"></div><div class="col-sm-12 col-md-6"></div></div><div class="row"><div class="col-sm-12">
                 <?php
-                    uasort($fieldsByGroup, function($b, $a) {
-                       if ($a["Change"] == $b["Change"]) {
-                           return 0;
-                       }
-                       return ($a["Change"] < $b["Change"]) ? -1 : 1;
-                     });
-
-                     $top5Increase = array_slice($fieldsByGroup, 0, 5);
-                     $top5Decrease = array_reverse(array_slice($fieldsByGroup, -5));
+                    // uasort($fieldsByGroup, function($b, $a) {
+                    //    if ($a["Change"] == $b["Change"]) {
+                    //        return 0;
+                    //    }
+                    //    return ($a["Change"] < $b["Change"]) ? -1 : 1;
+                    //  });
+                    //
+                    //  $top5Increase = array_slice($fieldsByGroup, 0, 5);
+                    //  $top5Decrease = array_reverse(array_slice($fieldsByGroup, -5));
 
                      //var_dump($qry);
 
                     if (count($top5Decrease) > 0) { ?>
                       <div class="table-responsive">
-                        <table class="table table-striped dataTable no-footer" id="toptask2" data="" role="grid">
+                        <table class="table table-striped dataTable no-footer" id="toptask2" role="grid">
+                          <caption>Top 5 call drivers with biggest decrease over period</caption>
                           <thead>
                             <tr>
-                              <th class="sorting ascending" aria-controls="toptask2" aria-label="Topic: activate to sort column ascending" data-i18n="topic">Topic</th>
-                              <th class="sorting" aria-controls="toptask" aria-label="Change: activate to sort column" data-i18n="# of calls" >Number of calls</th>
-                              <th class="sorting" aria-controls="toptask2" aria-label="Change: activate to sort column ascending" data-i18n="change" >Change (# of calls)</th>
+                              <th class="sorting ascending" aria-controls="toptask2" aria-label="Topic: activate to sort column ascending" data-i18n="topic" scope="col">Topic</th>
+                              <!-- <th class="sorting" aria-controls="toptask2" aria-label="Change: activate to sort column" data-i18n="# of calls" scope="col">Number of calls</th> -->
+                              <th class="sorting" aria-controls="toptask2" aria-label="Change: activate to sort column" data-i18n="" scope="col" >Number of calls for <?=$d3DateRanges[1]?></th>
+                              <th class="sorting" aria-controls="toptask2" aria-label="Change: activate to sort column" data-i18n="" scope="col" >Number of calls for <?=$d3DateRanges[0]?></th>
+                              <th class="sorting" aria-controls="toptask2" aria-label="Change: activate to sort column ascending" data-i18n="comparison" scope="col" >Comparison (# of calls)</th>
                             </tr>
                           </thead>
                           <tbody>
@@ -1139,6 +1220,7 @@
                               <td><?= array_key_exists('Topic', $row[0]) ? $row[0]['Topic'] : "N/A (No Topic)";?></td>
                               <!-- <td><span><?//=array_sum(array_column_recursive($row, "Calls"));?></span></td> -->
                               <td><span><?=number_format($row['Total topic calls'])?></span></td>
+                               <td><span><?=array_key_exists($row[0]['Topic'], $fieldsByGroupPW) ? number_format($fieldsByGroupPW[$row[0]['Topic']]['Total topic calls']) : "";?></span></td>
                               <?php
 
                               // if the key from this week doesnt exist in the previous week data,
@@ -1170,63 +1252,6 @@
         </div>
       </div>
     </div>
-
-    <!-- TOP 5 CALL DRIVERS- - INCREASE table -->
-    <div class="row mb-4">
-      <div class="col-lg-12 col-md-12">
-        <div class="card">
-          <div class="card-body pt-2">
-            <h3 class="card-title"><span class="h6" data-i18n="top5-call-drivers-increase">Top 5 call drivers with biggest increase over period</span></h3>
-              <div id="toptask_wrapper" class="dataTables_wrapper dt-bootstrap5 no-footer"><div class="row"><div class="col-sm-12 col-md-6"></div><div class="col-sm-12 col-md-6"></div></div><div class="row"><div class="col-sm-12">
-                <?php
-                if (count($top5Decrease) > 0) { ?>
-                  <div class="table-responsive">
-                    <table class="table table-striped dataTable no-footer" id="toptask2" data="" role="grid">
-                      <thead>
-                        <tr>
-                          <th class="sorting ascending" aria-controls="toptask2" aria-label="Topic: activate to sort column ascending" data-i18n="topic">Topic</th>
-                          <th class="sorting" aria-controls="toptask" aria-label="Change: activate to sort column" data-i18n="# of calls" >Number of calls</th>
-                          <th class="sorting" aria-controls="toptask2" aria-label="Change: activate to sort column ascending" data-i18n="change" >Change (# of calls)</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                    <?php foreach ($top5Increase as $row) { ?>
-                        <tr>
-                          <td><?= array_key_exists('Topic', $row[0]) ? $row[0]['Topic'] : "N/A (No Topic)";?></td>
-                          <!-- <td><span><?//=array_sum(array_column_recursive($row, "Calls"));?></span></td> -->
-                          <td><span><?=number_format($row['Total topic calls'])?></span></td>
-                          <?php
-
-                          // if the key from this week doesnt exist in the previous week data,
-                          // do we make the change value 0% or 100%
-                          // ---------------TO BE DETERMINED ------------------
-                          if (array_key_exists($row[0]['Topic'], $fieldsByGroupPW)){
-                              //$diff = differ( $fieldsByGroupPW[$row[0]['Topic']]['Total topic calls'], $row['Total topic calls'] );
-                              $diff = $row['Change'];
-                              $posi = posOrNeg2($diff);
-                              $pieces = explode(":", $posi);
-                              $diff = abs($diff);
-                          }
-                          else {
-                            $diff = 0;
-                            $pieces = explode(":", 'text-warning:');
-                          }
-                          ?>
-                          <!-- <td><span>--><?//=$fieldsByGroupPW[$row[0]['Topic']]['Total topic calls'];?><!--</span></td> -->
-                          <td><span class="<?=$pieces[0]?>"><?=$pieces[1]?> <?=percent($diff)?></span></td>
-                        </tr>
-                    <?php } ?>
-                      </tbody>
-                    </table>
-                  </div>
-              <?php } ?>
-
-            </div></div><div class="row"><div class="col-sm-12 col-md-5"></div><div class="col-sm-12 col-md-7"></div></div></div>
-          </div>
-        </div>
-      </div>
-    </div>
-
 
 
 

@@ -39,7 +39,7 @@
 
       <?php
 
-            ini_set('display_errors', 1);
+            ini_set('display_errors', 0);
             require 'vendor/autoload.php';
             use TANIOS\Airtable\Airtable;
 
@@ -109,12 +109,12 @@
         ?>
 
     <!-- Dropdown - date range   -->
-    <div class="row mb-4 mt-1">
+    <!-- <div class="row mb-4 mt-1">
       <div class="dropdown">
         <button type="button" class="btn bg-white border border-1" id="range-button" data-bs-toggle="dropdown" aria-expanded="false"><span class="material-icons align-top">calendar_today</span> <span data-i18n="dr-alltime">All time</span></button> <span class="text-secondary ps-2 text-nowrap" data-i18n="dr-alltime"> All time</span>
 
       </div>
-    </div>
+    </div> -->
 
     <?php
         $urls = "";
@@ -134,7 +134,7 @@
         function posOrNeg($num)
         {
             if ($num > 0) return 'text-success:arrow_upward';
-            else if ($num == 0) return 'text-warning:horizontal_rule';
+            else if ($num == 0) return 'text-warning:';
             else return 'text-danger:arrow_downward';
         }
 
@@ -226,6 +226,9 @@
 
                      // group the all_fields by "UX Research Project Title" key
                     $fieldsByGroup = group_by('UX Research Project Title', $all_fields);
+                    // echo "<pre>";
+                    // print_r($fieldsByGroup);
+                    // echo "</pre>";
 
 
                      //$financialyeardate = (date('m')<'04') ? date('Y-04-01',strtotime('-1 year')) : date('Y-04-01');
@@ -260,16 +263,42 @@
                        $qEnd = date("Y-09-30");
                      }
 
-
+                     //this gives as the TASKS tested for last fiscal year (count per test)
                      $projectsLastFiscal = count(array_filter($all_fields, function ($val) use ($prev_financialyear_startdate, $prev_financialyear_enddate) {
                         return (date("Y-m-d", strtotime($val["Date"])) >= $prev_financialyear_startdate && date("Y-m-d", strtotime($val["Date"])) <= $prev_financialyear_enddate);
                      }));
 
+                     // THIS lists all the Tests (UX Research Project Title) for the last fiscal year (count per unique UX Research Project Title)
+                    //-------------------------------------------------------------------------------------------------------------------------------
+                     $testsLastFiscal = array_filter($all_fields, function ($val) use ($prev_financialyear_startdate, $prev_financialyear_enddate) {
+                        return (date("Y-m-d", strtotime($val["Date"])) >= $prev_financialyear_startdate && date("Y-m-d", strtotime($val["Date"])) <= $prev_financialyear_enddate);
+                     });
+                     $totalTestsLastFiscal = count(array_unique(array_column($testsLastFiscal, 'UX Research Project Title')));
 
+
+                     //this gives as the TASKS tested for last quarter (count per test)
                      $projectsLastQuarter = count(array_filter($all_fields, function ($val) use ($qStart, $qEnd) {
                         return (date("Y-m-d", strtotime($val["Date"])) >= $qStart && date("Y-m-d", strtotime($val["Date"])) <= $qEnd);
                      }));
 
+                     // THIS lists all the Tests (UX Research Project Title) for the last QUARTER (count per unique UX Research Project Title)
+                     //-------------------------------------------------------------------------------------------------------------------------------
+                     $testsLastQuarter = array_filter($all_fields, function ($val) use ($qStart, $qEnd) {
+                        return (date("Y-m-d", strtotime($val["Date"])) >= $qStart && date("Y-m-d", strtotime($val["Date"])) <= $qEnd);
+                     });
+                     $totalTestsLastQuarter = count(array_unique(array_column($testsLastQuarter, 'UX Research Project Title')));
+                     // echo "<pre>";
+                     // print_r($projectsLastFiscal2);
+                     // echo "</pre>";
+
+
+                     // COPS tested tested since  2018
+                    //-------------------------------------------------------------------------------------------------------------------------------
+                     $testCops = array_filter($all_fields, function ($val) {
+                        return (array_key_exists('COPS', $val));
+                     });
+                     $totalTestsCops = count(array_unique(array_column($testCops, 'UX Research Project Title')));
+                     //echo $totalTestsCops;
               }
 
           ?>
@@ -280,7 +309,7 @@
        <div class="col-lg-4 col-md-6 col-sm-12">
          <div class="card">
            <div class="card-body card-pad pt-2">
-             <h3 class="card-title"><span class="h6" data-i18n="tests_completed">UX test completed (All time)</span></h3>
+             <h3 class="card-title"><span class="h6" data-i18n="">Tests completed since 2018</span></h3>
                <div class="row">
                  <div class="col-lg-8 col-md-8 col-sm-8"><span class="h3 text-nowrap"><?=number_format(count($fieldsByGroup)) ?></span><span class="small"></span></div>
                  <div class="col-lg-4 col-md-4 col-sm-4 text-end"><span class="h3 text-nowrap"><span class="material-icons"></span> </span></div>
@@ -292,10 +321,10 @@
        <div class="col-lg-4 col-md-6 col-sm-12">
          <div class="card">
            <div class="card-body card-pad pt-2">
-             <h3 class="card-title"><span class="h6" data-i18n="tests_last_fiscal_year">Tests from last fiscal year</span><span class="h6"> (<?=date("Y M d", strtotime($prev_financialyear_startdate));?> - <?=date("Y M d",strtotime($prev_financialyear_enddate));?>)</span></h3>
+             <h3 class="card-title"><span class="h6" data-i18n="">Tasks tested since 2018</span></h3>
                <div class="row">
-                 <div class="col-md-8 col-sm-6"><span class="h3 text-nowrap"><?=number_format($projectsLastFiscal) ?></span><span class="small"></span></div>
-                 <div class="col-lg-4 col-md-4 col-sm-4 text-end"><span class="h3 text-nowrap"><span class="material-icons"></span></span></div>
+                 <div class="col-lg-8 col-md-8 col-sm-8"><span class="h3 text-nowrap"><?=number_format(count($re)); ?></span><span class="small"></span></div>
+                 <div class="col-lg-4 col-md-4 col-sm-4 text-end"><span class="h3 text-nowrap"><span class="material-icons"></span> </span></div>
              </div>
            </div>
          </div>
@@ -304,33 +333,7 @@
        <div class="col-lg-4 col-md-6 col-sm-12">
          <div class="card">
            <div class="card-body card-pad pt-2">
-             <h3 class="card-title"><span class="h6" data-i18n="tests_last_quarter">Tests from last quarter</span><span class="h6"> (Q<?=$lastQuarter."/"?><?=($lastQuarter != 4) ? date('y') : date('y',strtotime('-1 years')); ?>)</span></h3>
-               <div class="row">
-                 <div class="col-sm-8"><span class="h3 text-nowrap"><?=number_format($projectsLastQuarter) ?></span><span class="small"></span></div>
-                 <div class="col-lg-4 col-md-4 col-sm-4 text-end"><span class="h3 text-nowrap"><span class="material-icons"></span></span></div>
-             </div>
-           </div>
-         </div>
-       </div>
-     </div>
-
-    <!-- 2 number charts -->
-    <div class="row mb-3 gx-3">
-       <div class="col-lg-6 col-md-6 col-sm-12">
-         <div class="card">
-           <div class="card-body card-pad pt-2">
-             <h3 class="card-title"><span class="h6" data-i18n="total_tasks_tested">Total tasks tested</span></h3>
-               <div class="row">
-                 <div class="col-lg-8 col-md-8 col-sm-8"><span class="h3 text-nowrap"><?=number_format(count($re)); ?></span><span class="small"></span></div>
-                 <div class="col-lg-4 col-md-4 col-sm-4 text-end"><span class="h3 text-nowrap"><span class="material-icons"></span> </span></div>
-             </div>
-           </div>
-         </div>
-       </div>
-       <div class="col-lg-6 col-md-6 col-sm-12">
-         <div class="card">
-           <div class="card-body card-pad pt-2">
-             <h3 class="card-title"><span class="h6" data-i18n="number_of_participants">Number of participants</span></h3>
+             <h3 class="card-title"><span class="h6" data-i18n="">Participants tested since 2018</span></h3>
                <div class="row">
                  <div class="col-md-8 col-sm-6"><span class="h3 text-nowrap"><?=number_format($num_participants); ?></span></div>
                  <div class="col-lg-4 col-md-4 col-sm-4 text-end"><span class="h3 text-nowrap"><span class="material-icons"></span></span></div>
@@ -338,14 +341,56 @@
            </div>
          </div>
        </div>
-     </div>
+    </div>
+
+    <!-- 2 number charts -->
+    <div class="row mb-3 gx-3">
+
+        <div class="col-lg-4 col-md-6 col-sm-12">
+          <div class="card">
+            <div class="card-body card-pad pt-2">
+              <h3 class="card-title"><span class="h6" data-i18n="">Tests conducted last fiscal year</span><span class="h6"> (<?=date("M d", strtotime($prev_financialyear_startdate));?> - <?=date("M d",strtotime($prev_financialyear_enddate));?>)</span></h3>
+                <div class="row">
+                  <!-- <div class="col-md-8 col-sm-6"><span class="h3 text-nowrap"><?//=number_format($projectsLastFiscal) ?></span><span class="small"></span></div> -->
+                  <div class="col-md-8 col-sm-6"><span class="h3 text-nowrap"><?=number_format($totalTestsLastFiscal) ?></span><span class="small"></span></div>
+                  <div class="col-lg-4 col-md-4 col-sm-4 text-end"><span class="h3 text-nowrap"><span class="material-icons"></span></span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-lg-4 col-md-6 col-sm-12">
+          <div class="card">
+            <div class="card-body card-pad pt-2">
+              <h3 class="card-title"><span class="h6" data-i18n="">Tests conducted last quarter</span><span class="h6"> (Q<?=$lastQuarter."/"?><?=($lastQuarter != 4) ? date('y') : date('y',strtotime('-1 years')); ?>)</span></h3>
+                <div class="row">
+                  <!-- <div class="col-sm-8"><span class="h3 text-nowrap"><?//=number_format($projectsLastQuarter) ?></span><span class="small"></span></div> -->
+                  <div class="col-sm-8"><span class="h3 text-nowrap"><?=number_format($totalTestsLastQuarter) ?></span><span class="small"></span></div>
+                  <div class="col-lg-4 col-md-4 col-sm-4 text-end"><span class="h3 text-nowrap"><span class="material-icons"></span></span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+       <div class="col-lg-4 col-md-6 col-sm-12">
+         <div class="card">
+           <div class="card-body card-pad pt-2">
+             <h3 class="card-title"><span class="h6" data-i18n="">COPS tests completed since 2018</span></h3>
+               <div class="row">
+                 <div class="col-md-8 col-sm-6"><span class="h3 text-nowrap"><?=number_format($totalTestsCops); ?></span></div>
+                 <div class="col-lg-4 col-md-4 col-sm-4 text-end"><span class="h3 text-nowrap"><span class="material-icons"></span></span></div>
+             </div>
+           </div>
+         </div>
+       </div>
+    </div>
 
     <!-- Recent US test results by page - currently listed ALL instead of recent only -->
     <div class="row mb-4">
       <div class="col-lg-12 col-md-12">
         <div class="card">
           <div class="card-body pt-2">
-            <h3 class="card-title"><span class="h6" data-i18n="table_title_testing_results">UX test results by project</span></h3>
+            <h3 class="card-title"><span class="h6" data-i18n="">Recent testing scores by project</span></h3>
               <div id="toptask_wrapper" class="dataTables_wrapper dt-bootstrap5 no-footer"><div class="row"><div class="col-sm-12 col-md-6"></div><div class="col-sm-12 col-md-6"></div></div><div class="row"><div class="col-sm-12">
 
                <?php
@@ -356,22 +401,28 @@
 
                 if (count($qry) > 0) { ?>
                   <div class="table-responsive">
+                    <!-- <table class="table table-striped dataTable no-footer" id="pages_dt"> -->
                     <table class="table table-striped dataTable no-footer">
+                      <caption>Recent testing scores by project</caption>
                       <thead>
                         <tr>
-                          <th data-i18n="ux_projects">UX projects</th>
-                          <th data-i18n="type">Type</th>
-                          <th data-i18n="date">Date</th>
-                          <th data-i18n="avg_success_rate">Average success rate</th>
+                          <th data-i18n="ux_projects" scope="col">UX projects</th>
+                          <th data-i18n="" scope="col">Test</th>
+                          <th data-i18n="date" scope="col">Date</th>
+                          <!-- <th data-i18n="avg_success_rate" scope="col">Average success rate</th> -->
+                          <th data-i18n="" scope="col">Score</th>
+                          <th data-i18n="" scope="col">Participants</th>
                         </tr>
                       </thead>
                       <tbody>
                     <?php foreach ($qry as $row) { ?>
                         <tr>
                           <td><?=$row[0]['UX Research Project Title'];?></td>
-                          <td><span><?=array_key_exists('COPS', $row[0]) ? "COPS" : "N/A";     //echo ($row[0]['COPS']==1) ? "COPS" : "N/A";           //$row[0]['COPS'];?></span></td>
+                          <!-- <td><span><?//=array_key_exists('COPS', $row[0]) ? "COPS" : "N/A";     //echo ($row[0]['COPS']==1) ? "COPS" : "N/A";           //$row[0]['COPS'];?></span></td> -->
+                          <td><span><?=array_key_exists('Test Type', $row[0]) ? $row[0]["Test Type"] : "N/A";     //echo ($row[0]['COPS']==1) ? "COPS" : "N/A";           //$row[0]['COPS'];?></span></td>
                           <td><span><?=array_key_exists('Date', $row[0]) ? date('m/Y',strtotime($row[0]['Date'])) : "";             //$row[0]['Date'];?></span></td>
                           <td><span><?=round((array_sum(array_column_recursive($row, "Success Rate"))/count(array_column_recursive($row, "Success Rate")))*100)."%";?></span></td>
+                          <td><span><?=array_sum(array_column_recursive($row, "# of Users"));?></span></td>
                         </tr>
                     <?php } ?>
                       </tbody>

@@ -42,7 +42,7 @@ function numDiffer($old, $new)
 function posOrNeg($num)
 {
     if ($num > 0) return 'text-success:arrow_upward';
-    else if ($num == 0) return 'text-warning:horizontal_rule';
+    else if ($num == 0) return 'text-warning:';
     else return 'text-danger:arrow_downward';
 }
 
@@ -203,9 +203,9 @@ $weeklyDatesHeader = $dateUtils->getWeeklyDates('header');
 <div class="row mb-4 mt-1">
     <div class="dropdown">
         <button type="button" class="btn bg-white border border-1 dropdown-toggle" id="range-button" data-bs-toggle="dropdown" aria-expanded="false"><span class="material-icons align-top">calendar_today</span> <span data-i18n="dr-lastweek">Last week</span></button>
-        <span class="text-secondary ps-2 text-nowrap dates-header-week"><?=$weeklyDatesHeader['current']['start']?> - <?=$weeklyDatesHeader['current']['end']?></span>
-        <span class="text-secondary ps-2 text-nowrap dates-header-week" data-i18n="compared_to"> compared to </span>
-        <span class="text-secondary ps-2 text-nowrap dates-header-week"><?=$weeklyDatesHeader['previous']['start']?> - <?=$weeklyDatesHeader['previous']['end']?></span>
+        <span class="text-secondary ps-2 text-nowrap dates-header-week"><strong><?=$weeklyDatesHeader['current']['start']?> - <?=$weeklyDatesHeader['current']['end']?></strong></span>
+        <span class="text-secondary ps-1 text-nowrap dates-header-week" data-i18n="compared_to">compared to</span>
+        <span class="text-secondary ps-1 text-nowrap dates-header-week"><strong><?=$weeklyDatesHeader['previous']['start']?> - <?=$weeklyDatesHeader['previous']['end']?></strong></span>
 
         <ul class="dropdown-menu" aria-labelledby="range-button" style="">
             <li><a class="dropdown-item active" href="#" aria-current="true" data-i18n="dr-lastweek">Last week</a></li>
@@ -353,13 +353,14 @@ $taskParticipants = array_sum(array_column_recursive($taskTests,"# of Users"));
 
                     if (count($qry) > 0) { ?>
                       <div class="table-responsive">
-                        <table class="table table-striped dataTable no-footer" data="" role="grid" id="toptask">
+                        <table class="table table-striped dataTable no-footer" role="grid" id="toptask">
+                          <caption>Success rate and scenarios</caption>
                           <thead>
                             <tr>
-                              <th class="sorting" aria-controls="toptask" aria-label="Project" data-i18n="">Project</th>
-                              <th class="sorting" aria-controls="toptask" aria-label="Scenario" data-i18n="">Scenario</th>
-                              <th class="sorting" aria-controls="toptask" aria-label="Result" data-i18n="">Result</th>
-                              <th class="sorting" aria-controls="toptask" aria-label="Date" data-i18n="">Date</th>
+                              <th class="sorting" aria-controls="toptask" aria-label="Project" data-i18n="" scope="col">Project</th>
+                              <th class="sorting" aria-controls="toptask" aria-label="Scenario" data-i18n="" scope="col">Scenario</th>
+                              <th class="sorting" aria-controls="toptask" aria-label="Result" data-i18n="" scope="col">Result</th>
+                              <th class="sorting" aria-controls="toptask" aria-label="Date" data-i18n="" scope="col">Date</th>
                             </tr>
                           </thead>
                           <tbody>

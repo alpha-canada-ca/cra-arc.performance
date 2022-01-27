@@ -14,7 +14,6 @@
 <script src="./assets/i18n/js/jquery.i18n.fallbacks.js"></script>
 <script src="./assets/i18n/js/jquery.i18n.language.js"></script>
 <script src="./assets/i18n/js/jquery.i18n.parser.js"></script>
-
 <script src="./assets/i18n/js/jquery.i18n.emitter.js"></script>
 <script src="./assets/i18n/js/jquery.i18n.emitter.bidi.js"></script>
 <script src="./assets/i18n/js/global.js"></script>
@@ -217,9 +216,9 @@ if ($succ === 1)
     <div class="row mb-4 mt-1">
       <div class="dropdown">
         <button type="button" class="btn bg-white border border-1 dropdown-toggle" id="range-button" data-bs-toggle="dropdown" aria-expanded="false"><span class="material-icons align-top">calendar_today</span> <span data-i18n="dr-lastweek">Last week</span></button>
-            <span class="text-secondary ps-2 text-nowrap dates-header-week"><?=$datesHeader[1][0] ?> - <?=$datesHeader[1][1] ?></span>
-            <span class="text-secondary ps-2 text-nowrap dates-header-week" data-i18n="compared_to"> compared to </span>
-            <span class="text-secondary ps-2 text-nowrap dates-header-week"><?=$datesHeader[0][0] ?> - <?=$datesHeader[0][1] ?></span>
+              <span class="text-secondary ps-2 text-nowrap dates-header-week"><strong><?=$datesHeader[1][0] ?> - <?=$datesHeader[1][1] ?></strong></span>
+              <span class="text-secondary ps-2 text-nowrap dates-header-week" data-i18n="compared_to">compared to</span>
+              <span class="text-secondary ps-2 text-nowrap dates-header-week"><strong><?=$datesHeader[0][0] ?> - <?=$datesHeader[0][1] ?></strong></span>
 
         <ul class="dropdown-menu" aria-labelledby="range-button" style="">
           <li><a class="dropdown-item active" href="#" aria-current="true" data-i18n="dr-lastweek">Last week</a></li>
@@ -390,7 +389,7 @@ if ($succ === 1)
         function posOrNeg($num)
         {
             if ($num > 0) return 'text-success:arrow_upward';
-            else if ($num == 0) return 'text-warning:horizontal_rule';
+            else if ($num == 0) return 'text-warning:';
             else return 'text-danger:arrow_downward';
         }
 
@@ -740,10 +739,10 @@ $diff = abs($diff);
                       <summary data-i18n="view-data-table">View table data</summary>
                       <div class="table-responsive">
                               <table class="table">
-                                <caption data-i18n="dr-lastweek">Last Week</caption>
+                                <caption data-i18n="">Visits for <?=$datesHeader[0][0] ?> - <?=$datesHeader[0][1] ?></caption>
                                 <thead>
-                                  <th data-i18n="date">Date</th>
-                                  <th data-i18n="value">Value</th>
+                                  <th data-i18n="date" scope="col">Date</th>
+                                  <th data-i18n="value" scope="col">Visits</th>
                                 </thead>
                                 <tbody>
 
@@ -768,10 +767,10 @@ $diff = abs($diff);
                               </table>
 
                                 <table class="table">
-                                  <caption>Week</caption>
+                                  <caption>Visits for <?=$datesHeader[1][0] ?> - <?=$datesHeader[1][1] ?></caption>
                                   <thead>
-                                    <th>Date</th>
-                                    <th>Value</th>
+                                    <th data-i18n="date" scope="col">Date</th>
+                                    <th data-i18n="value" scope="col">Visits</th>
                                   </thead>
                                   <tbody>
 
@@ -820,13 +819,14 @@ $diff = abs($diff);
 
                 if (count($qry) > 0) { ?>
                    <div class="table-responsive">
-                     <table class="table table-striped dataTable no-footer"  id="toptask" data="" role="grid">
+                     <table class="table table-striped dataTable no-footer" id="toptask" data="" role="grid">
+                       <caption>Top 10 pages visited</caption>
                        <thead>
                          <tr>
-                           <th class="sorting ascending" aria-controls="toptask" aria-label="Change: activate to sort column" data-i18n="rank">Rank</th>
-                           <th class="sorting" aria-controls="toptask" aria-label="Change: activate to sort column" data-i18n="page" >Page</th>
-                           <th class="sorting" aria-controls="toptask" aria-label="Change: activate to sort column" data-i18n="visitors" >Visitors</th>
-                           <th class="sorting" aria-controls="toptask" aria-label="Change: activate to sort column" data-i18n="comparison" >Comparison</th>
+                           <th class="sorting ascending" aria-controls="toptask" aria-label="Change: activate to sort column" data-i18n="rank" scope="col">Rank</th>
+                           <th class="sorting" aria-controls="toptask" aria-label="Change: activate to sort column" data-i18n="page" scope="col">Page</th>
+                           <th class="sorting" aria-controls="toptask" aria-label="Change: activate to sort column" data-i18n="visitors" scope="col" >Visitors</th>
+                           <th class="sorting" aria-controls="toptask" aria-label="Change: activate to sort column" data-i18n="comparison" scope="col" >Comparison</th>
                          </tr>
                        </thead>
                        <tbody>

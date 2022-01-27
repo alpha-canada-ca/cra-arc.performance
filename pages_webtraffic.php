@@ -270,9 +270,9 @@ if ($succ === 1)
     <div class="row mb-4 mt-1">
       <div class="dropdown">
         <button type="button" class="btn bg-white border border-1 dropdown-toggle" id="range-button" data-bs-toggle="dropdown" aria-expanded="false"><span class="material-icons align-top">calendar_today</span> <span data-i18n="dr-lastweek">Last week</span></button>
-            <span class="text-secondary ps-2 text-nowrap dates-header-week"><?=$datesHeader[1][0] ?> - <?=$datesHeader[1][1] ?></span>
-            <span class="text-secondary ps-2 text-nowrap dates-header-week" data-i18n="compared_to"> compared to </span>
-            <span class="text-secondary ps-2 text-nowrap dates-header-week"><?=$datesHeader[0][0] ?> - <?=$datesHeader[0][1] ?></span>
+            <span class="text-secondary ps-2 text-nowrap dates-header-week"><strong><?=$datesHeader[1][0] ?> - <?=$datesHeader[1][1] ?></strong></span>
+            <span class="text-secondary ps-2 text-nowrap dates-header-week" data-i18n="compared_to">compared to</span>
+            <span class="text-secondary ps-2 text-nowrap dates-header-week"><strong><?=$datesHeader[0][0] ?> - <?=$datesHeader[0][1] ?></strong></span>
 
         <ul class="dropdown-menu" aria-labelledby="range-button" style="">
           <li><a class="dropdown-item active" href="#" aria-current="true" data-i18n="dr-lastweek">Last week</a></li>
@@ -421,7 +421,7 @@ if ($succ === 1)
         function posOrNeg($num)
         {
             if ($num > 0) return 'text-success:arrow_upward';
-            else if ($num == 0) return 'text-warning:horizontal_rule';
+            else if ($num == 0) return 'text-warning:';
             else return 'text-danger:arrow_downward';
         }
 
@@ -751,8 +751,8 @@ if ($succ === 1)
                           <table class="table">
                             <caption><!--Last Week--></caption>
                             <thead>
-                              <th data-i18n="date">Date (<?=$d3DateRanges[0]?>)</th>
-                              <th data-i18n="visits">Visits</th>
+                              <th data-i18n="date" scope="col">Date (<?=$d3DateRanges[0]?>)</th>
+                              <th data-i18n="visits" scope="col">Visits</th>
                             </thead>
                             <tbody>
 
@@ -780,8 +780,8 @@ if ($succ === 1)
                           <table class="table">
                             <caption><!--Week--></caption>
                             <thead>
-                              <th data-i18n="date">Date (<?=$d3DateRanges[1]?>)</th>
-                              <th data-i18n="visits">Visits</th>
+                              <th data-i18n="date" scope="col">Date (<?=$d3DateRanges[1]?>)</th>
+                              <th data-i18n="visits" scope="col">Visits</th>
                             </thead>
                             <tbody>
 
@@ -816,7 +816,7 @@ if ($succ === 1)
             <div class="card">
               <div class="card-body pt-2">
                 <h3 class="card-title"><span class="card-tooltip h6" data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-placement="right" data-bs-content="Where visitors came from" data-bs-original-title="" title="" data-i18n="">Where visitors came from</span></h3>
-                <div id="toptask_wrapper" class="dataTables_wrapper dt-bootstrap5 no-footer"><div class="row"><div class="col-sm-12 col-md-6"></div><div class="col-sm-12 col-md-6"></div></div><div class="row"><div class="col-sm-12">
+                <div class="dataTables_wrapper dt-bootstrap5 no-footer"><div class="row"><div class="col-sm-12 col-md-6"></div><div class="col-sm-12 col-md-6"></div></div><div class="row"><div class="col-sm-12">
 
                   <?php
                       uasort($prevPages, function($b, $a) {
@@ -832,13 +832,14 @@ if ($succ === 1)
 
                        if (count($qry) > 0) { ?>
                          <div class="table-responsive">
-                           <table class="table table-striped dataTable no-footer" data="" role="grid" id="toptask">
+                           <table class="table table-striped dataTable no-footer" role="grid" id="toptask">
+                             <caption>Where visitors came from</caption>
                              <thead>
                                <tr>
-                                 <th class="sorting" aria-controls="toptask" aria-label="Topic: activate to sort column" data-i18n="">Previous page URL</th>
-                                 <th class="sorting" aria-controls="toptask" aria-label="Change: activate to sort column" data-i18n="" >Visits</th>
+                                 <th class="sorting" aria-controls="toptask" aria-label="Topic: activate to sort column" data-i18n="" scope="col">Previous page URL</th>
+                                 <th class="sorting" aria-controls="toptask" aria-label="Change: activate to sort column" data-i18n="" scope="col" >Visits</th>
                                  <!-- <th class="sorting" aria-controls="toptask" aria-label="Change: activate to sort column" data-i18n="" >Prev Week Calls</th> -->
-                                 <th data-i18n="change">Change</th>
+                                 <th class="sorting" aria-controls="toptask" aria-label="Change: activate to sort column" data-i18n="comparison" scope="col">Comparison</th>
                                </tr>
                              </thead>
                              <tbody>
@@ -880,7 +881,7 @@ if ($succ === 1)
         <div class="card">
           <div class="card-body pt-2">
             <h3 class="card-title"><span class="card-tooltip h6" data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-placement="right" data-bs-content="" data-bs-original-title="" title="" data-i18n="">What visitors clicked on</span></h3>
-            <div id="toptask_wrapper" class="dataTables_wrapper dt-bootstrap5 no-footer"><div class="row"><div class="col-sm-12 col-md-6"></div><div class="col-sm-12 col-md-6"></div></div><div class="row"><div class="col-sm-12">
+            <div class="dataTables_wrapper dt-bootstrap5 no-footer"><div class="row"><div class="col-sm-12 col-md-6"></div><div class="col-sm-12 col-md-6"></div></div><div class="row"><div class="col-sm-12">
 
               <?php
                   uasort($activityMap, function($b, $a) {
@@ -896,13 +897,14 @@ if ($succ === 1)
 
                    if (count($qry) > 0) { ?>
                      <div class="table-responsive">
-                       <table class="table table-striped dataTable no-footer" data="" role="grid" id="toptask">
+                       <table class="table table-striped dataTable no-footer" data="" role="grid" id="toptask2">
+                         <caption>What visitors clicked on</caption>
                          <thead>
                            <tr>
-                             <th class="sorting" aria-controls="toptask" aria-label="Topic: activate to sort column" data-i18n="">Text</th>
-                             <th class="sorting" aria-controls="toptask" aria-label="Change: activate to sort column" data-i18n="" >Clicks</th>
-                             <!-- <th class="sorting" aria-controls="toptask" aria-label="Change: activate to sort column" data-i18n="" >Prev Week Calls</th> -->
-                             <th data-i18n="change">Change</th>
+                             <th class="sorting" aria-controls="toptask2" aria-label="Topic: activate to sort column" data-i18n="" scope="col">Text</th>
+                             <th class="sorting" aria-controls="toptask2" aria-label="Change: activate to sort column" data-i18n=""  scope="col">Clicks</th>
+                             <!-- <th class="sorting" aria-controls="toptask2" aria-label="Change: activate to sort column" data-i18n="" >Prev Week Calls</th> -->
+                             <th class="sorting" aria-controls="toptask2" aria-label="Change: activate to sort column" data-i18n="comparison" scope="col">Comparison</th>
                            </tr>
                          </thead>
                          <tbody>
@@ -941,7 +943,7 @@ if ($succ === 1)
         <div class="card">
           <div class="card-body pt-2">
             <h3 class="card-title"><span class="card-tooltip h6" data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-placement="right" data-bs-content="" data-bs-original-title="" title="" data-i18n="">Visitor location</span></h3>
-            <div id="toptask_wrapper" class="dataTables_wrapper dt-bootstrap5 no-footer"><div class="row"><div class="col-sm-12 col-md-6"></div><div class="col-sm-12 col-md-6"></div></div><div class="row"><div class="col-sm-12">
+            <div class="dataTables_wrapper dt-bootstrap5 no-footer"><div class="row"><div class="col-sm-12 col-md-6"></div><div class="col-sm-12 col-md-6"></div></div><div class="row"><div class="col-sm-12">
 
             </div></div><div class="row"><div class="col-sm-12 col-md-5"></div><div class="col-sm-12 col-md-7"></div></div></div>
           </div>
