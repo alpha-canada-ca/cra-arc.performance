@@ -3,7 +3,7 @@
     <nav class="nav">
         <div>
           <!-- <a class="nav_logo"> <span class="material-icons nav_logo-icon">leaderboard</span> <span class="nav_logo-name">UPD</span> </a> -->
-          <a class="nav_logo"><img src="assets/img/upd-logo.svg" width="145px" alt="Usability Performance Dashboard"></a>
+          <a class="nav_logo"><img src="assets/img/upd-logo.png" width="148px"  alt="Usability Performance Dashboard"></a>
 
             <div class="nav_list mt-5">
               <!-- <a class="nav_link active" aria-current="page" id="active"> <span class="material-icons nav_icon">home</span> <span class="nav_name" data-i18n="menu-overview">Overview</span> </a> -->
