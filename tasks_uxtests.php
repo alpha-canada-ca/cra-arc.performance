@@ -157,7 +157,7 @@ $weeklyDatesHeader = $dateUtils->getWeeklyDates('header');
               }
 
               echo implode(", ", array_map(function($project) {
-                  return '<a href="./projects_pagefeedback.php?projectId='.$project['id'].'" alt="Project: '.$project['title'].'" target="_blank">' . $project['title'] . '</a>';
+                  return '<a href="./projects_summary.php?projectId='.$project['id'].'" alt="Project: '.$project['title'].'">' . $project['title'] . '</a>';
                   //SWITCH TO THIS line after the summary page is done
                   //return '<a href="./projects_summary.php?prj='.$project.'" alt="Project: '.$project.'">' . $project . '</a>';
               }, $taskProjects));

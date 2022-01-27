@@ -41,6 +41,8 @@ $taskData = $db->getTaskById($taskId)[0];
 
 $taskPages = $db->getPagesByTaskId($taskId, ['Url']);
 
+$taskProjects = $db->getProjectsByTaskId($taskId, ['title']);
+
 $taskUrls = array_column($taskPages, 'Url');
 
 $urlsForQuery = implode(',', array_map(fn($url) => "'$url'", $taskUrls));
@@ -115,8 +117,25 @@ $weeklyDatesHeader = $dateUtils->getWeeklyDates('header');
     <span class="material-icons align-top">west</span> <a href="./tasks_home.php" alt="Back to tasks home page">Tasks</a>
 </div>
 
-<div class="row">
+<!-- <div class="row">
     <h2 class="h3 pt-2 pb-2 d-inline-block" data-i18n=""><?=$taskData['Task']?></h2>
+</div> -->
+<h2 class="h3 pt-2 pb-2" data-i18n=""><?=$taskData['Task']?></h2>
+
+<div class="page_header back_link">
+        <span id="page_project">
+              <?php
+              if (count($taskProjects) > 0) {
+                  echo '<span class="material-icons align-top">folder</span>';
+              }
+
+              echo implode(", ", array_map(function($project) {
+                  return '<a href="./projects_summary.php?projectId='.$project['id'].'" alt="Project: '.$project['title'].'">' . $project['title'] . '</a>';
+                  //SWITCH TO THIS line after the summary page is done
+                  //return '<a href="./projects_summary.php?prj='.$project.'" alt="Project: '.$project.'">' . $project . '</a>';
+              }, $taskProjects));
+              ?>
+         </span>
 </div>
 
 <div class="tabs sticky">
