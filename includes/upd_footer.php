@@ -32,7 +32,7 @@
 <script>
 
   $(document).ready(function() {
-      $("#toptask, #toptask2").DataTable({
+      $("#toptask, #toptask2, #toptask3").DataTable({
           "paging":   false,
           //"ordering": true //default value
           //"order": [[ 1, "asc" ]],

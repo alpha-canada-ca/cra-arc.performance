@@ -328,7 +328,8 @@ a {
 }
 
 .text-secondary {
-    color: #686F78!important;
+    /* color: #686F78!important; */
+    color: #000 !important;
 }
 
 /* located in the current css file*/
@@ -437,5 +438,9 @@ margin: 0px 20px 0px 20px;
 
 /* Updated text-warning colour from orange/yellow to black */
 .text-warning {
-  color:#000 !important;
+  color:#686F78 !important;
+}
+
+caption {
+    color: #686F78 !important;
 }

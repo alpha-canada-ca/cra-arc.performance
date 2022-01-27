@@ -131,9 +131,9 @@ if ($succ === 1)
     <div class="row mb-4 mt-1">
       <div class="dropdown">
         <button type="button" class="btn bg-white border border-1 dropdown-toggle" id="range-button" data-bs-toggle="dropdown" aria-expanded="false"><span class="material-icons align-top">calendar_today</span> <span data-i18n="dr-lastweek">Last week</span></button>
-            <span class="text-secondary ps-2 text-nowrap dates-header-week"><?=$datesHeader[1][0] ?> - <?=$datesHeader[1][1] ?></span>
-            <span class="text-secondary ps-2 text-nowrap dates-header-week" data-i18n="compared_to"> compared to </span>
-            <span class="text-secondary ps-2 text-nowrap dates-header-week"><?=$datesHeader[0][0] ?> - <?=$datesHeader[0][1] ?></span>
+            <span class="text-secondary ps-2 text-nowrap dates-header-week"><strong><?=$datesHeader[1][0] ?> - <?=$datesHeader[1][1] ?></strong></span>
+            <span class="text-secondary ps-2 text-nowrap dates-header-week" data-i18n="compared_to">compared to</span>
+            <span class="text-secondary ps-2 text-nowrap dates-header-week"><strong><?=$datesHeader[0][0] ?> - <?=$datesHeader[0][1] ?></strong></span>
 
         <ul class="dropdown-menu" aria-labelledby="range-button" style="">
           <li><a class="dropdown-item active" href="#" aria-current="true" data-i18n="dr-lastweek">Last week</a></li>
@@ -248,7 +248,8 @@ if ($succ === 1)
         function posOrNeg($num)
         {
             if ($num > 0) return 'text-success:arrow_upward';
-            else if ($num == 0) return 'text-warning:horizontal_rule';
+            else if ($num == 0) return 'text-warning:';
+            //else if ($num == 0) return 'text-warning:horizontal_rule';
             else return 'text-danger:arrow_downward';
         }
 
@@ -458,9 +459,12 @@ $diff = abs($diff);
                     $s = date("Y-m-d", strtotime($s));
                     $e1 = date("Y-m-d", strtotime($e1));
 
+                    //echo $e1;
+
                     $params = array("filterByFormula" => "AND(IS_AFTER({CALL_DATE}, '$s'), IS_BEFORE({CALL_DATE}, DATEADD('$e1',1,'days')))");
 
                     $table = $curMonth;
+                    //echo $table;
 
                     $fullArray = [];
 
@@ -505,6 +509,10 @@ $diff = abs($diff);
                    $utime = strtotime($var['fields']['CALL_DATE']);
                    return $utime <= $rangeEndPW && $utime >= $rangeStartPW;
                 });
+
+                // echo "<pre>";
+                // print_r($fullArray);
+                // echo "</pre>";
 
 
                 if (( count( $WeeklyData ) > 0 ) && ( count( $PWeeklyData ) > 0 )) {
@@ -1238,7 +1246,7 @@ $sumNumUsers = number_format(array_sum($con1));
       <div class="col-lg-12 col-md-12">
         <div class="card">
           <div class="card-body pt-2">
-            <h3 class="card-title"><span class="card-tooltip h6" data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-placement="right" data-bs-content="Top Tasks from the CRA Quarterly Top Task Survey" data-bs-original-title="" title="" data-i18n="top10-tasks">Top 10 tasks</span></h3>
+            <h3 class="card-title"><span class="card-tooltip h6" data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-placement="right" data-bs-content="Top Tasks from the CRA Quarterly Top Task Survey" data-bs-original-title="" title="" data-i18n="top10-tasks">Top 10 tasks GC Task Success Survey</span></h3>
             <div id="toptask_wrapper" class="dataTables_wrapper dt-bootstrap5 no-footer"><div class="row"><div class="col-sm-12 col-md-6"></div><div class="col-sm-12 col-md-6"></div></div><div class="row"><div class="col-sm-12">
 
                <?php
@@ -1249,11 +1257,12 @@ $sumNumUsers = number_format(array_sum($con1));
                 if (count($qry) > 0) { ?>
                   <div class="table-responsive">
               <table class="table table-striped dataTable no-footer">
+                <caption>Top 10 Tasks GC Task Success Survey</caption>
                 <thead>
                   <tr>
                     <th data-i18n="task">Task</th>
-                    <th data-i18n="change">>Change</th>
-                    <th data-i18n="">Task Success Survey Completed</th>
+                    <th data-i18n="comparison">>Comparison</th>
+                    <th data-i18n=""><span class="card-tooltip h6" data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-placement="right" data-bs-content="Task Success Survey Completed tooltip" data-bs-original-title="" title="" data-i18n="">Task Success Survey Completed</span></th>
                   </tr>
                 </thead>
                 <tbody>
@@ -1281,252 +1290,6 @@ $sumNumUsers = number_format(array_sum($con1));
       </div>
     </div>
 
-    <div class="row mb-4">
-      <div class="col-lg-12 col-md-12">
-        <div class="card">
-          <div class="card-body pt-2">
-            <h3 class="card-title"><span class="card-tooltip h6" data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-placement="right" data-bs-content="Total number of calls per enquiry line: ITE (Individual Tax Enquiries), e-services, Child and Family Benefits, Buiness Enquiries, etc." data-bs-original-title="" title="" data-i18n="d3-tcbil">Total calls by inquiry line</span></h3>
-            <div class="card-body pt-2" id="d3_tcbil"></div>
-              <div id="d3_www_legend3"></div>
-                <!-- Total calls by Enquiry_line D3 bar chart -->
-                <?php
-
-                  $fieldsByGroupEL = group_by('Enquiry_line', $all_fields);
-                  $fieldsByGroupELPW = group_by('Enquiry_line', $all_fieldsPW);
-
-
-                  foreach ( $fieldsByGroupEL as &$item ) {
-                    $item["Total EL calls"] = array_sum(array_column_recursive($item, "Calls"));
-                  }
-
-                  foreach ( $fieldsByGroupELPW as &$item ) {
-                    $item["Total EL calls"] = array_sum(array_column_recursive($item, "Calls"));
-                  }
-
-                  $s = date("M d", strtotime($s));
-                  $e = date("M d", strtotime($e));
-                  $s1 = date("M d", strtotime($s1));
-                  $e1 = date("M d", strtotime($e1));
-
-
-                  // echo $s;
-                  // echo $e;
-                  // echo $s1;
-                  // echo $e1;
-                  //echo gettype($e1);
-
-
-                  $d3DateRanges = array($s.'-'.$e,$s1.'-'.$e1); // previous $a1
-
-                  // echo "<pre>";
-                  // print_r($d3DateRanges);
-                  // echo "</pre>";
-
-                  $groups = json_encode($d3DateRanges);
-
-                  $el = array_values(array_unique(array_column_recursive($fieldsByGroup, "Enquiry_line")));
-                  $subgroups = json_encode($el);
-
-                  /// ---------------------
-                  /// MAKE SURE WE ADD THE DATA IN THE RIGHT DATE RANGE - AND TRIPLE CHECK THE RESULTS WITH THE ACTUAL DATA IN THE WEKLY AND PWEEKLY VARIABLES
-                  /// -----------------------
-                  for ($i = 0; $i < 2; ++$i) {
-                    $final_array2["dateRange"] = $d3DateRanges[$i];
-                          if ($i==0) {
-                              for ($k = 0; $k < count($el); ++$k) {
-                                $final_array2[$el[$k]] = $fieldsByGroupELPW[$el[$k]]["Total EL calls"];
-                              }
-                          }
-                          else {
-                            for ($k = 0; $k < count($el); ++$k) {
-                              $final_array2[$el[$k]] = $fieldsByGroupEL[$el[$k]]["Total EL calls"];
-                            }
-                          }
-                    // $final_array["No"] = $d3Data[$i+4];
-                    $d3_data_w[]=$final_array2;
-                  }
-
-                  $mydata2 = json_encode($d3_data_w);
-
-                  // echo "<pre>";
-                  // print_r($d3_data_w);
-                  // echo "</pre>";
-
-                  ?>
-                  <script>
-
-                  // set the dimensions and margins of the graph
-                  width = parseInt(d3.select('#d3_tcbil').style('width'), 10)
-                  height = width / 3;
-                  //alert("hellp");
-                  var margin = {top: 10, right: 30, bottom: 30, left: 100},
-                      width = width - margin.left - margin.right,
-                      height = height - margin.top - margin.bottom,
-                      legendHeight = 0;
-
-                  // append the svg object to the body of the page
-                  var svg2 = d3.select("#d3_tcbil")
-                    .append("svg")
-                      .attr("width", width + margin.left + margin.right)
-                      .attr("height", height + margin.top + margin.bottom + legendHeight)
-                    .append("g")
-                      .attr("transform",
-                            "translate(" + margin.left + "," + margin.top + ")");
-
-                  // Parse the Data
-                    var data2 = <?=$mydata2?>;
-
-                    console.log("data for TCBIL");
-                    console.log(data2);
-                    //console.log(typeof data)
-                    // List of subgroups = header of the csv files = soil condition here
-                    //var subgroups = data.columns.slice(1)
-                    var subgroups = <?=$subgroups?>;
-                    //console.log(subgroups)
-                    //console.log(typeof subgroups)
-
-                    // List of groups = species here = value of the first column called group -> I show them on the X axis
-                    //var groups = d3.map(data, function(d){return(d.group)}).keys()
-                    var groups = <?=$groups?>;
-                    //console.log(groups)
-                    //console.log(typeof groups)
-
-                    // Add X axis
-                    var x = d3.scaleBand()
-                        .domain(groups)
-                        .range([0, width])
-                        .padding([0.3]);
-                    svg2.append("g")
-                      .attr("transform", "translate(0," + height + ")")
-                      .call(d3.axisBottom(x).tickSizeOuter(0));
-
-                    // get the max value from the data json object for the y axis domain
-                    var max = d3.max(data2, function(d){ return d3.max(d3.values(d).filter(function(d1){ return !isNaN(d1)}))});
-                    console.log(max);
-                    var num_digits = Math.floor(Math.log10(max)) + 1;
-                    console.log(num_digits);
-                    console.log(Math.ceil(max/Math.pow(10,num_digits-1))*Math.pow(10,num_digits-1));
-
-                    // Add Y axis
-                    var y = d3.scaleLinear()
-                      .domain([0, Math.ceil(max/Math.pow(10,num_digits-1))*Math.pow(10,num_digits-1)])
-                      //.domain([0, 200000])
-                      .range([ height, 0 ]);
-
-                    // grid lines on Y axis
-                    var yGrid = d3.axisLeft(y).tickSize(-width).tickFormat('').ticks(5);
-
-                    // Another scale for subgroup position?
-                    var xSubgroup = d3.scaleBand()
-                      .domain(subgroups)
-                      .range([0, x.bandwidth()])
-                      .padding([0.1]);
-
-                    //create  yGrid
-                    svg2.append('g')
-                      .attr('class', 'axis-grid')
-                      .call(yGrid);
-
-                    //create Y axis
-                    svg2.append("g")
-                      .call(d3.axisLeft(y).ticks(5));
-
-                    // color palette = one color per subgroup
-                    var color = d3.scaleOrdinal()
-                      .domain(subgroups)
-                      .range(['#345EA5','#6CB5F3','#36A69A','#F8C040','#3EE9B7','#F17F2B']);
-
-                      // Show the bars
-                    svg2.append("g")
-                        .selectAll("g")
-                        // Enter in data = loop group per group
-                        .data(data2)
-                        .enter()
-                        .append("g")
-                          .attr("transform", function(d) { return "translate(" + x(d.dateRange) + ",0)"; })
-                        .selectAll("rect")
-                        .data(function(d) { return subgroups.map(function(key) { return {key: key, value: d[key]}; }); })
-                        .enter().append("rect")
-                          .attr("x", function(d) { return xSubgroup(d.key); })
-                          .attr("y", function(d) { return y(d.value); })
-                          .attr("width", xSubgroup.bandwidth())
-                          .attr("height", function(d) { return height - y(d.value); })
-                          .attr("fill", function(d) { return color(d.key); });
-
-                    svg2.selectAll(".tick text")
-                         .style("font-size","14px")
-                         .style("fill","#666");
-
-
-                    // D3 legend
-                    //color.domain(d3.keys(data[0]).filter(function(key) { return key !== "dateRange"; }));
-
-                    // svg_new.append("g")
-                    //    .attr("class", "legendOrdinal")
-                    //    .attr("transform", "translate(0,"+(height+45)+")");
-                    //
-                    // var legendOrdinal = d3.legendColor()
-                    //  .shape("rect")
-                    //  .shapePadding(150)
-                    //  .orient('horizontal')
-                    //  .labelAlign("start")
-                    //  .scale(color);
-                    //
-                    // svg_new.select(".legendOrdinal")
-                    //    .call(legendOrdinal);
-
-                    var legend = d3.select('#d3_www_legend3').selectAll("legend")
-                        .data(subgroups);
-
-                    var legend_cells = legend.enter().append("div")
-                      .attr("class","legend");
-
-                    var p1 = legend_cells.append("p").attr("class","legend_field");
-                    p1.append("span").attr("class","legend_color").style("background",function(d,i) { return color(i) } );
-                    p1.insert("text").text(function(d,i) { return d } );
-
-                    // text label for the y axis
-                    svg2.append("text")
-                        .attr("transform", "rotate(-90)")
-                        .attr("y", 0 - margin.left)
-                        .attr("x",0 - (height / 2))
-                        .attr("dy", "1em")
-                        .style("text-anchor", "middle")
-                        .text("Number of calls");
-
-                  </script>
-                  <details class="details-chart">
-                    <summary data-i18n="view-data-table">View table data</summary>
-                    <div class="table-responsive">
-                      <table class="table">
-                        <thead>
-                          <th>Inquiry line</th>
-                          <!-- <th>Previous Month</th>
-                          <th>Month</th> -->
-                          <th>Number of calls for <?=$d3DateRanges[0]?><!--two weeks ago--></th>
-                          <th>Number of calls for <?=$d3DateRanges[1]?><!--last week--></th>
-                        </thead>
-                        <tbody>
-
-                        <?php foreach ($el as $row) { ?>
-                          <tr>
-                            <td><?=$row?></td>
-                            <td><?=number_format($fieldsByGroupELPW[$row]["Total EL calls"]) ?></td>
-                            <td><?=number_format($fieldsByGroupEL[$row]["Total EL calls"]) ?></td>
-                          </tr>
-                        <?php } ?>
-
-                        </tbody>
-                      </table>
-                    </div>
-                  </details>
-
-
-
-          </div>
-        </div>
-      </div>
-    </div>
 
     <div class="row mb-4">
       <div class="col-lg-6 col-md-6">
@@ -1685,12 +1448,13 @@ $sumNumUsers = number_format(array_sum($con1));
               <summary data-i18n="view-data-table">View table data</summary>
               <div class="table-responsive">
                 <table class="table">
+                  <caption>Did you find what you were looking for?</caption>
                   <thead>
-                    <th>Metrics</th>
-                    <th>Previous Month</th>
-                    <th>Month</th>
-                    <th>Previous Week</th>
-                    <th>Week</th>
+                    <th scope="col">Metrics</th>
+                    <th scope="col">Previous Month</th>
+                    <th scope="col">Month</th>
+                    <th scope="col">Previous Week</th>
+                    <th scope="col">Week</th>
                   </thead>
                   <tbody>
 
@@ -1899,12 +1663,13 @@ $sumNumUsers = number_format(array_sum($con1));
               <summary data-i18n="view-data-table">View table data</summary>
               <div class="table-responsive">
                     <table class="table">
+                      <caption>What was wrong?</caption>
                       <thead>
-                        <th>Metrics</th>
-                        <th>Previous Month</th>
-                        <th>Month</th>
-                        <th>Previous Week</th>
-                        <th>Week</th>
+                        <th scope="col">Metrics</th>
+                        <th scope="col">Previous Month</th>
+                        <th scope="col">Month</th>
+                        <th scope="col">Previous Week</th>
+                        <th scope="col">Week</th>
                       </thead>
                       <tbody>
                    <tr>
@@ -1951,41 +1716,6 @@ $sumNumUsers = number_format(array_sum($con1));
     <!-- <div class="row mb-3 gx-3">
       <h4>UX Tests</h4>
     </div> -->
-    <div class="row mb-3 gx-3">
-      <div class="col-lg-4 col-md-6 col-sm-12">
-        <div class="card">
-          <div class="card-body card-pad pt-2">
-            <h3 class="card-title"><span class="h6" title="">Tasks tested</span></h3>
-              <div class="row">
-                <div class="col-lg-8 col-md-8 col-sm-8"><span class="h3 text-nowrap"><?=$totalTasks; ?></span></div>
-                <div class="col-lg-4 col-md-4 col-sm-4 text-end"><span class="h3 text-danger text-nowrap"></span></div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="col-lg-4 col-md-6 col-sm-12">
-        <div class="card">
-          <div class="card-body card-pad pt-2">
-            <h3 class="card-title"><span class="h6" title="">Average success rate</span></h3>
-              <div class="row">
-                <div class="col-md-8 col-sm-6"><span class="h3 text-nowrap"><?=$avgSuccessRate; ?></span></div>
-                <div class="col-md-4 col-sd-6 text-end"><span class="h3 text-success text-nowrap"></span></div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="col-lg-4 col-md-6 col-sm-12">
-        <div class="card">
-          <div class="card-body card-pad pt-2">
-            <h3 class="card-title"><span class="h6" title="">Participants</span></h3>
-              <div class="row">
-                <div class="col-sm-8"><span class="h3 text-nowrap"><?=$sumNumUsers; ?></span></div>
-                <div class="col-sm-4 text-end"><span class="h3 text-danger text-nowrap"></span></div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
 
 
 <!--Main content end-->
