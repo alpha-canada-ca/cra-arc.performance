@@ -53,7 +53,8 @@ function cardPercentage($percentage) {
 
         default: {
             $colour = '';
-            $arrow = 'horizontal_rule';
+            //$arrow = 'horizontal_rule';
+            $arrow = '';
             break;
         }
     }
@@ -134,9 +135,9 @@ $weeklyDatesHeader = $dateUtils->getWeeklyDates('header');
 <div class="row mb-4 mt-1">
     <div class="dropdown">
         <button type="button" class="btn bg-white border border-1 dropdown-toggle" id="range-button" data-bs-toggle="dropdown" aria-expanded="false"><span class="material-icons align-top">calendar_today</span> <span data-i18n="dr-lastweek">Last week</span></button>
-        <span class="text-secondary ps-2 text-nowrap dates-header-week"><?=$weeklyDatesHeader['current']['start']?> - <?=$weeklyDatesHeader['current']['end']?></span>
-        <span class="text-secondary ps-2 text-nowrap dates-header-week" data-i18n="compared_to">compared to</span>
-        <span class="text-secondary ps-2 text-nowrap dates-header-week"><?=$weeklyDatesHeader['previous']['start']?> - <?=$weeklyDatesHeader['previous']['end']?></span>
+        <span class="text-secondary ps-2 text-nowrap dates-header-week"><strong><?=$weeklyDatesHeader['current']['start']?> - <?=$weeklyDatesHeader['current']['end']?></strong></span>
+        <span class="text-secondary ps-1 text-nowrap dates-header-week" data-i18n="compared_to">compared to</span>
+        <span class="text-secondary ps-1 text-nowrap dates-header-week"><strong><?=$weeklyDatesHeader['previous']['start']?> - <?=$weeklyDatesHeader['previous']['end']?></strong></span>
 
         <ul class="dropdown-menu" aria-labelledby="range-button" style="">
             <li><a class="dropdown-item active" href="#" aria-current="true" data-i18n="dr-lastweek">Last week</a></li>
@@ -171,12 +172,13 @@ $weeklyDatesHeader = $dateUtils->getWeeklyDates('header');
                             <div class="col-sm-12">
                                 <div class="table-responsive">
                                     <table id="pages-dt" class="table table-striped dataTable no-footer">
+                                      <caption>Visits by page</caption>
                                         <thead>
                                         <tr>
-                                            <th>Page title</th>
-                                            <th>Url</th>
-                                            <th class="text-nowrap">Unique visits</th>
-                                            <th class="text-nowrap">% Change</th>
+                                            <th scope="col">Page title</th>
+                                            <th scope="col">Url</th>
+                                            <th class="text-nowrap" scope="col">Unique visits</th>
+                                            <th class="text-nowrap" scope="col">% Change</th>
                                         </tr>
                                         </thead>
                                         <tbody>

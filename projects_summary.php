@@ -55,7 +55,7 @@ function numDiffer($old, $new)
 function posOrNeg($num)
 {
     if ($num > 0) return 'text-success:arrow_upward';
-    else if ($num == 0) return 'text-warning:horizontal_rule';
+    else if ($num == 0) return 'text-warning:';
     else return 'text-danger:arrow_downward';
 }
 
@@ -380,9 +380,9 @@ if (empty($tmp)) {
 <div class="row mb-4 mt-1">
     <div class="dropdown">
         <button type="button" class="btn bg-white border border-1 dropdown-toggle" id="range-button" data-bs-toggle="dropdown" aria-expanded="false"><span class="material-icons align-top">calendar_today</span> <span data-i18n="dr-lastweek">Last week</span></button>
-        <span class="text-secondary ps-2 text-nowrap dates-header-week"><?=$datesHeader[1][0] ?> - <?=$datesHeader[1][1] ?></span>
-        <span class="text-secondary ps-2 text-nowrap dates-header-week" data-i18n="compared_to"> compared to </span>
-        <span class="text-secondary ps-2 text-nowrap dates-header-week"><?=$datesHeader[0][0] ?> - <?=$datesHeader[0][1] ?></span>
+        <span class="text-secondary ps-2 text-nowrap dates-header-week"><strong><?=$weeklyDatesHeader['current']['start']?> - <?=$weeklyDatesHeader['current']['end']?></strong></span>
+        <span class="text-secondary ps-1 text-nowrap dates-header-week" data-i18n="compared_to">compared to</span>
+        <span class="text-secondary ps-1 text-nowrap dates-header-week"><strong><?=$weeklyDatesHeader['previous']['start']?> - <?=$weeklyDatesHeader['previous']['end']?></strong></span>
 
         <ul class="dropdown-menu" aria-labelledby="range-button" style="">
             <li><a class="dropdown-item active" href="#" aria-current="true" data-i18n="dr-lastweek">Last week</a></li>
@@ -466,6 +466,7 @@ where \"Page URL (v12)\" in ($urlsForQuery)
                             if (count($qry) > 0) { ?>
                                 <div class="table-responsive">
                                     <table class="table table-striped dataTable no-footer">
+                                      <caption>Participant Task</caption>
                                         <tbody>
                                         <?php foreach ($qry as $row) { ?>
                                             <tr>
@@ -650,12 +651,13 @@ where \"Page URL (v12)\" in ($urlsForQuery)
                         <summary data-i18n="view-data-table">View table data</summary>
                         <div class="table-responsive">
                             <table class="table">
+                              <caption></caption>
                                 <thead>
-                                <th>Metrics</th>
-                                <th>Previous Month</th>
-                                <th>Month</th>
-                                <th>Previous Week</th>
-                                <th>Week</th>
+                                <th scope="col">Metrics</th>
+                                <th scope="col">Previous Month</th>
+                                <th scope="col">Month</th>
+                                <th scope="col">Previous Week</th>
+                                <th scope="col">Week</th>
                                 </thead>
                                 <tbody>
 
@@ -857,12 +859,13 @@ where \"Page URL (v12)\" in ($urlsForQuery)
                         <summary data-i18n="view-data-table">View table data</summary>
                         <div class="table-responsive">
                             <table class="table">
+                              <caption></caption>
                                 <thead>
-                                <th>Metrics</th>
-                                <th>Previous Month</th>
-                                <th>Month</th>
-                                <th>Previous Week</th>
-                                <th>Week</th>
+                                <th scope="col">Metrics</th>
+                                <th scope="col">Previous Month</th>
+                                <th scope="col">Month</th>
+                                <th scope="col">Previous Week</th>
+                                <th scope="col">Week</th>
                                 </thead>
                                 <tbody>
                                 <tr>

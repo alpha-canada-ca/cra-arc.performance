@@ -3,7 +3,7 @@
 <?php include "./includes/upd_sidebar.php"; ?>
 <?php include "./includes/date-ranges.php"; ?>
 <?php include "./includes/functions.php"; ?>
-<?php ini_set('display_errors', 1);
+<?php ini_set('display_errors', 0);
  ?>
 
 <!--Translation Code start-->
@@ -135,9 +135,9 @@ if ($succ === 1)
     <div class="row mb-4 mt-1">
       <div class="dropdown">
         <button type="button" class="btn bg-white border border-1 dropdown-toggle" id="range-button" data-bs-toggle="dropdown" aria-expanded="false"><span class="material-icons align-top">calendar_today</span> <span data-i18n="dr-lastweek">Last week</span></button>
-            <span class="text-secondary ps-2 text-nowrap dates-header-week"><?=$datesHeader[1][0] ?> - <?=$datesHeader[1][1] ?></span>
-            <span class="text-secondary ps-2 text-nowrap dates-header-week" data-i18n="compared_to"> compared to </span>
-            <span class="text-secondary ps-2 text-nowrap dates-header-week"><?=$datesHeader[0][0] ?> - <?=$datesHeader[0][1] ?></span>
+            <span class="text-secondary ps-2 text-nowrap dates-header-week"><strong><?=$datesHeader[1][0] ?> - <?=$datesHeader[1][1] ?></strong></span>
+            <span class="text-secondary ps-2 text-nowrap dates-header-week" data-i18n="compared_to">compared to</span>
+            <span class="text-secondary ps-2 text-nowrap dates-header-week"><strong><?=$datesHeader[0][0] ?> - <?=$datesHeader[0][1] ?></strong></span>
 
         <ul class="dropdown-menu" aria-labelledby="range-button" style="">
           <li><a class="dropdown-item active" href="#" aria-current="true" data-i18n="dr-lastweek">Last week</a></li>
@@ -239,7 +239,7 @@ if ($succ === 1)
         function posOrNeg($num)
         {
             if ($num > 0) return 'text-success:arrow_upward';
-            else if ($num == 0) return 'text-warning:horizontal_rule';
+            else if ($num == 0) return 'text-warning:';
             else return 'text-danger:arrow_downward';
         }
 
@@ -608,12 +608,13 @@ if ($succ === 1)
               <summary data-i18n="view-data-table">View table data</summary>
               <div class="table-responsive">
                 <table class="table">
+                  <caption></caption>
                   <thead>
-                    <th>Metrics</th>
-                    <th>Previous Month</th>
-                    <th>Month</th>
-                    <th>Previous Week</th>
-                    <th>Week</th>
+                    <th scope="col">Metrics</th>
+                    <th scope="col">Previous Month</th>
+                    <th scope="col">Month</th>
+                    <th scope="col">Previous Week</th>
+                    <th scope="col">Week</th>
                   </thead>
                   <tbody>
 
@@ -804,12 +805,13 @@ if ($succ === 1)
               <summary data-i18n="view-data-table">View table data</summary>
                 <div class="table-responsive">
                     <table class="table">
+                      <caption></caption>
                       <thead>
-                        <th>Metrics</th>
-                        <th>Previous Month</th>
-                        <th>Month</th>
-                        <th>Previous Week</th>
-                        <th>Week</th>
+                        <th scope="col">Metrics</th>
+                        <th scope="col">Previous Month</th>
+                        <th scope="col">Month</th>
+                        <th scope="col">Previous Week</th>
+                        <th scope="col">Week</th>
                       </thead>
                       <tbody>
                         <tr>
@@ -859,7 +861,7 @@ if ($succ === 1)
         <div class="card">
           <div class="card-body pt-2">
             <h3 class="card-title"><span class="h6" data-i18n="top5-programs-most-feedback">Top 5 programs/services with the most feedback</span></h3>
-            <div id="toptask_wrapper" class="dataTables_wrapper dt-bootstrap5 no-footer"><div class="row"><div class="col-sm-12 col-md-6"></div><div class="col-sm-12 col-md-6"></div></div><div class="row"><div class="col-sm-12">
+            <div class="dataTables_wrapper dt-bootstrap5 no-footer"><div class="row"><div class="col-sm-12 col-md-6"></div><div class="col-sm-12 col-md-6"></div></div><div class="row"><div class="col-sm-12">
 
               <?php
 
@@ -868,11 +870,12 @@ if ($succ === 1)
                      if (count($qry) > 0) { ?>
                        <div class="table-responsive">
                          <table class="table table-striped dataTable no-footer">
+                           <caption>Top 5 programs/services with the most feedback</caption>
                            <thead>
                              <tr>
-                               <th data-i18n="program-service">Program/service</th>
-                               <th data-i18n="# of comments"># of comments</th>
-                               <th data-i18n="change">Change</th>
+                               <th data-i18n="program-service" scope="col">Program/service</th>
+                               <th data-i18n="# of comments" scope="col"># of comments</th>
+                               <th data-i18n="comparison" scope="col">Comparison</th>
                              </tr>
                            </thead>
                            <tbody>
@@ -914,7 +917,7 @@ if ($succ === 1)
         <div class="card">
           <div class="card-body pt-2">
             <h3 class="card-title"><span class="h6" data-i18n="top5-pages-most-feedback">Top 5 pages with the most feedback</span></h3>
-            <div id="toptask_wrapper" class="dataTables_wrapper dt-bootstrap5 no-footer"><div class="row"><div class="col-sm-12 col-md-6"></div><div class="col-sm-12 col-md-6"></div></div><div class="row"><div class="col-sm-12">
+            <div class="dataTables_wrapper dt-bootstrap5 no-footer"><div class="row"><div class="col-sm-12 col-md-6"></div><div class="col-sm-12 col-md-6"></div></div><div class="row"><div class="col-sm-12">
 
                <?php
 
@@ -923,18 +926,19 @@ if ($succ === 1)
                     if (count($qry) > 0) { ?>
                       <div class="table-responsive">
                         <table class="table table-striped dataTable no-footer">
+                          <caption>Top 5 pages with the most feedback</caption>
                           <thead>
                             <tr>
-                              <th data-i18n="page">Page</th>
-                              <th data-i18n="# of comments"># of comments</th>
-                              <th data-i18n="change">Change</th>
+                              <th data-i18n="page" scope="col">Page</th>
+                              <th data-i18n="# of comments" scope="col"># of comments</th>
+                              <th data-i18n="comparison" scope="col">Comparison</th>
                             </tr>
                           </thead>
                           <tbody>
                               <?php foreach ($qry as $row) { ?>
                                   <tr>
-                                    <td><a href="<?=array_key_exists('URL', $row[0]) ? $row[0]['URL'] : "#";?>" target="_blank"><?=array_key_exists('Lookup_page_title', $row[0]) ? $row[0]['Lookup_page_title'][0] : "";//=$row['Lookup_page_title'][0];?></a></td><?//=array_key_exists('Lookup_page_title', $row) ? $row['Lookup_page_title']) : "";?>
-                                    <td><?=array_key_exists('Total comments', $row) ? number_format($row['Total comments']) : "";?></td>
+                                    <td><a href="<?=array_key_exists('URL', $row[0]) ? './pages_summary.php?url='.$row[0]['URL'] : '#';?>"><?=array_key_exists('Lookup_page_title', $row[0]) ? $row[0]['Lookup_page_title'][0] : '';?></a></td> <?//=array_key_exists('Lookup_page_title', $row) ? $row['Lookup_page_title']) : "";?>
+                                    <td><a href="<?=array_key_exists('URL', $row[0]) ? './pages_pagefeedback.php?url='.$row[0]['URL'].'#comments' : '#';?>"><?=array_key_exists('Total comments', $row) ? number_format($row['Total comments']) : "";?></a></td>
                                     <?php
                                         if (array_key_exists($row[0]['URL'], $fieldsByGroupPW)){
                                             $diff = differ( $fieldsByGroupPW[$row[0]['URL']]['Total comments'], $row['Total comments'] );

@@ -42,7 +42,7 @@ function numDiffer($old, $new)
 function posOrNeg($num)
 {
     if ($num > 0) return 'text-success:arrow_upward';
-    else if ($num == 0) return 'text-warning:horizontal_rule';
+    else if ($num == 0) return 'text-warning:';
     else return 'text-danger:arrow_downward';
 }
 
@@ -319,9 +319,9 @@ $weeklyDatesHeader = $dateUtils->getWeeklyDates('header');
 <div class="row mb-4 mt-1">
     <div class="dropdown">
         <button type="button" class="btn bg-white border border-1 dropdown-toggle" id="range-button" data-bs-toggle="dropdown" aria-expanded="false"><span class="material-icons align-top">calendar_today</span> <span data-i18n="dr-lastweek">Last week</span></button>
-        <span class="text-secondary ps-2 text-nowrap dates-header-week"><?=$weeklyDatesHeader['current']['start']?> - <?=$weeklyDatesHeader['current']['end']?></span>
-        <span class="text-secondary ps-2 text-nowrap dates-header-week" data-i18n="compared_to"> compared to </span>
-        <span class="text-secondary ps-2 text-nowrap dates-header-week"><?=$weeklyDatesHeader['previous']['start']?> - <?=$weeklyDatesHeader['previous']['end']?></span>
+        <span class="text-secondary ps-2 text-nowrap dates-header-week"><strong><?=$weeklyDatesHeader['current']['start']?> - <?=$weeklyDatesHeader['current']['end']?></strong></span>
+        <span class="text-secondary ps-1 text-nowrap dates-header-week" data-i18n="compared_to">compared to</span>
+        <span class="text-secondary ps-1 text-nowrap dates-header-week"><strong><?=$weeklyDatesHeader['previous']['start']?> - <?=$weeklyDatesHeader['previous']['end']?></strong></span>
 
         <ul class="dropdown-menu" aria-labelledby="range-button" style="">
             <li><a class="dropdown-item active" href="#" aria-current="true" data-i18n="dr-lastweek">Last week</a></li>
@@ -433,7 +433,7 @@ $kpi_pieces = explode(":", $kpi_pos);
     <div class="card">
       <div class="card-body pt-2">
         <h3 class="card-title"><span class="card-tooltip h6" data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-placement="right" data-bs-content="" data-bs-original-title="" title="" data-i18n="">Participant tasks</span></h3>
-        <div id="toptask_wrapper" class="dataTables_wrapper dt-bootstrap5 no-footer"><div class="row"><div class="col-sm-12 col-md-6"></div><div class="col-sm-12 col-md-6"></div></div><div class="row"><div class="col-sm-12">
+        <div class="dataTables_wrapper dt-bootstrap5 no-footer"><div class="row"><div class="col-sm-12 col-md-6"></div><div class="col-sm-12 col-md-6"></div></div><div class="row"><div class="col-sm-12">
 
            <?php
 
@@ -442,6 +442,7 @@ $kpi_pieces = explode(":", $kpi_pos);
             if (count($qry) > 0) { ?>
               <div class="table-responsive">
                 <table class="table table-striped dataTable no-footer">
+                  <caption></caption>
                   <!-- <thead>
                     <tr>
                       <th data-i18n="task">Task</th>
@@ -477,7 +478,7 @@ $kpi_pieces = explode(":", $kpi_pos);
     <div class="card">
       <div class="card-body pt-2">
         <h3 class="card-title"><span class="h6" data-i18n="">Task Success by UX Test </span></h3>
-          <div id="toptask_wrapper" class="dataTables_wrapper dt-bootstrap5 no-footer"><div class="row"><div class="col-sm-12 col-md-6"></div><div class="col-sm-12 col-md-6"></div></div><div class="row"><div class="col-sm-12">
+          <div class="dataTables_wrapper dt-bootstrap5 no-footer"><div class="row"><div class="col-sm-12 col-md-6"></div><div class="col-sm-12 col-md-6"></div></div><div class="row"><div class="col-sm-12">
 
             <?php
 
@@ -493,16 +494,17 @@ $kpi_pieces = explode(":", $kpi_pos);
                  if (count($qry) > 0) { ?>
                    <div class="table-responsive">
                      <table class="table table-striped dataTable no-footer" id="toptask" data="" role="grid">
+                       <caption>Task Success by UX Test </caption>
                        <thead>
                          <tr>
-                           <th class="sorting" aria-controls="toptask" aria-label="Topic: activate to sort column" data-i18n="">Task</th>
+                           <th class="sorting" aria-controls="toptask" aria-label="Topic: activate to sort column" data-i18n="" scope="col">Task</th>
                            <?php foreach (array_reverse($prjByGroupType) as $key => $value) { ?>
-                                <th data-i18n=""><?=$key?> (<?=date("Y-m-d", strtotime($value[0]['Date']))?>)</th>
+                            <th class="sorting" aria-controls="toptask" aria-label="Topic: activate to sort column" data-i18n="" scope="col"><?=$key?> (<?=date("Y-m-d", strtotime($value[0]['Date']))?>)</th>
                             <?php } ?>
                            <!-- <th class="sorting" aria-controls="toptask" aria-label="Change: activate to sort column" data-i18n="# of calls" >Number of calls</th> -->
                            <!-- <th class="sorting" aria-controls="toptask" aria-label="Change: activate to sort column" data-i18n="" >Prev Week Calls</th> -->
                            <?php if (count($prjByGroupType)>1) {?>
-                              <th data-i18n="change">Change</th>
+                            <th class="sorting" aria-controls="toptask" aria-label="Topic: activate to sort column" data-i18n="comparison" scope="col">Comparison</th>
                            <?php } ?>
                          </tr>
                        </thead>
