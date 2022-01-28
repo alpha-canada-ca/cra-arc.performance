@@ -324,7 +324,7 @@ $weeklyDatesHeader = $dateUtils->getWeeklyDates('header');
 <div class="row mb-4 mt-1">
     <div class="dropdown">
         <button type="button" class="btn bg-white border border-1 dropdown-toggle" id="range-button" data-bs-toggle="dropdown" aria-expanded="false"><span class="material-icons align-top">calendar_today</span> <span data-i18n="dr-lastweek">Last week</span></button>
-        <span class="text-secondary ps-2 text-nowrap dates-header-week"><strong><?=$weeklyDatesHeader['current']['start']?> - <?=$weeklyDatesHeader['current']['end']?></strong></span>
+        <span class="text-secondary ps-3 text-nowrap dates-header-week"><strong><?=$weeklyDatesHeader['current']['start']?> - <?=$weeklyDatesHeader['current']['end']?></strong></span>
         <span class="text-secondary ps-1 text-nowrap dates-header-week" data-i18n="compared_to">compared to</span>
         <span class="text-secondary ps-1 text-nowrap dates-header-week"><strong><?=$weeklyDatesHeader['previous']['start']?> - <?=$weeklyDatesHeader['previous']['end']?></strong></span>
 
@@ -442,7 +442,10 @@ $kpi_pieces = explode(":", $kpi_pos);
 
            <?php
 
-          $qry = $prjTasks;
+          $qry = $projectTasks;
+          // echo "<pre>";
+          // print_r($qry);
+          // echo "</pre>";
 
             if (count($qry) > 0) { ?>
               <div class="table-responsive">
@@ -457,9 +460,9 @@ $kpi_pieces = explode(":", $kpi_pos);
                   </thead> -->
                   <tbody>
                 <?php foreach ($qry as $row) { ?>
-                    <tr>
-                      <td><?=$row;?></td>
-                    </tr>
+                  <tr>
+                      <td><a href="./tasks_summary.php?taskId=<?=$row['id']?>"><?=$row['Task']?></a></td>
+                  </tr>
                 <?php } ?>
                   </tbody>
                 </table>
