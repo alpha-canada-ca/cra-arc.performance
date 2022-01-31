@@ -130,9 +130,9 @@ if ($succ === 1)
     <div class="row mb-4 mt-1">
       <div class="dropdown">
         <button type="button" class="btn bg-white border border-1 dropdown-toggle" id="range-button" data-bs-toggle="dropdown" aria-expanded="false"><span class="material-icons align-top">calendar_today</span> <span data-i18n="dr-lastweek">Last week</span></button>
-            <span class="text-secondary ps-2 text-nowrap dates-header-week"><strong><?=$datesHeader[1][0] ?> - <?=$datesHeader[1][1] ?></strong></span>
-            <span class="text-secondary ps-2 text-nowrap dates-header-week" data-i18n="compared_to">compared to</span>
-            <span class="text-secondary ps-2 text-nowrap dates-header-week"><strong><?=$datesHeader[0][0] ?> - <?=$datesHeader[0][1] ?></strong></span>
+            <span class="text-secondary ps-3 text-nowrap dates-header-week"><strong><?=$datesHeader[1][0] ?> - <?=$datesHeader[1][1] ?></strong></span>
+            <span class="text-secondary ps-1 text-nowrap dates-header-week" data-i18n="compared_to">compared to</span>
+            <span class="text-secondary ps-1 text-nowrap dates-header-week"><strong><?=$datesHeader[0][0] ?> - <?=$datesHeader[0][1] ?></strong></span>
 
         <!-- <ul class="dropdown-menu" aria-labelledby="range-button" style="">
           <li><a class="dropdown-item active" href="#" aria-current="true" data-i18n="dr-lastweek">Last week</a></li>
@@ -531,7 +531,7 @@ $diff = abs($diff);
       <div class="col-lg-12 col-md-12">
         <div class="card">
           <div class="card-body pt-2">
-            <h3 class="card-title"><span class="card-tooltip h6" data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-placement="right" data-bs-content="Top 10 most used search terms in Google to access CRA pages." data-bs-original-title="" title="" data-i18n="top10-terms-google">Top 10 search terms from Google</span></h3>
+            <h3 class="card-title"><span class="card-tooltip h6" data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-placement="right" data-bs-content="Top 10 most used search terms in Google to access CRA pages." data-bs-original-title="" title="" data-i18n="top10-terms-google">Top 10 Search terms from Google</span></h3>
             <div class="dataTables_wrapper dt-bootstrap5 no-footer"><div class="row"><div class="col-sm-12 col-md-6"></div><div class="col-sm-12 col-md-6"></div></div><div class="row"><div class="col-sm-12">
 
               <?php
@@ -669,7 +669,19 @@ $diff = abs($diff);
                                   ?>
 
                                           <tr>
-                                            <td><?=$value['value'] ?></td>
+                                            <td>
+                                                <?php
+                                                  // if ($value['value'] != "(Low Traffic)")
+                                                  //   {
+                                                  //     echo $value['value'];
+                                                  //   }
+                                                  // else {
+                                                  //     echo "Other searches";
+                                                  //   }
+                                                  echo ($value['value'] != "(Low Traffic)") ? $value['value'] : "Other search terms";
+
+                                                ?>
+                                            </td>
                                             <td><?=number_format($value['data'][1]) ?></td>
                                             <td><span class="<?=$pieces[0] ?> text-nowrap"><span class="material-icons"><?=$pieces[1] ?></span> <?=percent($diff) ?></span></td>
                                           </tr>

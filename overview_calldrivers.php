@@ -152,9 +152,9 @@
     <div class="row mb-4 mt-1">
       <div class="dropdown">
         <button type="button" class="btn bg-white border border-1 dropdown-toggle" id="range-button" data-bs-toggle="dropdown" aria-expanded="false"><span class="material-icons align-top">calendar_today</span> <span data-i18n="dr-lastweek">Last week</span></button>
-            <span class="text-secondary ps-2 text-nowrap dates-header-week"><strong><?=$datesHeader[1][0] ?> - <?=$datesHeader[1][1] ?></strong></span>
-            <span class="text-secondary ps-2 text-nowrap dates-header-week" data-i18n="compared_to">compared to</span>
-            <span class="text-secondary ps-2 text-nowrap dates-header-week"><strong><?=$datesHeader[0][0] ?> - <?=$datesHeader[0][1] ?></strong></span>
+            <span class="text-secondary ps-3 text-nowrap dates-header-week"><strong><?=$datesHeader[1][0] ?> - <?=$datesHeader[1][1] ?></strong></span>
+            <span class="text-secondary ps-1 text-nowrap dates-header-week" data-i18n="compared_to">compared to</span>
+            <span class="text-secondary ps-1 text-nowrap dates-header-week"><strong><?=$datesHeader[0][0] ?> - <?=$datesHeader[0][1] ?></strong></span>
         <?php /*<span class="text-secondary ps-2 text-nowrap dates-header-month d-none"><?=$datesHeaderMonth[1][0] ?> to <?=$datesHeaderMonth[1][1] ?> compared to <?=$datesHeaderMonth[0][0] ?> to <?=$datesHeaderMonth[0][1] ?></span>*/?>
 
         <ul class="dropdown-menu" aria-labelledby="range-button" style="">

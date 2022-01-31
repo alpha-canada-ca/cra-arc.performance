@@ -113,6 +113,197 @@ if ($previousTotalVisits === 0) {
 }
 
 $weeklyDatesHeader = $dateUtils->getWeeklyDates('header');
+
+
+
+// ADDED by KOLE
+
+//-----------------------------
+// FUNCTIONS
+// we need to add these in functions.php and remove them from every other page
+//-----------------------------
+
+
+//-----------------------------
+// FUNCTIONS
+// we need to add these in functions.php and remove them from every other page
+//-----------------------------
+
+function differ($old, $new)
+{
+    return (($new - $old) / $old);
+}
+
+function numDiffer($old, $new)
+{
+    return ($new - $old);
+}
+
+function posOrNeg($num)
+{
+    if ($num > 0) return 'text-success:arrow_upward';
+    else if ($num == 0) return 'text-warning:';
+    else return 'text-danger:arrow_downward';
+}
+
+function posOrNeg2($num)
+{
+    if ($num > 0) return 'text-success:+';
+    else if ($num == 0) return 'text-warning:';
+    else return 'text-danger:-';
+}
+
+function percent($num)
+{
+    return round($num * 100, 0) . '%';
+}
+
+function metKPI($num, $old)
+{
+    if (($num > 0.8) || (abs($old-$num)>0.2))  return 'text-success:check_circle:Met';
+    else return 'text-danger:warning:Did not meet';
+}
+
+
+$uxTestSelectedFields = [
+      '"Test title"',
+      '"Success Rate"',
+      '"Scenario/Questions"',
+      'Date',
+      '"# of Users"',
+      '"Test Type"'
+];
+
+$projectTasks = $db->getTasksByProjectId($projectId, ['Task']);
+$prjTasks = array_column($projectTasks, 'Task');
+
+// echo "<pre>";
+// print_r($prjTasks);
+// echo "</pre>";
+
+$projectTests = $db->getUxTestsByTaskId($taskId, $uxTestSelectedFields);
+//$taskTests = $db->getUxTestsByTaskId($taskId, $uxTestSelectedFields);
+//$relatedUxTests = array_column($projectTests, "Success Rate");
+
+
+//$relatedUxTests = array_column($taskTests, 'title');
+
+//
+// echo "<h4>UX Test correct</h4><pre>";
+// print_r($projectTests);
+// echo "</pre>";
+
+
+// ------------------------------------------------------------------
+// $prjTasks = array_values(array_unique(array_flatten(array_column_recursive($weeklyRe,"Lookup_Tasks"))));
+// $prjPages = array_values(array_unique(array_flatten(array_column_recursive($weeklyRe,"Lookup_Pages"))));
+// $prjStatus = array_values(array_unique(array_flatten(array_column_recursive($weeklyRe,"Status"))));
+$prjParticipants = array_sum(array_column_recursive($projectTests,"# of Users"));
+//echo "# of Users: ".$prjParticipants;
+
+# of Users
+// $relatedTasks = $fullArray[0]['fields']['Lookup_Tasks'];//['records'];
+// $relatedProjects = $fullArray[0]['fields']['Projects'];
+
+// echo "<pre>";
+// print_r($prjTasks);
+// echo "</pre>";
+// echo "-------------<br/>";
+// echo "<pre>";
+// print_r($prjPages);
+// echo "</pre>";
+
+
+
+//$prjData = array_column_recursive($fullArray,"fields");
+$prjData = $projectTests;
+
+// echo "<pre>";
+// print_r($prjData);
+// echo "</pre>";
+
+//sort the array by Date
+usort($prjData, function($b, $a) {
+   return new DateTime($a['Date']) <=> new DateTime($b['Date']);
+ });
+
+$prjByGroupType = group_by('Test Type', $prjData);
+
+
+// echo "<pre>";
+// print_r($prjByGroupType);
+// //print_r($prjData[0]['Success Rate']);
+// echo "</pre>";
+
+//-------------------------------------------------------
+// there are 2 ways to get the latest two UX testings per project
+//-------------------------------------------------------
+// 1. sort the array by DATE and group it by the Test Type and get the last two UX test types
+// 2. get the unique dates for all tests (as an array), sort the array and then with foreach loops get the last two tests
+//-------------------------------------------------------
+
+
+// 1.------------------------------------------------------
+
+$prjDatesUnique = array_values(array_unique(array_flatten(array_column_recursive($prjData,"Date"))));
+// echo "<pre>";
+// print_r($prjDatesUnique);
+// echo "</pre>";
+
+
+$latestTestDate = $prjDatesUnique[0];
+$compareTestDate = $prjDatesUnique[1];
+
+
+// echo "<pre>";
+// print_r($latestTestDate);
+// echo "</pre>";
+// echo "<br>";
+// echo "<pre>";
+// print_r($compareTestDate);
+// echo "</pre>";
+
+if (count($prjDatesUnique)>1) {
+    foreach ($prjData as $item) {
+      if ($item['Date'] == $latestTestDate) {
+        $latestTest[] = $item;
+      }
+      if ($item['Date'] == $compareTestDate) {
+        $compareTest[] = $item;
+      }
+      // code...
+    }
+
+
+    $avgTaskSuccess = (array_sum(array_column_recursive($latestTest, "Success Rate")))/(count($latestTest));
+    $avgCmpTaskSuccess = (array_sum(array_column_recursive($compareTest, "Success Rate")))/(count($compareTest));
+
+}
+else {
+    foreach ($prjData as $item) {
+      if ($item['Date'] == $latestTestDate) {
+        $latestTest[] = $item;
+      }
+    }
+
+    $avgTaskSuccess = (array_sum(array_column_recursive($latestTest, "Success Rate")))/(count($latestTest));
+    $avgCmpTaskSuccess = $avgTaskSuccess;
+
+}
+
+
+
+//-------------------------------------------------------------------
+
+
+
+
+
+
+
+
+
+
 ?>
 
 <div class="back_link">
@@ -154,7 +345,7 @@ $weeklyDatesHeader = $dateUtils->getWeeklyDates('header');
 <div class="row mb-4 mt-1">
     <div class="dropdown">
         <button type="button" class="btn bg-white border border-1 dropdown-toggle" id="range-button" data-bs-toggle="dropdown" aria-expanded="false"><span class="material-icons align-top">calendar_today</span> <span data-i18n="dr-lastweek">Last week</span></button>
-        <span class="text-secondary ps-2 text-nowrap dates-header-week"><strong><?=$weeklyDatesHeader['current']['start']?> - <?=$weeklyDatesHeader['current']['end']?></strong></span>
+        <span class="text-secondary ps-3 text-nowrap dates-header-week"><strong><?=$weeklyDatesHeader['current']['start']?> - <?=$weeklyDatesHeader['current']['end']?></strong></span>
         <span class="text-secondary ps-1 text-nowrap dates-header-week" data-i18n="compared_to">compared to</span>
         <span class="text-secondary ps-1 text-nowrap dates-header-week"><strong><?=$weeklyDatesHeader['previous']['start']?> - <?=$weeklyDatesHeader['previous']['end']?></strong></span>
 
@@ -165,9 +356,34 @@ $weeklyDatesHeader = $dateUtils->getWeeklyDates('header');
     </div>
 </div>
 
-<!-- Total visits card -->
-<div class="row mb-4 gx-3">
-    <div class="col-lg-4 col-md-6 col-sm-12">
+<?php
+$diff = differ($avgCmpTaskSuccess, $avgTaskSuccess);
+//$diff = differ($avgTaskSuccess, $avgCmpTaskSuccess);
+$pos = posOrNeg($diff);
+$pieces = explode(":", $pos);
+//
+$diff = abs($diff);
+$kpi_pos = metKPI($avgTaskSuccess, $avgCmpTaskSuccess);
+$kpi_pieces = explode(":", $kpi_pos);
+?>
+
+
+<div class="row mb-2 gx-2">
+  <div class="col-lg-6 col-md-6 col-sm-12">
+    <div class="card">
+      <div class="card-body card-pad pt-2">
+        <h3 class="card-title"><span class="card-tooltip h6" data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-placement="right" data-bs-content="" data-i18n="">Average task success from last UX test</span></h3>
+          <div class="row">
+            <div class="col-lg-8 col-md-8 col-sm-8"><span class="h3 text-nowrap"><?=percent($avgTaskSuccess); ?></span><span class="small"><?//=number_format($metrics[$visitors + 2]) ?></span></div>
+            <div class="col-lg-4 col-md-4 col-sm-4 text-end"><span class="h3 <?=$pieces[0] ?> text-nowrap"><span class="material-icons"><?=$pieces[1] ?></span> <?php if (count($prjDatesUnique)>1) {echo percent($diff);}  ?></span></div>
+          </div>
+          <div class="row">
+            <div class="col-lg-12 col-md-12 col-sm-12"><span class="<?=$kpi_pieces[0] ?> text-nowrap"><span class="material-icons"><?=$kpi_pieces[1] ?></span></span><span class="text-nowrap"> <?=$kpi_pieces[2]?> objective of 80% task success or 20 point increase</span></div>
+          </div>
+      </div>
+    </div>
+  </div>
+    <div class="col-lg-6 col-md-6 col-sm-12">
         <div class="card">
             <div class="card-body card-pad pt-2">
                 <h3 class="card-title"><span class="h6" data-i18n="">Total visits from all pages</span></h3>
@@ -178,7 +394,9 @@ $weeklyDatesHeader = $dateUtils->getWeeklyDates('header');
             </div>
         </div>
     </div>
-</div>
+ </div>
+
+
 
     <!-- Page data table -->
     <div class="row mb-4">
@@ -202,7 +420,7 @@ $weeklyDatesHeader = $dateUtils->getWeeklyDates('header');
                                         </thead>
                                         <tbody>
                                         <?php
-                                        $pagesSummaryUrl = '/pages_summary.php?url=https://';
+                                        $pagesSummaryUrl = './pages_summary.php?url=https://';
                                         // todo: datatable stuff - pagination, sorting, etc.
 
                                         foreach ($visitsByPage as $row) {
