@@ -233,31 +233,30 @@ $compareTestDate = $prjDatesUnique[1];
 // echo "</pre>";
 
 if (count($prjDatesUnique)>1) {
-  foreach ($prjData as $item) {
-    if ($item['Date'] == $latestTestDate) {
-      $latestTest[] = $item;
+    foreach ($prjData as $item) {
+      if ($item['Date'] == $latestTestDate) {
+        $latestTest[] = $item;
+      }
+      if ($item['Date'] == $compareTestDate) {
+        $compareTest[] = $item;
+      }
+      // code...
     }
-    if ($item['Date'] == $compareTestDate) {
-      $compareTest[] = $item;
-    }
-    // code...
-  }
 
 
-  $avgTaskSuccess = (array_sum(array_column_recursive($latestTest, "Success Rate")))/(count($latestTest));
-  $avgCmpTaskSuccess = (array_sum(array_column_recursive($compareTest, "Success Rate")))/(count($compareTest));
+    $avgTaskSuccess = (array_sum(array_column_recursive($latestTest, "Success Rate")))/(count($latestTest));
+    $avgCmpTaskSuccess = (array_sum(array_column_recursive($compareTest, "Success Rate")))/(count($compareTest));
 
 }
 else {
-  foreach ($prjData as $item) {
-    if ($item['Date'] == $latestTestDate) {
-      $latestTest[] = $item;
+    foreach ($prjData as $item) {
+      if ($item['Date'] == $latestTestDate) {
+        $latestTest[] = $item;
+      }
     }
-    // code...
-  }
 
-  $avgTaskSuccess = (array_sum(array_column_recursive($latestTest, "Success Rate")))/(count($latestTest));
-  $avgCmpTaskSuccess = $avgTaskSuccess;
+    $avgTaskSuccess = (array_sum(array_column_recursive($latestTest, "Success Rate")))/(count($latestTest));
+    $avgCmpTaskSuccess = $avgTaskSuccess;
 
 }
 
@@ -324,7 +323,7 @@ $weeklyDatesHeader = $dateUtils->getWeeklyDates('header');
 <div class="row mb-4 mt-1">
     <div class="dropdown">
         <button type="button" class="btn bg-white border border-1 dropdown-toggle" id="range-button" data-bs-toggle="dropdown" aria-expanded="false"><span class="material-icons align-top">calendar_today</span> <span data-i18n="dr-lastweek">Last week</span></button>
-        <span class="text-secondary ps-2 text-nowrap dates-header-week"><strong><?=$weeklyDatesHeader['current']['start']?> - <?=$weeklyDatesHeader['current']['end']?></strong></span>
+        <span class="text-secondary ps-3 text-nowrap dates-header-week"><strong><?=$weeklyDatesHeader['current']['start']?> - <?=$weeklyDatesHeader['current']['end']?></strong></span>
         <span class="text-secondary ps-1 text-nowrap dates-header-week" data-i18n="compared_to">compared to</span>
         <span class="text-secondary ps-1 text-nowrap dates-header-week"><strong><?=$weeklyDatesHeader['previous']['start']?> - <?=$weeklyDatesHeader['previous']['end']?></strong></span>
 
@@ -358,7 +357,7 @@ $kpi_pieces = explode(":", $kpi_pos);
             <div class="col-lg-4 col-md-4 col-sm-4 text-end"><span class="h3 <?=$pieces[0] ?> text-nowrap"><span class="material-icons"><?=$pieces[1] ?></span> <?php if (count($prjDatesUnique)>1) {echo percent($diff);}  ?></span></div>
           </div>
           <div class="row">
-            <div class="col-lg-12 col-md-12 col-sm-12"><span class="<?=$kpi_pieces[0] ?> text-nowrap"><span class="material-icons"><?=$kpi_pieces[1] ?></span></span><span class="text-nowrap"> <?=$kpi_pieces[2]?> objectve of 80% task success or 20 point increase</span></div>
+            <div class="col-lg-12 col-md-12 col-sm-12"><span class="<?=$kpi_pieces[0] ?> text-nowrap"><span class="material-icons"><?=$kpi_pieces[1] ?></span></span><span class="text-nowrap"> <?=$kpi_pieces[2]?> objective of 80% task success or 20 point increase</span></div>
           </div>
       </div>
     </div>
@@ -442,7 +441,10 @@ $kpi_pieces = explode(":", $kpi_pos);
 
            <?php
 
-          $qry = $prjTasks;
+          $qry = $projectTasks;
+          // echo "<pre>";
+          // print_r($qry);
+          // echo "</pre>";
 
             if (count($qry) > 0) { ?>
               <div class="table-responsive">
@@ -457,9 +459,9 @@ $kpi_pieces = explode(":", $kpi_pos);
                   </thead> -->
                   <tbody>
                 <?php foreach ($qry as $row) { ?>
-                    <tr>
-                      <td><?=$row;?></td>
-                    </tr>
+                  <tr>
+                      <td><a href="./tasks_summary.php?taskId=<?=$row['id']?>"><?=$row['Task']?></a></td>
+                  </tr>
                 <?php } ?>
                   </tbody>
                 </table>

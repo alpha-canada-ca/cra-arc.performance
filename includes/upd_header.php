@@ -27,7 +27,7 @@
     <header id="header">
       <div class="row">
         <div class="col-lg-3 col-md-4 col-sm-6 col-6 text-start"><img class="img-fluid fip-colour" src="./assets/img/CRA-FIP-9pt-e.png" alt="Government of Canada"></div>
-        <div class="col-lg-9 col-md-8 col-sm-6 col-6 text-end lang-toggle locale-switcher">
+        <div class="col-lg-9 col-md-8 col-sm-6 col-6 text-end lang-toggle">
           <ul class="locale-switcher list-inline">
               <li class="list-inline-item hidden"><a href="#" data-locale="en">English</a></li>
               <li class="list-inline-item"><a href="#" data-locale="fr">Français</a></li>
