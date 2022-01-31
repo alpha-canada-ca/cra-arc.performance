@@ -233,31 +233,30 @@ $compareTestDate = $prjDatesUnique[1];
 // echo "</pre>";
 
 if (count($prjDatesUnique)>1) {
-  foreach ($prjData as $item) {
-    if ($item['Date'] == $latestTestDate) {
-      $latestTest[] = $item;
+    foreach ($prjData as $item) {
+      if ($item['Date'] == $latestTestDate) {
+        $latestTest[] = $item;
+      }
+      if ($item['Date'] == $compareTestDate) {
+        $compareTest[] = $item;
+      }
+      // code...
     }
-    if ($item['Date'] == $compareTestDate) {
-      $compareTest[] = $item;
-    }
-    // code...
-  }
 
 
-  $avgTaskSuccess = (array_sum(array_column_recursive($latestTest, "Success Rate")))/(count($latestTest));
-  $avgCmpTaskSuccess = (array_sum(array_column_recursive($compareTest, "Success Rate")))/(count($compareTest));
+    $avgTaskSuccess = (array_sum(array_column_recursive($latestTest, "Success Rate")))/(count($latestTest));
+    $avgCmpTaskSuccess = (array_sum(array_column_recursive($compareTest, "Success Rate")))/(count($compareTest));
 
 }
 else {
-  foreach ($prjData as $item) {
-    if ($item['Date'] == $latestTestDate) {
-      $latestTest[] = $item;
+    foreach ($prjData as $item) {
+      if ($item['Date'] == $latestTestDate) {
+        $latestTest[] = $item;
+      }
     }
-    // code...
-  }
 
-  $avgTaskSuccess = (array_sum(array_column_recursive($latestTest, "Success Rate")))/(count($latestTest));
-  $avgCmpTaskSuccess = $avgTaskSuccess;
+    $avgTaskSuccess = (array_sum(array_column_recursive($latestTest, "Success Rate")))/(count($latestTest));
+    $avgCmpTaskSuccess = $avgTaskSuccess;
 
 }
 
@@ -358,7 +357,7 @@ $kpi_pieces = explode(":", $kpi_pos);
             <div class="col-lg-4 col-md-4 col-sm-4 text-end"><span class="h3 <?=$pieces[0] ?> text-nowrap"><span class="material-icons"><?=$pieces[1] ?></span> <?php if (count($prjDatesUnique)>1) {echo percent($diff);}  ?></span></div>
           </div>
           <div class="row">
-            <div class="col-lg-12 col-md-12 col-sm-12"><span class="<?=$kpi_pieces[0] ?> text-nowrap"><span class="material-icons"><?=$kpi_pieces[1] ?></span></span><span class="text-nowrap"> <?=$kpi_pieces[2]?> objectve of 80% task success or 20 point increase</span></div>
+            <div class="col-lg-12 col-md-12 col-sm-12"><span class="<?=$kpi_pieces[0] ?> text-nowrap"><span class="material-icons"><?=$kpi_pieces[1] ?></span></span><span class="text-nowrap"> <?=$kpi_pieces[2]?> objective of 80% task success or 20 point increase</span></div>
           </div>
       </div>
     </div>
