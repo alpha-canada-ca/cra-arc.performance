@@ -459,6 +459,7 @@ if ($succ === 1)
         //
         $metricsNew = json_decode($result[1], true);
         $deviceTypeAndAvgTime = $metricsNew["summaryData"]["filteredTotals"];
+        $provinces = $metricsNew["summaryData"]["filteredTotals"];
         //$whatWasClicked = $activityMap["rows"];
         // echo "<pre>";
         // print_r($deviceTypeAndAvgTime);
@@ -469,6 +470,39 @@ if ($succ === 1)
         $deviceTablet = 8;
         $deviceOther = 12;
         $avgTimeOnPage = 16;
+        $provAB = 20;
+        $provBC = 24;
+        $provMB = 28;
+        $provNB = 32;
+        $provNFL = 36;
+        $provNWT = 40;
+        $provNS = 44;
+        $provNV = 48;
+        $provON = 52;
+        $provOutCan = 56;
+        $provPEI = 60;
+        $provQB = 64;
+        $provSK = 68;
+        $provYK = 72;
+
+        // [ Province Name <EN||FR>, 2 Months Ago, Previous Month, 2 Weeks Ago, Previous Week ]
+
+        $provArray = [
+            [ "Alberta||L'Alberta", $provinces[$provAB], $provinces[$provAB + 1], $provinces[$provAB + 2], $provinces[$provAB + 3]],
+            [ "British Columbia||La Colombie-Britannique", $provinces[$provBC], $provinces[$provBC + 1], $provinces[$provBC + 2], $provinces[$provBC + 3]],
+            [ "Manitoba||Le Manitoba", $provinces[$provMB], $provinces[$provMB + 1], $provinces[$provMB + 2], $provinces[$provMB + 3]],
+            [ "New Brunswick||Le Nouveau-Brunswick", $provinces[$provNB], $provinces[$provNB + 1], $provinces[$provNB + 2], $provinces[$provNB + 3]],
+            [ "Newfoundland and Labrador||La Terre-Neuve-et-Labrador", $provinces[$provNFL], $provinces[$provNFL + 1], $provinces[$provNFL + 2], $provinces[$provNFL + 3]],
+            [ "Northwest Territories||Les Territoires du Nord-Ouest", $provinces[$provNWT], $provinces[$provNWT + 1], $provinces[$provNWT + 2], $provinces[$provNWT + 3]],
+            [ "Nova Scotia||La Nouvelle-Écosse", $provinces[$provNS], $provinces[$provNS + 1], $provinces[$provNS + 2], $provinces[$provNS + 3]],
+            [ "Nunavut||Le Nunavut", $provinces[$provNV], $provinces[$provNV + 1], $provinces[$provNV + 2], $provinces[$provNV + 3]],
+            [ "Ontario||L'Ontario", $provinces[$provON], $provinces[$provON + 1], $provinces[$provON + 2], $provinces[$provON + 3]],
+            [ "Outside Canada||À l'extérieur du Canada", $provinces[$provOutCan], $provinces[$provOutCan + 1], $provinces[$provOutCan + 2], $provinces[$provOutCan + 3]],
+            [ "Prince Edward Island||Île-du-Prince-Édouard", $provinces[$provPEI], $provinces[$provPEI + 1], $provinces[$provPEI + 2], $provinces[$provPEI + 3]],
+            [ "Quebec||Le Québec", $provinces[$provQB], $provinces[$provQB + 1], $provinces[$provQB + 2], $provinces[$provQB + 3]],
+            [ "Saskatchewan||La Saskatchewan", $provinces[$provSK], $provinces[$provSK + 1], $provinces[$provSK + 2], $provinces[$provSK + 3]],
+            [ "Yukon||Le Yukon", $provinces[$provYK], $provinces[$provYK + 1], $provinces[$provYK + 2], $provinces[$provYK + 3]]
+        ];
 
 
         $pp = json_decode($result[2], true);
@@ -516,8 +550,10 @@ if ($succ === 1)
             <h3 class="card-title"><span class="card-tooltip h6" data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-placement="right" data-bs-content="Number of page visits breakdown (bar chart) relation over selected Date ranges, compared to the Call volume (line chart) - the total number of calls in the Calls centre for the same date ranges." data-bs-original-title="" title="" data-i18n="">Visits by day</span></h3>
             <div class="card-body pt-2" id="d3_visits"></div>
             <div id="d3_www_legend"></div><div id="d3_www_legend4"></div>
+       
               <!-- Total calls by Enquiry_line D3 bar chart -->
               <?php
+              
 
                 $s = $startLastGSC;
                 $e = $endLastGSC;
@@ -799,6 +835,7 @@ if ($succ === 1)
 
                                           <?php
                                   }
+                                  
 
                                   ?>
 
@@ -944,6 +981,45 @@ if ($succ === 1)
           <div class="card-body pt-2">
             <h3 class="card-title"><span class="card-tooltip h6" data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-placement="right" data-bs-content="" data-bs-original-title="" title="" data-i18n="">Visitor location</span></h3>
             <div class="dataTables_wrapper dt-bootstrap5 no-footer"><div class="row"><div class="col-sm-12 col-md-6"></div><div class="col-sm-12 col-md-6"></div></div><div class="row"><div class="col-sm-12">
+
+                 <?php
+                   $qry = $provArray;
+
+                   if (count($qry) > 0) { ?>
+                     <div class="table-responsive">
+                       <table class="table table-striped dataTable no-footer" data="" role="grid" id="toptask">
+                         <thead>
+                           <tr>
+                             <th class="sorting" aria-controls="toptask" aria-label="Topic: activate to sort column" data-i18n="">Province</th>
+                             <th class="sorting" aria-controls="toptask" aria-label="Change: activate to sort column" data-i18n="" >Visits</th>
+                             <!-- <th class="sorting" aria-controls="toptask" aria-label="Change: activate to sort column" data-i18n="" >Prev Week Calls</th> -->
+                             <th data-i18n="change">Change</th>
+                           </tr>
+                         </thead>
+                         <tbody>
+                       <?php foreach ($qry as $row) {
+                         // echo "---<pre>";
+                         // print_r($row);
+                         // echo "</pre>";
+
+                         ?>
+                           <tr>
+                             <td><?=explode("||", $row[0])[0]?></td>
+                             <td><span><?=number_format($row[4])?></span></td>
+                             <?php
+                             $diff = differ($row[3], $row[4] );
+                             $posi = posOrNeg2($diff);
+                             $pieces = explode(":", $posi);
+                             $diff = abs($diff);
+                             ?>
+                             <!-- <td><span>--><?//=$fieldsByGroupPW[$row[0]['Topic']]['Total topic calls'];?><!--</span></td> -->
+                             <td><span class="<?=$pieces[0]?>"><?=$pieces[1]?> <?=percent($diff)?></span></td>
+                           </tr>
+                       <?php } ?>
+                         </tbody>
+                       </table>
+                     </div>
+                 <?php } ?>
 
             </div></div><div class="row"><div class="col-sm-12 col-md-5"></div><div class="col-sm-12 col-md-7"></div></div></div>
           </div>
