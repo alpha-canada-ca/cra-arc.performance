@@ -180,7 +180,9 @@ foreach ($temp as $t)
 }
 
 $result = $allAPI;
-
+// echo "<pre>";
+// print_r($allAPI);
+// echo "</pre>";
 
 // -----------------------------------------------------------------------
 // METRICS query (Visit metrics and DYFWYWLF- Yes and No answers)
@@ -212,6 +214,21 @@ $sum_metrics2 = array_reduce($metrics2, function($sums, $row) {
     return $row;
 }, array_map(fn($item) => 0, $metrics2[0] ?? []));
 
+//echo "-------------------------";
+//$test12 = array_map(function($item) {return $item['filteredTotals'];}, $result[1]);
+$dyfwywlfPerPage = array_map(function($f) {return array_column_recursive($f, "filteredTotals");}, $result[0]);
+//$test12 = array_diff(array_combine(array_keys($result[1]), array_column_recursive($result[1], "filteredTotals")), [null]);
+//$test12 = array_filter(array_combine(array_keys($result[1]), array_column_recursive($result[1], "filteredTotals")));
+// echo "<pre>";
+// print_r($dyfwywlfPerPage);
+// echo "</pre>";
+
+// print_r($taskPages);
+// echo "metrics 2:";
+// echo "<pre>";
+// print_r($metrics2);
+// echo "</pre>";
+
 
 //DOES THIS PAGE HAS PAGE FEEDBACK TOOL OR NOT
 if (empty($tmp)) {
@@ -227,9 +244,20 @@ else {
     $visitors = 12;
     $visits = 16;
 
+    // function differ($old, $new)
+    // {
+    //     return (($new - $old) / $old);
+    // }
+
     function differ($old, $new)
     {
-        return (($new - $old) / $old);
+        if ($old == 0) {
+          $dif = $new;
+        }
+        else {
+          $dif = (($new - $old) / $old);
+        }
+          return $dif;
     }
 
     function numDiffer($old, $new)
@@ -387,6 +415,7 @@ else {
             $all_fields = array_column_recursive($WeeklyData, 'fields');
             $all_fieldsPW = array_column_recursive($PWeeklyData, 'fields');
 
+
             //we are grouping the pages by URL instead of Page Title, cause some pages might not have titles listes in the table
             //stil, the main idea is to group the pages by some unique page element
 
@@ -397,6 +426,12 @@ else {
             foreach ( $all_fieldsPW as &$item ) {
                 $item["Tag"] = implode($item['Lookup_tags']);
             }
+
+            // echo "Current Week:";
+            // echo "<pre>";
+            // print_r($all_fields);
+            // echo "</pre>";
+
 
             $fieldsByGroupTag = group_by('Tag', $all_fields);
             $fieldsByGroupTagPW = group_by('Tag', $all_fieldsPW);
@@ -409,6 +444,23 @@ else {
             }
 
             $d3TotalFeedbackByPageSuccess = 1;
+
+            // group the comments by PAGE URL to get the number of comments for each page (we need this in the "Breakdown by page" table)
+
+            $fieldsByGroupUrl = group_by('URL', $all_fields);
+            $fieldsByGroupUrlPW = group_by('URL', $all_fieldsPW);
+
+            foreach ( $fieldsByGroupUrlPW as &$item ) {
+                $item["Total comments per URL"] = count($item);
+            }
+            foreach ( $fieldsByGroupUrl as &$item ) {
+                $item["Total comments per URL"] = count($item);
+            }
+
+            // echo "comments by URL:";
+            // echo "<pre>";
+            // print_r($fieldsByGroupUrlPW);
+            // echo "</pre>";
 
         }
     } else {
@@ -818,6 +870,93 @@ else {
         </div>
     </div>
 
+    <!-- Breakdown by Page - DYFWYWLF -->
+    <div class="row mb-4">
+      <div class="col-lg-12 col-md-12">
+        <div class="card">
+          <div class="card-body pt-2">
+            <h3 class="card-title"><span class="card-tooltip h6" data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-placement="right" data-bs-content="Breakdown by Page - Did you find what you were looking for?" data-bs-original-title="" title="" data-i18n="">Breakdown by Page - Did you find what you were looking for?</span></h3>
+            <div class="dataTables_wrapper dt-bootstrap5 no-footer"><div class="row"><div class="col-sm-12 col-md-6"></div><div class="col-sm-12 col-md-6"></div></div><div class="row"><div class="col-sm-12">
+
+              <?php
+                  // uasort($prevPages, function($b, $a) {
+                  //    if ($a["data"][3] == $b["data"][3]) {
+                  //        return 0;
+                  //    }
+                  //    return ($a["data"][3] < $b["data"][3]) ? -1 : 1;
+                  //  });
+                  //
+                   // $top15prevPages = array_slice($prevPages, 0, 15);
+                   // //$top5Decrease = array_reverse(array_slice($fieldsByGroup, -5));
+                   $qry = $dyfwywlfPerPage;
+                   // echo "---<pre>";
+                   // print_r($taskTests);
+                   // echo "</pre>";
+
+                   if (count($qry) > 0) { ?>
+                     <div class="table-responsive">
+                       <table class="table table-striped dataTable no-footer" role="grid" id="toptask">
+                         <caption>Breakdown by Page - Did you find what you were looking for?</caption>
+                         <thead>
+                           <tr>
+                             <th class="sorting" aria-controls="toptask" aria-label="Page URL" data-i18n="" scope="col">Page URL</th>
+                             <th class="sorting" aria-controls="toptask" aria-label="Yes" data-i18n="yes" scope="col">Yes</th>
+                             <th class="sorting" aria-controls="toptask" aria-label="No" data-i18n="no" scope="col">No</th>
+                             <th class="sorting" aria-controls="toptask" aria-label="Comparison" data-i18n="" scope="col">Comparison (for No answer)</th>
+                             <th class="sorting" aria-controls="toptask" aria-label="% of visitors who left feedback" data-i18n="" scope="col">% of visitors who left feedback</th>
+                           </tr>
+                         </thead>
+                         <tbody>
+                       <?php foreach ($qry as $key => $value) {
+                         // echo "---<pre>";
+                         // print_r($row);
+                         // echo "</pre>";
+                         // '"Test title"',
+                         // '"Success Rate"',
+                         // '"Scenario/Questions"',
+                         // 'Date',
+                         // '"# of Users"'
+
+                         ?>
+                           <tr>
+                             <td><a href="./pages_summary.php?url=https://<?=$key?>"><?=$key?></a></td>
+                             <td><a href="./pages_pagefeedback.php?url=https://<?=$key?>"><?=$dyfwywlfPerPage[$key][0][3]?></a></td> <!-- Yes -->
+                             <td><a href="./pages_pagefeedback.php?url=https://<?=$key?>"><?=$dyfwywlfPerPage[$key][0][7]?></a></td> <!-- No -->
+                             <?php
+                                 $diff = differ($dyfwywlfPerPage[$key][0][6], $dyfwywlfPerPage[$key][0][7] );
+                                 $posi = posOrNeg2($diff);
+                                 $pieces = explode(":", $posi);
+                                 $diff = abs($diff);
+                              ?>
+                             <td><span class="<?=$pieces[0]?>"><?=$pieces[1]?> <?=percent($diff)?></span></td>
+                             <?php
+                                //$visLeftFeedback = $dyfwywlfPerPage[$key][0][7]/$fieldsByGroupUrl[$key]["Total comments per URL"];
+                                $visLeftFeedback = $dyfwywlfPerPage[$key][0][7]/$dyfwywlfPerPage[$key][0][15];
+                                // echo $fieldsByGroupUrl[$key]["Total comments per URL"];
+                                // echo($dyfwywlfPerPage[$key][0][7]);
+                                // echo "----";
+                                // echo($dyfwywlfPerPage[$key][0][15]);
+                             ?>
+                             <td><?=round($visLeftFeedback * 100,3)."%"?></td>
+                           </tr>
+                       <?php } ?>
+                         </tbody>
+                       </table>
+                     </div>
+                 <?php } ?>
+
+
+
+            </div></div><div class="row"><div class="col-sm-12 col-md-5"></div><div class="col-sm-12 col-md-7"></div></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+
+
+    <!-- Total Feedback by Page chart -->
     <div class="row mb-4">
         <div class="col-lg-12 col-md-12">
             <div class="card">
@@ -1092,6 +1231,7 @@ else {
             </div>
         </div>
     </div>
+
 
     <div class="row mb-4">
         <div class="col-lg-12 col-md-12">

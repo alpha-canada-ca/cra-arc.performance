@@ -336,7 +336,7 @@ $taskParticipants = array_sum(array_column_recursive($taskTests,"# of Users"));
        <div class="col-lg-12 col-md-12">
          <div class="card">
            <div class="card-body pt-2">
-             <h3 class="card-title"><span class="card-tooltip h6" data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-placement="right" data-bs-content="Where visitors came from" data-bs-original-title="" title="" data-i18n="">Success rate and scenarios</span></h3>
+             <h3 class="card-title"><span class="card-tooltip h6" data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-placement="right" data-bs-content="Success rate and scenarios" data-bs-original-title="" title="" data-i18n="">Success rate and scenarios</span></h3>
              <div id="toptask_wrapper" class="dataTables_wrapper dt-bootstrap5 no-footer"><div class="row"><div class="col-sm-12 col-md-6"></div><div class="col-sm-12 col-md-6"></div></div><div class="row"><div class="col-sm-12">
 
                <?php
