@@ -1043,7 +1043,9 @@ $diff = abs($diff);
 // GSC
 $data = include ('./php/data-gsc.php');
 
-$type = ['ovrvw-smmry-totals', 'ovrvw-smmry-qryAll'];
+$type = ['ovrvw-smmry-totalsRegex', 'ovrvw-smmry-qryAllRegex'];
+
+$regex = '/en/revenue-agency|/fr/agence-revenu|/en/services/taxes|/fr/services/impots';
 
 $results = 5;
 
@@ -1059,7 +1061,7 @@ foreach ($type as $t)
     {
 
         $analytics = initializeAnalytics();
-        $response = getReport($d[0], $d[1], $results, $url, $t);
+        $response = getReport($d[0], $d[1], $results, $regex, $t);
         $u = printResults($analytics, $response, $t);
         $u = json_decode($u, true);
 
