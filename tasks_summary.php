@@ -158,9 +158,9 @@ function percent($num)
     return round($num * 100, 0) . '%';
 }
 
-function metKPI($num, $old)
+function metKPI($old, $new)
 {
-    if (($num > 0.8) || (abs($old-$num)>0.2))  return 'text-success:check_circle:Met';
+    if (($new > 0.8) || (($new-$old)>0.2))  return 'text-success:check_circle:Met';
     else return 'text-danger:warning:Did not meet';
 }
 
@@ -402,12 +402,16 @@ if (isset($_SESSION["token"]))
 
 <?php
 $diff = differ($avgCmpTaskSuccess, $avgTaskSuccess);
+// echo $avgCmpTaskSuccess;
+// echo "<br>";
+// echo $avgTaskSuccess;
 //$diff = differ($avgTaskSuccess, $avgCmpTaskSuccess);
 $pos = posOrNeg($diff);
 $pieces = explode(":", $pos);
 //
 $diff = abs($diff);
-$kpi_pos = metKPI($avgTaskSuccess, $avgCmpTaskSuccess);
+//$kpi_pos = metKPI($avgTaskSuccess, $avgCmpTaskSuccess);
+$kpi_pos = metKPI($avgCmpTaskSuccess, $avgTaskSuccess);
 $kpi_pieces = explode(":", $kpi_pos);
 ?>
 

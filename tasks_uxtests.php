@@ -3,7 +3,7 @@
 <?php include "./includes/upd_sidebar.php"; ?>
 <?php include "./includes/date-ranges.php"; ?>
 <?php include "./includes/functions.php"; ?>
-<?php ini_set('display_errors', 1);
+<?php ini_set('display_errors', 0);
 ?>
 
 <!--Translation Code start-->
@@ -58,9 +58,9 @@ function percent($num)
     return round($num * 100, 0) . '%';
 }
 
-function metKPI($num, $old)
+function metKPI($old, $new)
 {
-    if (($num > 0.8) || (abs($old-$num)>0.2))  return 'text-success:check_circle:Met';
+    if (($new > 0.8) || (($new-$old)>0.2))  return 'text-success:check_circle:Met';
     else return 'text-danger:warning:Did not meet';
 }
 
@@ -113,31 +113,6 @@ $relatedUxTests = array_column($taskTests, "Success Rate");
 //$relatedUxTests = array_column($taskTests, 'title');
 
 
-// echo "<h4>UX Test correct</h4><pre>";
-// print_r($taskTests);
-// echo "</pre>";
-
-// echo "-----------------<br/>";
-//
-//
-// $uxTestAll=[];
-// foreach ($taskProjects as $project_id) {
-//   //echo ($project_id['id']);
-//   $uxTest = $db->getUxTestsByProjectId($project_id['id'], $uxTestSelectedFields);
-//   $uxTestAll[] = $uxTest;
-//   //$relatedUxTests = array_column($uxTests, 'Test title');
-// }
-//
-// echo "<h4>UX Test</h4><pre>";
-// print_r($uxTestAll);
-// echo "</pre>";
-
-
-//$taskUxTests = $db->getProjectsByTaskId($taskId, $uxTestSelectedFields);
-//$relatedProjects = array_column($taskUxTests, "Test title");
-
-
-
 
 $dateUtils = new DateUtils();
 
@@ -176,29 +151,6 @@ $weeklyDatesHeader = $dateUtils->getWeeklyDates('header');
     </ul>
 </div>
 
-<?php
-
-// // Adobe Analytics
-//
-// if (!isset($_SESSION['CREATED']))
-// {
-//     $_SESSION['CREATED'] = time();
-//     require_once ('./php/getToken.php');
-// }
-// else if (time() - $_SESSION['CREATED'] > 86400)
-// {
-//     session_regenerate_id(true);
-//     $_SESSION['CREATED'] = time();
-//     require_once ('./php/getToken.php');
-// }
-// if (isset($_SESSION["token"]))
-// {
-//     require_once ('./php/api_post.php');
-//     $config = include ('./php/config-aa.php');
-//     $data = include ('./php/data-aa.php');
-// }
-
-?>
 
 <div class="row mb-4 mt-1">
     <div class="dropdown">
@@ -220,14 +172,6 @@ $weeklyDatesHeader = $dateUtils->getWeeklyDates('header');
 // echo "<pre>";
 // print_r($taskData);
 // echo "</pre>";
-//
-// echo "<pre>";
-// print_r($taskProjects);
-// echo "</pre>";
-
-
-//
-
 
 //sort the array by Date
 usort($taskTests, function($b, $a) {
@@ -239,10 +183,7 @@ usort($taskTests, function($b, $a) {
 // echo "<pre>";
 // print_r($taskTests);
 // echo "</pre>";
-//
-// echo "<pre>";
-// print_r($taskTests[0]['Success Rate']);
-// echo "</pre>";
+
 
 $taskParticipants = array_sum(array_column_recursive($taskTests,"# of Users"));
 
@@ -299,38 +240,190 @@ $taskParticipants = array_sum(array_column_recursive($taskTests,"# of Users"));
  </div>
 
 
- <!-- <div class="row mb-4">
-   <div class="col-lg-12 col-md-12">
-     <div class="card">
-       <div class="card-body pt-2">
-         <h3 class="card-title"><span class="card-tooltip h6" data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-placement="right" data-bs-content="" data-bs-original-title="" title="" data-i18n="">Members</span></h3>
+     <!-- D3 VISUALIZATION -->
 
-         <div class="table-responsive">
-           <table class="table table-striped dataTable no-footer">
-             <thead>
-               <tr>
-                 <th data-i18n="">Project</th>
-                 <th data-i18n="">Scenario</th>
-                 <th data-i18n="">Result</th>
-                 <th data-i18n="">Date</th>
-               </tr>
-             </thead>
-             <tbody>
+     <div class="row mb-4">
+       <div class="col-lg-12 col-md-12">
+         <div class="card">
+           <div class="card-body pt-2">
+             <h3 class="card-title"><span class="card-tooltip h6" data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-placement="right" data-bs-content="Tasks success by Test" data-bs-original-title="" title="" data-i18n="">Tasks success by Test</span></h3>
+               <div class="card-body pt-2" id="d3_uxtests"></div>
+                 <div id="d3_www_legend"></div>
+                   <!-- Task Success by Test D3 bar chart -->
+                   <script src="https://d3js.org/d3-scale-chromatic.v1.min.js"></script>
+                   <?php
+                   foreach ($taskTests as $key => $value) {
+                     //For the UX test names to be unique, we add "Test:i-" for every test
+                     // we can also ADD multiple "white spaces" in front of the name (cause the Test name is aligned right on this axis_)
+                     // (code for white spaces - str_repeat("", i))
+                     //OR
+                     //we can use the dates (in brackets) to make all same Ux tests unique (maybe add extra second or minute), but keep the date correct.
+                     $d3["test"] = "UX Test:".($key+1)."-".$value["Test title"];
+                     $d3["rate"] = $value["Success Rate"];
+                     $d3Data[] = $d3;
+                   }
 
-               <tr>
-                 <td>Project Lead</td>
-                 <td><?=$prjLeads[0];?></td>
-                 <td></td>
-               </tr>
-             </tbody>
-           </table>
+                   $allGroups = array_column($d3Data, "test");
+                   // echo "<pre>";
+                   // print_r($taskTests);
+                   // echo "</pre>";
+                   ?>
+
+
+                   <script>
+
+                   // set the dimensions and margins of the graph
+                   width = parseInt(d3.select('#d3_uxtests').style('width'), 10)
+                   height = width / 3;
+                   //alert("hellp");
+                   var margin = {top: 10, right: 30, bottom: 100, left: 300},
+                       width = width - margin.left - margin.right,
+                       height = height - margin.top - margin.bottom,
+                       legendHeight = 0,
+                       //dualaxisWidth = 120;
+                       dualaxisWidth = 0;
+
+
+                   // append the svg object to the body of the page
+                   var svg = d3.select("#d3_uxtests")
+                     .append("svg")
+                       .attr("width", width + margin.left + margin.right)
+                       .attr("height", height + margin.top + margin.bottom + legendHeight)
+                     .append("g")
+                       .attr("transform",
+                             "translate(" + margin.left + "," + margin.top + ")");
+
+
+                   /// HORIZONTAL Bar
+
+                     var data = <?=json_encode($d3Data)?>;
+                     var allGroups = <?=json_encode($allGroups)?>;
+
+                     var color = d3.scaleOrdinal()
+                         .domain(allGroups)
+                         .range(['#345EA5','#6CB5F3','#36A69A'])
+
+
+                     // Add X axis
+                     var x = d3.scaleLinear()
+                       .domain([0, 100])
+                       .range([ 0, width]);
+                     svg.append("g")
+                       .attr("transform", "translate(0," + height + ")")
+                       .call(d3.axisBottom(x))
+                       .selectAll("text")
+                         .attr("transform", "translate(-10,0)rotate(-45)")
+                         .style("text-anchor", "end");
+
+
+                     // Y axis
+                     var y = d3.scaleBand()
+                       .range([ 0, height ])
+                       .domain(data.map(function(d) { return d.test; }))
+                       .padding(.4);
+                     svg.append("g")
+                       .call(d3.axisLeft(y));
+
+
+
+                     //Bars
+                     svg.selectAll("myRect")
+                       .data(data)
+                       .enter()
+                       .append("rect")
+                       .attr("x", x(0) )
+                       .attr("y", function(d) { return y(d.test); })
+                       .attr("width", function(d) { return x(d.rate*100); })
+                       .attr("height", y.bandwidth() )
+                       //.attr("fill", "#69b3a2")
+                       .attr("fill", function(d) { return color(d.test); })
+
+                    // tick text size
+                     svg.selectAll(".tick text")
+                         //.attr("class","axis_labels")
+                         .style("font-size","13px")
+                         .style("fill","#666");
+
+                       // Legend
+                       var legend = d3.select('#d3_www_legend').selectAll("legend")
+                           .data(allGroups);
+
+                       var legend_cells = legend.enter().append("div")
+                           .attr("class","legend");
+
+                       var p = legend_cells.append("p").attr("class","legend_field");
+                       p.append("span").attr("class","legend_color").style("background",function(d,i) { return color(i) } );
+                       p.insert("text").text(function(d,i) { return d.split("-")[1] } );
+
+                       console.log(data);
+
+
+                       // text label for the y axis
+                       svg.append("text")
+                           .attr("transform", "rotate(-90)")
+                           .attr("y", 0 - margin.left)
+                           .attr("x",0 - (height / 2))
+                           .attr("dy", "1em")
+                           .style("text-anchor", "middle")
+                           .text("UX tests");
+
+                       svg.append("text")
+                           .attr("transform", "rotate(0)")
+                           .attr("y", height + 50)
+                           .attr("x", width/2)
+                           .attr("dy", "1em")
+                           .style("text-anchor", "middle")
+                           .text("Task success rate (%)");
+
+
+                   </script>
+
+
+
+                  <details class="details-chart">
+                       <summary data-i18n="view-data-table">View table data</summary>
+                           <div class="table-responsive">
+                               <table class="table">
+                                 <caption><!--Last Week--></caption>
+                                 <thead>
+                                   <th data-i18n="" scope="col">UX test</th>
+                                   <th data-i18n="" scope="col">Task Success Rate</th>
+                                 </thead>
+                                 <tbody>
+
+                                   <?php
+                                       //foreach ($aaTrendLastWeek as $trend)
+                                       foreach ($d3Data as $key=>$value)
+                                       {
+
+                                       ?>
+
+                                               <tr>
+                                                 <td><?=explode("-", $value['test'])[1]; ?></td>
+                                                 <td><?=percent($value['rate']) ?></td>
+                                               </tr>
+
+                                               <?php
+                                       }
+
+                                       ?>
+
+
+                                 </tbody>
+                               </table>
+                         </div>
+                 </details>
+               </div>
+             </div>
+           </div>
          </div>
 
-         </div></div>
+     <!-- end D3 VISUALIZATION-->
 
-         <div class="row"><div class="col-sm-12 col-md-5"></div><div class="col-sm-12 col-md-7"></div></div>
-       </div>
-     </div> -->
+
+
+
+
 
      <div class="row mb-4">
        <div class="col-lg-12 col-md-12">

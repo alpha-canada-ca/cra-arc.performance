@@ -71,9 +71,9 @@ function percent($num)
     return round($num * 100, 0) . '%';
 }
 
-function metKPI($num, $old)
+function metKPI($old, $new)
 {
-    if (($num > 0.8) || (abs($old-$num)>0.2))  return 'text-success:check_circle:Met';
+    if (($new > 0.8) || (($new-$old)>0.2))  return 'text-success:check_circle:Met';
     else return 'text-danger:warning:Did not meet';
 }
 
@@ -147,7 +147,8 @@ $successRateChange = null;
 
 if ($lastTestHasComparison) {
     $prevTestSuccessRate = round($last2Tests[1]['Success Rate'] * 100, 0);
-    $successRateChange = $prevTestSuccessRate - $lastTestSuccessRate;
+    //$successRateChange = $prevTestSuccessRate - $lastTestSuccessRate;
+    $successRateChange = $lastTestSuccessRate - $prevTestSuccessRate;
 }
 
 function metKPIOutput($lastTestSuccess, $change) {
