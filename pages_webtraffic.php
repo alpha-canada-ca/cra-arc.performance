@@ -543,310 +543,312 @@ if ($succ === 1)
               ?>
 
 
-    <div class="row mb-4">
-      <div class="col-lg-12 col-md-12">
-        <div class="card">
-          <div class="card-body pt-2">
-            <h3 class="card-title"><span class="card-tooltip h6" data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-placement="right" data-bs-content="Number of page visits breakdown (bar chart) relation over selected Date ranges, compared to the Call volume (line chart) - the total number of calls in the Calls centre for the same date ranges." data-bs-original-title="" title="" data-i18n="">Visits by day</span></h3>
-            <div class="card-body pt-2" id="d3_visits"></div>
-            <div id="d3_www_legend"></div><div id="d3_www_legend4"></div>
-       
-              <!-- Total calls by Enquiry_line D3 bar chart -->
-              <?php
-              
+      <div class="row mb-4">
+        <div class="col-lg-12 col-md-12">
+          <div class="card">
+            <div class="card-body pt-2">
+              <h3 class="card-title"><span class="card-tooltip h6" data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-placement="right" data-bs-content="Number of page visits breakdown (bar chart) relation over selected Date ranges, compared to the Call volume (line chart) - the total number of calls in the Calls centre for the same date ranges." data-bs-original-title="" title="" data-i18n="">Visits by day</span></h3>
+              <div class="card-body pt-2" id="d3_visits"></div>
+              <div id="d3_www_legend"></div><div id="d3_www_legend4"></div>
+                <!-- Total calls by Enquiry_line D3 bar chart -->
+                <?php
 
-                $s = $startLastGSC;
-                $e = $endLastGSC;
-                $s1 = $startGSC;
-                $e1 = $endGSC;
+                  $s = $startLastGSC;
+                  $e = $endLastGSC;
+                  $s1 = $startGSC;
+                  $e1 = $endGSC;
 
-                //echo $s;
-                //echo gettype($e1);
+                  //echo $s;
+                  //echo gettype($e1);
 
-                $s = date("M d", strtotime($s));
-                $e = date("M d", strtotime($e));
-                $s1 = date("M d", strtotime($s1));
-                $e1 = date("M d", strtotime($e1));
+                  $s = date("M d", strtotime($s));
+                  $e = date("M d", strtotime($e));
+                  $s1 = date("M d", strtotime($s1));
+                  $e1 = date("M d", strtotime($e1));
 
 
 
 
-                $days = array('Sunday', 'Monday', 'Tuesday', 'Wednesday','Thursday','Friday', 'Saturday');
-                $d3DateRanges = array($s.'-'.$e,$s1.'-'.$e1); // previous $a1
-                //$dates = [[$startLastGSC, $endLastGSC], [$startGSC, $endGSC]];
-                //$dataPW = $aaTrendLastWeek;
-                //$dataW = $aaTrendWeek;
+                  $days = array('Sunday', 'Monday', 'Tuesday', 'Wednesday','Thursday','Friday', 'Saturday');
+                  $d3DateRanges = array($s.'-'.$e,$s1.'-'.$e1); // previous $a1
+                  //$dates = [[$startLastGSC, $endLastGSC], [$startGSC, $endGSC]];
+                  //$dataPW = $aaTrendLastWeek;
+                  //$dataW = $aaTrendWeek;
 
-                for ($i = 0; $i < 7; ++$i) {
-                  $final_array1["day"] = $days[$i];
-                  $final_array1[$d3DateRanges[0]] = $aaTrendLastWeek[$i]['data'][1];
-                  $final_array1[$d3DateRanges[1]] = $aaTrendWeek[$i]['data'][1];
-                  $data_array[]=$final_array1;
-                }
+                  for ($i = 0; $i < 7; ++$i) {
+                    $final_array1["day"] = $days[$i];
+                    $final_array1[$d3DateRanges[0]] = $aaTrendLastWeek[$i]['data'][1];
+                    $final_array1[$d3DateRanges[1]] = $aaTrendWeek[$i]['data'][1];
+                    $data_array[]=$final_array1;
 
-                //$s = $startLastGSC;
-                //$e = $endLastGSC;
-                //$s1 = $startGSC;
-                //$e1 = $endGSC;
-                //For loop for the call volume data
-
-                $pwDays = [];
-                $wDays = [];
-
-                for ($i = 0; $i < 7; ++$i) {
-                  $pwDays[] = date("Y-m-d", strtotime($startLastGSC. " +".$i."days"));
-                  $wDays[] = date("Y-m-d", strtotime($startGSC. " +".$i."days"));
-                }
-
-
-                for ($i = 0; $i < 7; ++$i) {
-                  $final_array2["day"] = $days[$i];
-                  // get the key from the fieldsByGroupDate and fieldsByGroupDatePW arrays
-                  // convert the value to
-                  // $fieldsByGroupDatePW
-                  // $fieldsByGroupDate
-
-                  // foreach ($fieldsByGroupDatePW as $trend)
-                  // {
-                  if (array_key_exists($pwDays[$i], $fieldsByGroupDatePW)){
-                        $final_array2[$d3DateRanges[0]] = $fieldsByGroupDatePW[$pwDays[$i]]['Total calls per day'];
                   }
-                  else {
-                        $final_array2[$d3DateRanges[0]] = 0;
-                  }
-                  if (array_key_exists($wDays[$i], $fieldsByGroupDate)){
-                        $final_array2[$d3DateRanges[1]] = $fieldsByGroupDate[$wDays[$i]]['Total calls per day'];
-                  }
-                  else {
-                        $final_array2[$d3DateRanges[1]] = 0;
+
+                  //$s = $startLastGSC;
+                  //$e = $endLastGSC;
+                  //$s1 = $startGSC;
+                  //$e1 = $endGSC;
+                  //For loop for the call volume data
+
+                  $pwDays = [];
+                  $wDays = [];
+
+                  for ($i = 0; $i < 7; ++$i) {
+                    $pwDays[] = date("Y-m-d", strtotime($startLastGSC. " +".$i."days"));
+                    $wDays[] = date("Y-m-d", strtotime($startGSC. " +".$i."days"));
                   }
 
 
-                  //$final_array2[$d3DateRanges[1]] = $fieldsByGroupDate['Total calls per day'];
+                  for ($i = 0; $i < 7; ++$i) {
+                    $final_array2["day"] = $days[$i];
+                    // get the key from the fieldsByGroupDate and fieldsByGroupDatePW arrays
+                    // convert the value to
+                    // $fieldsByGroupDatePW
+                    // $fieldsByGroupDate
 
-                  $data_array2[]=$final_array2;
-                }
-
-                // echo count($data_array2);
-                // echo "<pre>";
-                // print_r($data_array2);
-                // echo "</pre>";
-
-
-
-                $subgroups = json_encode($d3DateRanges);
-
-                $groups = json_encode($days);
-
-                $mydata = json_encode($data_array);
-
-                $mydataCalls = json_encode($data_array2);
-
-                // echo "<pre>";
-                // print_r($data_array2);
-                // echo "</pre>";
-
-                ?>
-                <script>
-                //
-                // set the dimensions and margins of the graph
-                width = parseInt(d3.select('#d3_visits').style('width'), 10)
-                height = width / 3;
-                //alert("hellp");
-                var margin = {top: 10, right: 30, bottom: 30, left: 100},
-                    width = width - margin.left - margin.right,
-                    height = height - margin.top - margin.bottom,
-                    legendHeight = 0,
-                    //dualaxisWidth = 120;
-                    dualaxisWidth = 0;
+                    // foreach ($fieldsByGroupDatePW as $trend)
+                    // {
+                    if (array_key_exists($pwDays[$i], $fieldsByGroupDatePW)){
+                          $final_array2[$d3DateRanges[0]] = $fieldsByGroupDatePW[$pwDays[$i]]['Total calls per day'];
+                    }
+                    else {
+                          $final_array2[$d3DateRanges[0]] = 0;
+                    }
+                    if (array_key_exists($wDays[$i], $fieldsByGroupDate)){
+                          $final_array2[$d3DateRanges[1]] = $fieldsByGroupDate[$wDays[$i]]['Total calls per day'];
+                    }
+                    else {
+                          $final_array2[$d3DateRanges[1]] = 0;
+                    }
 
 
-                // append the svg object to the body of the page
-                var svg1 = d3.select("#d3_visits")
-                  .append("svg")
-                    .attr("width", width + margin.left + margin.right)
-                    .attr("height", height + margin.top + margin.bottom + legendHeight)
-                  .append("g")
-                    .attr("transform",
-                          "translate(" + margin.left + "," + margin.top + ")");
+                    //$final_array2[$d3DateRanges[1]] = $fieldsByGroupDate['Total calls per day'];
 
-                // Parse the Data
-                  var data = <?=$mydata?>;
+                    $data_array2[]=$final_array2;
+                  }
 
-                  //console.log(data)
-                  //console.log(typeof data)
-                  // List of subgroups = header of the csv files = soil condition here
-                  //var subgroups = data.columns.slice(1)
-                  var subgroups = <?=$subgroups?>;
-                  console.log(subgroups);
-                  console.log(subgroups[0]);
-                  //console.log(typeof subgroups)
-
-                  // List of groups = species here = value of the first column called group -> I show them on the X axis
-                  //var groups = d3.map(data, function(d){return(d.group)}).keys()
-                  var groups = <?=$groups?>;
-                  //console.log(groups)
-                  //console.log(typeof groups)
-
-                  // Add X axis
-                  var x = d3.scaleBand()
-                      .domain(groups)
-                      .range([0, width-dualaxisWidth])
-                      .padding([0.4]);
-                  svg1.append("g")
-                    .attr("transform", "translate(0," + height + ")")
-                    .call(d3.axisBottom(x).tickSizeOuter(0));
-
-                  // get the max value from the data json object for the y axis domain (Number of visits)
-                  var max1 = d3.max(data, function(d){ return d3.max(d3.values(d).filter(function(d1){ return !isNaN(d1)}))});
-                  console.log(max1);
-                  var num_digits1 = Math.floor(Math.log10(max1)) + 1;
-                  console.log(num_digits1);
-                  console.log(Math.ceil(max1/Math.pow(10,num_digits1-1))*Math.pow(10,num_digits1-1));
-
-                  // Add Y axis
-                  var y = d3.scaleLinear()
-                    .domain([0, Math.ceil(max1/Math.pow(10,num_digits1-1))*Math.pow(10,num_digits1-1)])
-                    .range([ height, 0 ]);
-
-                  // grid lines on Y axis
-                  var yGrid = d3.axisLeft(y).tickSize(-(width-dualaxisWidth)).tickFormat('').ticks(5);
-
-                  // Another scale for subgroup position?
-                  var xSubgroup = d3.scaleBand()
-                    .domain(subgroups)
-                    .range([0, x.bandwidth()])
-                    .padding([0.1]);
-
-                  //create  yGrid
-                  svg1.append('g')
-                    .attr('class', 'axis-grid')
-                    .call(yGrid);
-
-                  //create Y axis
-                  svg1.append("g")
-                    .call(d3.axisLeft(y).ticks(5));
-
-                  // color palette = one color per subgroup
-                  var color = d3.scaleOrdinal()
-                    .domain(subgroups)
-                    .range(['#B6C2CB','#345EA5']);
-
-                    // Show the bars
-                  svg1.append("g")
-                      .selectAll("g")
-                      // Enter in data = loop group per group
-                      .data(data)
-                      .enter()
-                      .append("g")
-                        .attr("transform", function(d) { return "translate(" + x(d.day) + ",0)"; })
-                      .selectAll("rect")
-                      .data(function(d) { return subgroups.map(function(key) { return {key: key, value: d[key]}; }); })
-                      .enter().append("rect")
-                        .attr("x", function(d) { return xSubgroup(d.key); })
-                        .attr("y", function(d) { return y(d.value); })
-                        .attr("width", xSubgroup.bandwidth())
-                        .attr("height", function(d) { return height - y(d.value); })
-                        .attr("fill", function(d) { return color(d.key); });
-
-                  svg1.selectAll(".tick text")
-                       .style("font-size","14px")
-                       .style("fill","#666");
+                  // echo count($data_array2);
+                  // echo "<pre>";
+                  // print_r($data_array2);
+                  // echo "</pre>";
 
 
 
+                  $subgroups = json_encode($d3DateRanges);
 
-                  var legend = d3.select('#d3_www_legend').selectAll("legend")
-                      .data(subgroups);
+                  $groups = json_encode($days);
 
-                  var legend_cells = legend.enter().append("div")
-                    .attr("class","legend");
+                  $mydata = json_encode($data_array);
 
-                  var p1 = legend_cells.append("p").attr("class","legend_field");
-                  p1.append("span").attr("class","legend_color").style("background",function(d,i) { return color(i) } );
-                  p1.insert("text").text(function(d,i) { return d } );
+                  $mydataCalls = json_encode($data_array2);
 
+                  // echo "<pre>";
+                  // print_r($data_array2);
+                  // echo "</pre>";
 
-
-                  // text label for the y axis
-                  svg1.append("text")
-                      .attr("transform", "rotate(-90)")
-                      .attr("y",0 - margin.left)
-                      .attr("x",0 - (height / 2))
-                      .attr("dy", "1em")
-                      .style("text-anchor", "middle")
-                      .text("Visits");
-
-
-
-
-                </script>
-                 <details class="details-chart">
-                      <summary data-i18n="view-data-table">View table data</summary>
-                      <div class="table-responsive">
-                          <table class="table">
-                            <caption><!--Last Week--></caption>
-                            <thead>
-                              <th data-i18n="date" scope="col">Date (<?=$d3DateRanges[0]?>)</th>
-                              <th data-i18n="visits" scope="col">Visits</th>
-                            </thead>
-                            <tbody>
-
-                              <?php
-                                  //foreach ($aaTrendLastWeek as $trend)
-                                  foreach ($aaTrendLastWeek as $key=>$value)
-                                  {
-
-                                  ?>
-
-                                          <tr>
-                                            <td><?=$value['value'] ?></td>
-                                            <td><?=number_format($value['data'][1]) ?></td>
-                                          </tr>
-
-                                          <?php
-                                  }
-
-                                  ?>
+                  ?>
+                  <script>
+                  //
+                  // set the dimensions and margins of the graph
+                  width = parseInt(d3.select('#d3_visits').style('width'), 10)
+                  height = width / 3;
+                  //alert("hellp");
+                  var margin = {top: 10, right: 30, bottom: 30, left: 100},
+                      width = width - margin.left - margin.right,
+                      height = height - margin.top - margin.bottom,
+                      legendHeight = 0,
+                      //dualaxisWidth = 120;
+                      dualaxisWidth = 0;
 
 
-                            </tbody>
-                          </table>
+                  // append the svg object to the body of the page
+                  var svg1 = d3.select("#d3_visits")
+                    .append("svg")
+                      .attr("width", width + margin.left + margin.right)
+                      .attr("height", height + margin.top + margin.bottom + legendHeight)
+                    .append("g")
+                      .attr("transform",
+                            "translate(" + margin.left + "," + margin.top + ")");
 
-                          <table class="table">
-                            <caption><!--Week--></caption>
-                            <thead>
-                              <th data-i18n="date" scope="col">Date (<?=$d3DateRanges[1]?>)</th>
-                              <th data-i18n="visits" scope="col">Visits</th>
-                            </thead>
-                            <tbody>
+                  // Parse the Data
+                    var data = <?=$mydata?>;
 
-                              <?php
-                                  //foreach ($aaTrendWeek as $trend)
-                                  foreach ($aaTrendWeek as $key=>$value)
-                                  {
+                    //console.log(data)
+                    //console.log(typeof data)
+                    // List of subgroups = header of the csv files = soil condition here
+                    //var subgroups = data.columns.slice(1)
+                    var subgroups = <?=$subgroups?>;
+                    console.log(subgroups);
+                    console.log(subgroups[0]);
+                    //console.log(typeof subgroups)
 
-                                  ?>
+                    // List of groups = species here = value of the first column called group -> I show them on the X axis
+                    //var groups = d3.map(data, function(d){return(d.group)}).keys()
+                    var groups = <?=$groups?>;
+                    //console.log(groups)
+                    //console.log(typeof groups)
 
-                                          <tr>
-                                            <td><?=$value['value'] ?></td>
-                                            <td><?=number_format($value['data'][1]) ?></td>
-                                          </tr>
+                    // Add X axis
+                    var x = d3.scaleBand()
+                        .domain(groups)
+                        .range([0, width-dualaxisWidth])
+                        .padding([0.4]);
+                    svg1.append("g")
+                      .attr("transform", "translate(0," + height + ")")
+                      .call(d3.axisBottom(x).tickSizeOuter(0));
 
-                                          <?php
-                                  }
-                                  
+                    // get the max value from the data json object for the y axis domain (Number of visits)
+                    var max1 = d3.max(data, function(d){ return d3.max(d3.values(d).filter(function(d1){ return !isNaN(d1)}))});
+                    console.log(max1);
+                    var num_digits1 = Math.floor(Math.log10(max1)) + 1;
+                    console.log(num_digits1);
+                    console.log(Math.ceil(max1/Math.pow(10,num_digits1-1))*Math.pow(10,num_digits1-1));
 
-                                  ?>
+                    // Add Y axis
+                    var y = d3.scaleLinear()
+                      .domain([0, Math.ceil(max1/Math.pow(10,num_digits1-1))*Math.pow(10,num_digits1-1)])
+                      .range([ height, 0 ]);
 
-                            </tbody>
-                          </table>
+                    // grid lines on Y axis
+                    var yGrid = d3.axisLeft(y).tickSize(-(width-dualaxisWidth)).tickFormat('').ticks(5);
 
-                </details>
+                    // Another scale for subgroup position?
+                    var xSubgroup = d3.scaleBand()
+                      .domain(subgroups)
+                      .range([0, x.bandwidth()])
+                      .padding([0.1]);
+
+                    //create  yGrid
+                    svg1.append('g')
+                      .attr('class', 'axis-grid')
+                      .call(yGrid);
+
+                    //create Y axis
+                    svg1.append("g")
+                      .call(d3.axisLeft(y).ticks(5));
+
+                    // color palette = one color per subgroup
+                    var color = d3.scaleOrdinal()
+                      .domain(subgroups)
+                      .range(['#B6C2CB','#345EA5']);
+
+                      // Show the bars
+                    svg1.append("g")
+                        .selectAll("g")
+                        // Enter in data = loop group per group
+                        .data(data)
+                        .enter()
+                        .append("g")
+                          .attr("transform", function(d) { return "translate(" + x(d.day) + ",0)"; })
+                        .selectAll("rect")
+                        .data(function(d) { return subgroups.map(function(key) { return {key: key, value: d[key]}; }); })
+                        .enter().append("rect")
+                          .attr("x", function(d) { return xSubgroup(d.key); })
+                          .attr("y", function(d) { return y(d.value); })
+                          .attr("width", xSubgroup.bandwidth())
+                          .attr("height", function(d) { return height - y(d.value); })
+                          .attr("fill", function(d) { return color(d.key); });
+
+                    svg1.selectAll(".tick text")
+                         .style("font-size","14px")
+                         .style("fill","#666");
+
+
+
+
+                    var legend = d3.select('#d3_www_legend').selectAll("legend")
+                        .data(subgroups);
+
+                    var legend_cells = legend.enter().append("div")
+                      .attr("class","legend");
+
+                    var p1 = legend_cells.append("p").attr("class","legend_field");
+                    p1.append("span").attr("class","legend_color").style("background",function(d,i) { return color(i) } );
+                    p1.insert("text").text(function(d,i) { return d } );
+
+
+
+                    // text label for the y axis
+                    svg1.append("text")
+                        .attr("transform", "rotate(-90)")
+                        .attr("y",0 - margin.left)
+                        .attr("x",0 - (height / 2))
+                        .attr("dy", "1em")
+                        .style("text-anchor", "middle")
+                        .text("Visits");
+
+
+
+
+                  </script>
+                   <details class="details-chart">
+                        <summary data-i18n="view-data-table">View table data</summary>
+                            <div class="table-responsive">
+                                <table class="table">
+                                  <caption><!--Last Week--></caption>
+                                  <thead>
+                                    <th data-i18n="date" scope="col">Date (<?=$d3DateRanges[0]?>)</th>
+                                    <th data-i18n="visits" scope="col">Visits</th>
+                                  </thead>
+                                  <tbody>
+
+                                    <?php
+                                        //foreach ($aaTrendLastWeek as $trend)
+                                        foreach ($aaTrendLastWeek as $key=>$value)
+                                        {
+
+                                        ?>
+
+                                                <tr>
+                                                  <td><?=$value['value'] ?></td>
+                                                  <td><?=number_format($value['data'][1]) ?></td>
+                                                </tr>
+
+                                                <?php
+                                        }
+
+                                        ?>
+
+
+                                  </tbody>
+                                </table>
+
+                                <table class="table">
+                                  <caption><!--Week--></caption>
+                                  <thead>
+                                    <th data-i18n="date" scope="col">Date (<?=$d3DateRanges[1]?>)</th>
+                                    <th data-i18n="visits" scope="col">Visits</th>
+                                  </thead>
+                                  <tbody>
+
+                                    <?php
+                                        //foreach ($aaTrendWeek as $trend)
+                                        foreach ($aaTrendWeek as $key=>$value)
+                                        {
+
+                                        ?>
+
+
+                                                <tr>
+                                                  <td><?=$value['value'] ?></td>
+                                                  <td><?=number_format($value['data'][1]) ?></td>
+                                                </tr>
+
+                  
+
+
+                                                <?php
+                                        }
+
+                                        ?>
+
+                                  </tbody>
+                                </table>
+                          </div>
+                  </details>
+                </div>
               </div>
             </div>
           </div>
-        </div>
 
         <div class="row mb-4">
           <div class="col-lg-12 col-md-12">
