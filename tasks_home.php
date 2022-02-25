@@ -97,8 +97,8 @@ usort($tasksData, fn($rowA, $rowB) => strcmp($rowA['Task'], $rowB['Task']));
                                         <thead>
                                         <tr>
                                             <th data-i18n="" scope="col">Task</th>
-                                            <th data-i18n="" scope="col">Sub-category</th>
                                             <th data-i18n="" scope="col">Category</th>
+                                            <th data-i18n="" scope="col">Sub-category</th>
                                             <th data-i18n="" scope="col">Visits</th>
                                         </tr>
                                         </thead>
@@ -106,8 +106,8 @@ usort($tasksData, fn($rowA, $rowB) => strcmp($rowA['Task'], $rowB['Task']));
                                         <?php foreach ($filteredTasks as $row): ?>
                                             <tr>
                                                 <td><a href="./tasks_summary.php?taskId=<?=$row['id']?>"><?=$row['Task']?></a></td>
-                                                <td><?=$row['Sub Topic']?></td>
                                                 <td><?=$row['Topic']?></td>
+                                                <td><?=$row['Sub Topic']?></td>
                                                 <td><?=number_format($row['num_visits'])?></td>
                                             </tr>
                                         <?php endforeach ?>

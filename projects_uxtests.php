@@ -58,9 +58,9 @@ function percent($num)
     return round($num * 100, 0) . '%';
 }
 
-function metKPI($num, $old)
+function metKPI($old, $new)
 {
-    if (($num > 0.8) || (abs($old-$num)>0.2))  return 'text-success:check_circle:Met';
+    if (($new > 0.8) || (($new-$old)>0.2))  return 'text-success:check_circle:Met';
     else return 'text-danger:warning:Did not meet';
 }
 
@@ -154,35 +154,23 @@ $projectTests = $db->getUxTestsByProjectId($projectId, $uxTestSelectedFields);
 //$taskTests = $db->getUxTestsByTaskId($taskId, $uxTestSelectedFields);
 //$relatedUxTests = array_column($projectTests, "Success Rate");
 
-
+// echo "<pre>";
+// print_r($projectTests);
+// echo "</pre>";
 //$relatedUxTests = array_column($taskTests, 'title');
 
 
-// echo "<h4>UX Test correct</h4><pre>";
-// print_r($projectTests);
-// echo "</pre>";
+// Add Task for each UX Test
+foreach ($projectTests as $key => $value) {
+    $tsk = $db->getTaskByUxTestId($value["id"],["Task"]);
+    $relatedTsk = array_column($tsk, "Task");
+    $projectTests[$key]["Task"] = $relatedTsk[0];
+    // echo $test["Test title"]."<br>";
+    // echo $;
+}
 
-
-// ------------------------------------------------------------------
-// $prjTasks = array_values(array_unique(array_flatten(array_column_recursive($weeklyRe,"Lookup_Tasks"))));
-// $prjPages = array_values(array_unique(array_flatten(array_column_recursive($weeklyRe,"Lookup_Pages"))));
-// $prjStatus = array_values(array_unique(array_flatten(array_column_recursive($weeklyRe,"Status"))));
 $prjParticipants = array_sum(array_column_recursive($projectTests,"# of Users"));
 //echo "# of Users: ".$prjParticipants;
-
-# of Users
-// $relatedTasks = $fullArray[0]['fields']['Lookup_Tasks'];//['records'];
-// $relatedProjects = $fullArray[0]['fields']['Projects'];
-
-// echo "<pre>";
-// print_r($prjTasks);
-// echo "</pre>";
-// echo "-------------<br/>";
-// echo "<pre>";
-// print_r($prjPages);
-// echo "</pre>";
-
-
 
 //$prjData = array_column_recursive($fullArray,"fields");
 $prjData = $projectTests;
@@ -198,9 +186,23 @@ usort($prjData, function($b, $a) {
 
 $prjByGroupType = group_by('Test Type', $prjData);
 
+// -------------------------------------------------------------------------------------------------------------------
+//GET the list of DUPLICATE SUCCESS RATE values - so we map them correctly on the D3 chart (so they do not overlap (dots))
+// -------------------------------------------------------------------------------------------------------------------
+$arr = array_column_recursive($prjData,"Success Rate");
+
+$duplicateRates = array_values(array_intersect($arr, array_unique(array_diff_key($arr, array_unique($arr)))));
+function times100($n)
+{
+    return ($n * 100);
+}
+
+$duplicateRates = array_map('times100', $duplicateRates);
+// -------------------------------------------------------------------------------------------------------------------
+
 
 // echo "<pre>";
-// print_r($prjByGroupType);
+// print_r($duplicateRates);
 // //print_r($prjData[0]['Success Rate']);
 // echo "</pre>";
 
@@ -227,10 +229,7 @@ $compareTestDate = $prjDatesUnique[1];
 // echo "<pre>";
 // print_r($latestTestDate);
 // echo "</pre>";
-// echo "<br>";
-// echo "<pre>";
-// print_r($compareTestDate);
-// echo "</pre>";
+
 
 if (count($prjDatesUnique)>1) {
     foreach ($prjData as $item) {
@@ -269,6 +268,7 @@ else {
 
 
 
+
 ?>
 
 <h1 class="visually-hidden">Usability Performance Dashboard</h1>
@@ -294,26 +294,6 @@ else {
 </div>
 
 <?php
-// // Adobe Analytics
-// $time = microtime(true);
-//
-// if (!isset($_SESSION['CREATED']))
-// {
-//     $_SESSION['CREATED'] = time();
-//     require_once ('./php/getToken.php');
-// }
-// else if (time() - $_SESSION['CREATED'] > 86400)
-// {
-//     session_regenerate_id(true);
-//     $_SESSION['CREATED'] = time();
-//     require_once ('./php/getToken.php');
-// }
-// if (isset($_SESSION["token"]))
-// {
-//     require_once ('./php/api_post.php');
-//     $config = include ('./php/config-aa.php');
-//     $data = include ('./php/data-aa.php');
-// }
 
 $dateUtils = new DateUtils();
 
@@ -338,12 +318,19 @@ $weeklyDatesHeader = $dateUtils->getWeeklyDates('header');
 
 <?php
 $diff = differ($avgCmpTaskSuccess, $avgTaskSuccess);
+// echo $avgCmpTaskSuccess;
+// echo "<br>";
+// echo $avgTaskSuccess;
+// echo "<br>";
+// echo $diff;
 //$diff = differ($avgTaskSuccess, $avgCmpTaskSuccess);
 $pos = posOrNeg($diff);
 $pieces = explode(":", $pos);
 //
 $diff = abs($diff);
-$kpi_pos = metKPI($avgTaskSuccess, $avgCmpTaskSuccess);
+
+//$kpi_pos = metKPI($avgTaskSuccess, $avgCmpTaskSuccess);
+$kpi_pos = metKPI($avgCmpTaskSuccess, $avgTaskSuccess);
 $kpi_pieces = explode(":", $kpi_pos);
 ?>
 
@@ -362,17 +349,6 @@ $kpi_pieces = explode(":", $kpi_pos);
       </div>
     </div>
   </div>
-   <!-- <div class="col-lg-6 col-md-6 col-sm-12">
-     <div class="card">
-       <div class="card-body card-pad pt-2">
-         <h3 class="card-title"><span class="h6" data-i18n="">Average task success from last UX test</span></h3>
-           <div class="row">
-             <div class="col-lg-8 col-md-8 col-sm-8"><span class="h3 text-nowrap"><?//=percent($avgTaskSuccess) ?></span><span class="small"></span></div>
-             <div class="col-lg-4 col-md-4 col-sm-4 text-end"><span class="h3 text-nowrap"><span class="material-icons"></span> </span></div>
-         </div>
-       </div>
-     </div>
-   </div> -->
 
    <div class="col-lg-6 col-md-6 col-sm-12">
      <div class="card">
@@ -403,33 +379,395 @@ $kpi_pieces = explode(":", $kpi_pos);
           </div>
       </div>
     </div>
-  </div>
+  </div> -->
 
 
-<?php
 
-// $diff = differ($metrics[$pv + 2], $metrics[$pv + 3]);
-// $pos = posOrNeg($diff);
-// $pieces = explode(":", $pos);
-//
-// $diff = abs($diff);
-?>
-  <div class="col-lg-6 col-md-6 col-sm-12">
+
+<!-- D3 VISUALIZATION -->
+
+<div class="row mb-4">
+  <div class="col-lg-12 col-md-12">
     <div class="card">
-      <div class="card-body card-pad pt-2">
-        <h3 class="card-title"><span class="card-tooltip h6" data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-placement="right" data-bs-content="" data-i18n="">Call volume</span></h3>
-          <div class="row">
-            <div class="col-md-8 col-sm-6"><span class="h3 text-nowrap"><?//=number_format($totalVisits) ?></span><span class="small"><?//=number_format($metrics[$visits + 2]) ?></span></div>
-            <div class="col-lg-4 col-md-4 col-sm-4 text-end"><span class="h3 <?//=$pieces[0] ?> text-nowrap"><span class="material-icons"><?//=$pieces[1] ?></span> <?//=percent($diff) ?></span></div>
+      <div class="card-body pt-2">
+        <h3 class="card-title"><span class="card-tooltip h6" data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-placement="right" data-bs-content="Tasks success by Test" data-bs-original-title="" title="" data-i18n="">Tasks success by Test</span></h3>
+          <div class="card-body pt-2" id="d3_uxtests"></div>
+            <div id="d3_www_legend"></div>
+              <!-- Task Success by Test D3 bar chart -->
+              <script src="https://d3js.org/d3-scale-chromatic.v1.min.js"></script>
+
+
+               <?php
+               foreach ($prjData as $key => $value) {
+                 //For the UX test names to be unique, we add "Test:i-" for every test
+                 // we can also ADD multiple "white spaces" in front of the name (cause the Test name is aligned right on this axis_)
+                 // (code for white spaces - str_repeat("", i))
+                 //OR
+                 //we can use the dates (in brackets) to make all same Ux tests unique (maybe add extra second or minute), but keep the date correct.
+                 $d3["test"] = "UX Test:".($key+1)."-".$value["Test title"];
+                 $d3["rate"] = $value["Success Rate"];
+                 $d3Data[] = $d3;
+               }
+
+               $allGroups = array_column($d3Data, "test");
+               // echo "<pre>";
+               // print_r($prjData);
+               // echo "</pre>";
+               ?>
+
+
+
+              <?php
+
+              //$prjByGroupType = group_by('Test Type', $prjData);
+              $testTypes = [];
+              foreach (array_reverse($prjByGroupType) as $key => $value) {
+               $testTypes[] = $key." (".date("Y-m-d", strtotime($value[0]['Date'])).")";
+              }
+
+
+
+              // ------------------------------------------------------------------------------
+              // ---- IMPORTANT! - dataReady php array, converted to json----------
+              // with this, we don't need the dataReady mapping done in JS, we directly provide the
+              // json we need for the D3 visualization
+              // ------------------------------------------------------------------------------
+              $f =[];
+              foreach ($prjData as $k) {
+                  //$fJson["name"] = $k["id"];
+                  $fJson["name"] = $k["Task"];
+                  $fJ=[];
+                  $fJ2=[];
+                  foreach (array_reverse($prjByGroupType) as $key => $value) {
+                      // if ($key === $k["Test Type"]) {
+                      //     $fJ["test"] = $key;
+                      //     $fJ["rate"] = $k["Success Rate"];
+                      //     $fJ2[] = $fJ;
+                      // }
+
+                      // foreach ($value as $tst2) {
+                      //   if (($tst2["Task"] === $k["Task"]) && (!empty($tst2["Success Rate"]))) {
+                      //       $fJ["test"] = $key;
+                      //       $fJ["rate"] = $tst2["Success Rate"];
+                      //       $fJ2[] = $fJ;
+                      //   }
+                      // }
+
+                      foreach ($value as $tst2) {
+                        if (($tst2["Task"] === $k["Task"])) {
+
+                                if (!empty($tst2["Success Rate"])) {
+                                  $fJ["test"] = $key;
+                                  $fJ["rate"] = $tst2["Success Rate"]*100;
+                                }
+                                // else {
+                                //   $fJ["rate"] = 0;
+                                // }
+
+                            $fJ2[] = $fJ;
+                        }
+                      }
+
+                  }
+                  $fJson["values"] = $fJ2;
+                  $f[] = $fJson;
+              }
+              //echo count($f);
+
+              $f = array_slice($f,0,(count($f)/2));
+
+              // ------------------------------------------------------------------------------
+              // END------ IMPORTANT! - dataReady php array, converted to json----------
+              // ------------------------------------------------------------------------------
+
+
+
+              // NEW CODE FOR JSON file
+              foreach (array_reverse($prjByGroupType) as $tst) {
+                $j=[];
+                $j["type"] = $tst[0]["Test Type"];
+                foreach ($tst as $t) {
+
+                    if (!empty($t["Success Rate"])) {
+                      //echo $value["Test title"]."<br>";
+                      $j[$t["Task"]] = $t["Success Rate"]*100;
+                    }
+                    //print_r($a);
+                    //echo count($a["Baseline"]);
+                }
+                $jA[]=$j;
+              }
+              //$jA = array_slice($jA, 0, (count($jA)/2));
+
+              $myNewData3 = json_encode($jA);
+
+              $uxTestsTasks = array_values(array_unique(array_flatten(array_column_recursive($prjData,"Task"))));
+              $uxTestsTypes = array_values(array_unique(array_flatten(array_column_recursive($prjData,"Test Type"))));
+              // echo "Ids<pre>";
+              // print_r($jA);
+              // echo "</pre>";
+              //
+              ?>
+
+              <script>
+              //
+              // set the dimensions and margins of the graph
+              width = parseInt(d3.select('#d3_uxtests').style('width'), 10)
+              height = width / 3;
+              //alert("hellp");
+              var margin = {top: 10, right: 30, bottom: 100, left: 100},
+                  width = width - margin.left - margin.right,
+                  height = height - margin.top - margin.bottom,
+                  legendHeight = 0,
+                  //dualaxisWidth = 120;
+                  dualaxisWidth = 0;
+
+
+              // append the svg object to the body of the page
+              var svg1 = d3.select("#d3_uxtests")
+                .append("svg")
+                  .attr("width", width + margin.left + margin.right)
+                  .attr("height", height + margin.top + margin.bottom + legendHeight)
+                .append("g")
+                  .attr("transform",
+                        "translate(" + margin.left + "," + margin.top + ")");
+
+
+              // Parse the Data
+                //var data = <?//=$mydata?>;
+
+                //var data = <?//=$mydata;?>;
+                // var data = <?=$myNewData3;?>;
+                // console.log("data");
+                // console.log(data);
+
+
+
+                // List of groups (here I have one group per column)
+                //var allGroup = ["valueA", "valueB", "valueC"]
+                //var allGroup = ["Test 1","Test 2","Test 3","Test 4"]
+                var allGroup = <?=json_encode($uxTestsTasks)?>;
+                console.log("Tasks:")
+                console.log(allGroup);
+                //var allGroup = ["CRSB  - Post-launch test 1"]
+                //var testTypes = ["Baseline","Validation"]
+                var testTypes = <?=json_encode(array_reverse($uxTestsTypes))?>;
+                console.log("Test types:")
+                console.log(testTypes);
+
+                // Reformat the data: we need an array of arrays of {x, y} tuples
+                // var dataReady = allGroup.map( function(grpName) { // .map allows to do something for each element of the list
+                //   return {
+                //     name: grpName,
+                //     values: data.map(function(d) {
+                //       //return {time: d.Type, value: +d[grpName]};
+                //       return {test: d.type, rate: +d[grpName]};
+                //     })
+                //   };
+                // });
+
+                var dataReady = <?=json_encode($f)?>;
+                // I strongly advise to have a look to dataReady with
+                //console.log(data)
+                console.log("dataReady JSON data")
+                console.log(dataReady)
+
+                // A color scale: one color for each group
+                var myColor = d3.scaleOrdinal()
+                  .domain(allGroup)
+                  .range(['#345EA5','#6CB5F3','#36A69A','#F8C040']);
+                  //.range(d3.schemeSet2);
+
+
+                // Add Y axis
+                var y = d3.scaleLinear()
+                  .domain( [0,100])
+                  .range([ height, 0 ]);
+                svg1.append("g")
+                  .call(d3.axisLeft(y).ticks(5));
+
+                // grid lines on Y axis
+                var yGrid = d3.axisLeft(y).tickSize(-width).tickFormat('').ticks(10);
+
+                //create  yGrid
+                svg1.append('g')
+                    .attr('class', 'axis-grid')
+                    //.attr('transform', 'translate(0,' + height + ')')
+                    .call(yGrid);
+
+
+                // Add X axis --> it is a date format
+                var x = d3.scaleBand()
+                  .domain(testTypes)
+                  .range([ 0 , width ])
+                  .padding(1);
+                svg1.append("g")
+                  .attr("transform", "translate(0," + height + ")")
+                  .call(d3.axisBottom(x));
+
+
+              // if there's more than one test types, add the lines between the tests, otherwise  do not draw the lines
+              <?php if (count($prjByGroupType)>1) {?>
+
+                // Add the lines
+                var line = d3.line()
+                  .x(function(d) { return x(d.test) })
+                  .y(function(d) { return y(d.rate) })
+                svg1.selectAll("myLines")
+                  .data(dataReady)
+                  .enter()
+                  .append("path")
+                    .attr("d", function(d){ return line(d.values) } )
+                    .attr("stroke", function(d){ return myColor(d.name) })
+                    .style("stroke-width", 4)
+                    .style("fill", "none")
+
+                <?php } ?>
+                //const repeats = [75,75,75];
+                //const repeats = <?//=json_encode($duplicateRates)?>;
+                const repeats = [<?=implode(",",$duplicateRates)?>];
+                console.log(repeats);
+                // Add the points
+                svg1
+                  // First we need to enter in a group
+                  .selectAll("myDots")
+                  .data(dataReady)
+                  .enter()
+                    .append('g')
+                    .style("fill", function(d){ return myColor(d.name) })
+                  // Second we need to enter in the 'values' part of this group
+                  .selectAll("myPoints")
+                  .data(function(d){ return d.values })
+                  .enter()
+                  .append("circle")
+                    //.attr("cx", function(d) { return x(d.test) } )
+                    .attr("cx", function(d) {
+                    <?php if (count($prjByGroupType)>1) { ?>
+                          return x(d.test) } )
+                    <?php }
+                    else { ?>
+                        //if(repeats.indexOf(d.rate) !== -1){ includes("Banana")
+                       if(repeats.indexOf(d.rate) !== -1){
+                          repeats.pop()
+                          console.log(d.rate)
+                          return x(d.test)+20*repeats.length
+                          //console.log(repeats);
+                        } else{
+                          return x(d.test);
+                        }
+
+                      } )
+                    <?php } ?>
+
+                    .attr("cy", function(d) { return y(d.rate) } )
+                    .attr("r", 7)
+                    .attr("stroke", "white")
+
+                // Add a LABEL/LEGEND at the end of each line
+                // svg1
+                //   .selectAll("myLabels")
+                //   .data(dataReady)
+                //   .enter()
+                //     .append('g')
+                //     .append("text")
+                //       //.datum(function(d) { return {name: d.name, value: d.values[d.values.length - 1]}; }) // keep only the last value of each time series
+                //       <?php //if (count($prjByGroupType)>1) {?>
+                //           .datum(function(d) { return {name: d.name, value: d.values[1]}; }) // keep only the last value of each time series
+                //       <?php //} else { ?>
+                //             .datum(function(d) { return {name: d.name, value: d.values[0]}; }) // keep only the last value of each time series
+                //       <?php //} ?>
+                //
+                //       .attr("transform", function(d,i) { return "translate(" + x(d.value.test) + "," + y(d.value.rate) + ")"; }) // Put the text at the position of the last point
+                //       .attr("x", 12) // shift the text a bit more right
+                //       .text(function(d) { return d.name; })
+                //       .style("fill", function(d){ return myColor(d.name) })
+                //       .style("font-size", 15);
+
+
+              // LABEL y axis
+              svg1.append("text")
+                  .attr("transform", "rotate(-90)")
+                  .attr("y", 0 - margin.left)
+                  .attr("x", 0 - (height / 2))
+                  .attr("dy", "1em")
+                  .style("text-anchor", "middle")
+                  .text("Task success rate (%)");
+
+              svg1.append("text")
+                  .attr("transform", "rotate(0)")
+                  .attr("y", height + 50)
+                  .attr("x", width/2)
+                  .attr("dy", "1em")
+                  .style("text-anchor", "middle")
+                  .text("UX Test types");
+
+              // tick text size
+              svg1.selectAll(".tick text")
+                  //.attr("class","axis_labels")
+                  .style("font-size","14px")
+                  .style("fill","#666");
+
+
+                  // LEGEND
+                  var legend = d3.select('#d3_www_legend').selectAll("legend")
+                      .data(allGroup);
+
+                  var legend_cells = legend.enter().append("div")
+                      .attr("class","legend");
+
+                  var p = legend_cells.append("p").attr("class","legend_field");
+                  p.append("span").attr("class","legend_color").style("background",function(d,i) { return myColor(i) } );
+                  p.insert("text").text(function(d,i) { return d } );
+
+
+
+
+              </script>
+
+
+
+              <details class="details-chart">
+                   <summary data-i18n="view-data-table">View table data</summary>
+                       <div class="table-responsive">
+                           <table class="table">
+                             <caption><!--Last Week--></caption>
+                             <thead>
+                               <th data-i18n="" scope="col">Task</th>
+                               <th data-i18n="" scope="col">Test Type</th>
+                               <th data-i18n="" scope="col">Task Success Rate</th>
+                             </thead>
+                             <tbody>
+
+                               <?php
+                                   //foreach ($aaTrendLastWeek as $trend)
+                                   foreach ($prjData as $key=>$value)
+                                   {
+
+                                   ?>
+
+                                           <tr>
+                                             <td><?=$value['Task']; ?></td>
+                                             <td><?=$value["Test Type"]; ?></td>
+                                             <td><?=percent($value['Success Rate']) ?></td>
+                                           </tr>
+
+                                           <?php
+                                   }
+
+                                   ?>
+
+
+                             </tbody>
+                           </table>
+                     </div>
+             </details>
           </div>
-          <div class="row">
-            <div class="col-lg-12 col-md-12 col-sm-12"><span class="<?//=$pieces[0] ?> text-nowrap"><span class="material-icons"><?//=$pieces[1] ?></span></span><span class="text-nowrap"></span></div>
-          </div>
+        </div>
       </div>
     </div>
-  </div>
 
-</div> -->
+<!-- end D3 VISUALIZATION-->
+
 
 
 <div class="row mb-4">
@@ -494,9 +832,9 @@ $kpi_pieces = explode(":", $kpi_pos);
 
                //echo gettype($t5t['Total topic calls'][0]);
                // echo "<pre>";
-               // var_dump($prjByGroupType);
+               // print_r($prjByGroupType);
                // echo "</pre>";
-               //var_dump($qry);
+              //var_dump($qry);
 
                  if (count($qry) > 0) { ?>
                    <div class="table-responsive">
@@ -520,36 +858,65 @@ $kpi_pieces = explode(":", $kpi_pos);
                      <?php foreach ($qry as $row) { ?>
                        <?php $change = array(); ?>
                          <tr>
-                           <td><?=$row;?></td>
-                           <?php foreach (array_reverse($prjByGroupType) as $type) { ?>
-                             <?php $avgSR = 0; $count=0; ?>
-                             <?php foreach ($type as $uxtest): ?>
+                            <td><?=$row;?></td>
+                            <?php $lastKey = array_key_last(array_reverse($prjByGroupType));
+                              //echo $lastKey;
+                            ?>
+                            <?php foreach (array_reverse($prjByGroupType) as $key => $value) {
+                                      $avgSR = 0;
+                                      $count=0;
 
-                                     <?php //$t = $uxtest['id'];//$t = $uxtest['Lookup_Tasks'];
-                                           //$t = $db->getTaskByUxTestId($uxtest['id'], ['"Test title"']);
-                                           $tt = $db->getTaskByUxTestId($uxtest['id'], ["Task"]);
-                                           $t = array_column($tt, 'Task');
-                                           // echo "<pre>";
-                                           // var_dump($t);
-                                           // echo "</pre>";
+                                      //$lastKey2 = array_key_last($value);
 
-                                           if (in_array($row, $t)) {
-                                              $avgSR += $uxtest['Success Rate'];
-                                              $count += 1;
-                                          }
-                                     ?>
+                                      foreach ($value as $uxtest):
 
-                             <?php endforeach; ?>
+                                               $tt = $db->getTaskByUxTestId($uxtest['id'], ["Task"]);
+                                               $t = array_column($tt, 'Task');
+                                               // echo "<pre>";
+                                               // var_dump($t);
+                                               // echo "</pre>";
 
+                                               if (in_array($row, $t)) {
+                                                  $avgSR += $uxtest['Success Rate'];
+                                                  $count += 1;
+                                              }
 
-                             <?php
+                                      endforeach;
+                                      // foreach ($value as $key2 => $value2):
+                                      //
+                                      //          $tt = $db->getTaskByUxTestId($value2['id'], ["Task"]);
+                                      //          $t = array_column($tt, 'Task');
+                                      //          // echo "<pre>";
+                                      //          // var_dump($t);
+                                      //          // echo "</pre>";
+                                      //
+                                      //          if (in_array($row, $t)) {
+                                      //             $avgSR += $value2['Success Rate'];
+                                      //             $count += 1;
+                                      //         }
+                                      //
+                                      //
+                                      //         if (($key2 == $lastKey2) && ($value2['Test type']==$key)) {
+                                      //               echo "Last key is here";  // 'you can do something here as this condition states it just entered last element of an array';
+                                      //         }
+                                      //
+                                      // endforeach;
+
                                     ($count>0) ? $avgSR_total = $avgSR/$count : $avgSR_total=0;
                                     $change[]= $avgSR_total;
-                             ?>
 
 
-                                <td><?=percent($avgSR_total)?></td>
-                            <?php } ?>
+                                  //if its the last Test, mark the test that met the KPI
+                                  if ($key == $lastKey) { ?>
+                                      <td <?php if ($avgSR_total>=0.8) { echo "style='background:#90EE90'"; } else { echo ""; }?> ><?=percent($avgSR_total)?></td>
+                                 <?php  }
+                                 else { ?>
+                                      <td><?=percent($avgSR_total)?></td>
+                                 <?php } ?>
+
+
+
+                            <?php } //foreach prjByGroupType ?>
 
                            <?php if (count($prjByGroupType)>1) { ?>
                                  <?php
@@ -562,12 +929,15 @@ $kpi_pieces = explode(":", $kpi_pos);
 
                                  ?>
                                  <!-- <td><span>--><?//=$fieldsByGroupPW[$row[0]['Topic']]['Total topic calls'];?><!--</span></td> -->
-                                 <td><span class="<?=$pieces[0]?>"><?=$pieces[1]?> <?=percent($diff)?></span></td>
+                                 <td <?php if (($diff>=0.2) && ($pieces[1]=="+")) { echo "style='background:#90EE90'"; } else { echo ""; }?>><span class="<?=$pieces[0]?>"><?=$pieces[1]?> <?=percent($diff)?></span></td>
                            <?php } ?>
                          </tr>
                      <?php } ?>
                        </tbody>
                      </table>
+                        <div>
+                          <div class="legend"><p class="legend_field"><span class="legend_color" style="background: #90EE90;"></span><text>Met objective of 80% success rate or 20 point increase</text></p></div>
+                        </div>
                    </div>
                <?php } ?>
 

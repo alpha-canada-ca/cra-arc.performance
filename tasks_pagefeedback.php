@@ -219,7 +219,10 @@ $sum_metrics2 = array_reduce($metrics2, function($sums, $row) {
 $dyfwywlfPerPage = array_map(function($f) {return array_column_recursive($f, "filteredTotals");}, $result[0]);
 //$test12 = array_diff(array_combine(array_keys($result[1]), array_column_recursive($result[1], "filteredTotals")), [null]);
 //$test12 = array_filter(array_combine(array_keys($result[1]), array_column_recursive($result[1], "filteredTotals")));
-// echo "<pre>";
+// echo "Result 0:<pre>";
+// print_r($result[0]);
+// echo "</pre>";
+// echo "DYF per page<pre>";
 // print_r($dyfwywlfPerPage);
 // echo "</pre>";
 
@@ -931,7 +934,13 @@ else {
                              <td><span class="<?=$pieces[0]?>"><?=$pieces[1]?> <?=percent($diff)?></span></td>
                              <?php
                                 //$visLeftFeedback = $dyfwywlfPerPage[$key][0][7]/$fieldsByGroupUrl[$key]["Total comments per URL"];
-                                $visLeftFeedback = $dyfwywlfPerPage[$key][0][7]/$dyfwywlfPerPage[$key][0][15];
+                                if ($dyfwywlfPerPage[$key][0][7] !=0) {
+                                  $visLeftFeedback = $dyfwywlfPerPage[$key][0][7]/$dyfwywlfPerPage[$key][0][15];
+                                }
+                                else {
+                                  $visLeftFeedback = 0;
+                                }
+                                //$visLeftFeedback = $dyfwywlfPerPage[$key][0][7]/$dyfwywlfPerPage[$key][0][15];
                                 // echo $fieldsByGroupUrl[$key]["Total comments per URL"];
                                 // echo($dyfwywlfPerPage[$key][0][7]);
                                 // echo "----";
