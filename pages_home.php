@@ -201,50 +201,51 @@ if ($succ === 1)
             $urls = $url;
         }
 
-        $r = new ApiClient($config[0]['ADOBE_API_KEY'], $config[0]['COMPANY_ID'], $_SESSION['token']);
-
-        //$temp = ['aa-ovrvw-smmry-metrics', 'aa-ovrvw-smmry-fwylf', 'aa-ovrvw-smmry-trnd', 'aa-ovrvw-smmry-tsks']; //, 'fwylf' ];
-        $temp = []; //, 'fwylf' ];
-        $result = array();
-        $j = array();
-
-        foreach ($temp as $t)
-        {
-
-            $json = $data[$t];
-            $json = sprintf($json, $urls);
-
-            $json = str_replace(array(
-                "*previousMonthStart*",
-                "*previousMonthEnd*",
-                "*monthStart*",
-                "*monthEnd*",
-                "*previousWeekStart*",
-                "*previousWeekEnd*",
-                "*weekStart*",
-                "*weekEnd*"
-            ) , array(
-                $previousMonthStart,
-                $previousMonthEnd,
-                $monthStart,
-                $monthEnd,
-                $previousWeekStart,
-                $previousWeekEnd,
-                $weekStart,
-                $weekEnd
-            ) , $json);
-            //$result = api_post($config[0]['ADOBE_API_KEY'], $config[0]['COMPANY_ID'], $_SESSION['token'], $api);
-//            $result[] = $r->requestEntity($json);
-            $result[] = get_aa_data($json, $r);
-            $j[] = $json;
-
-        }
-
-        //echo var_dump($result[0]);
-        foreach ($result as $r)
-        {
-
-        }
+//         $r = new ApiClient($config[0]['ADOBE_API_KEY'], $config[0]['COMPANY_ID'], $_SESSION['token']);
+//
+//         //$temp = ['aa-ovrvw-smmry-metrics', 'aa-ovrvw-smmry-fwylf', 'aa-ovrvw-smmry-trnd', 'aa-ovrvw-smmry-tsks']; //, 'fwylf' ];
+//         $temp = ['pages-home'];
+//         //$temp = []; //, 'fwylf' ];
+//         $result = array();
+//         $j = array();
+//
+//         foreach ($temp as $t)
+//         {
+//
+//             $json = $data[$t];
+//             $json = sprintf($json, $urls);
+//
+//             $json = str_replace(array(
+//                 "*previousMonthStart*",
+//                 "*previousMonthEnd*",
+//                 "*monthStart*",
+//                 "*monthEnd*",
+//                 "*previousWeekStart*",
+//                 "*previousWeekEnd*",
+//                 "*weekStart*",
+//                 "*weekEnd*"
+//             ) , array(
+//                 $previousMonthStart,
+//                 $previousMonthEnd,
+//                 $monthStart,
+//                 $monthEnd,
+//                 $previousWeekStart,
+//                 $previousWeekEnd,
+//                 $weekStart,
+//                 $weekEnd
+//             ) , $json);
+//             //$result = api_post($config[0]['ADOBE_API_KEY'], $config[0]['COMPANY_ID'], $_SESSION['token'], $api);
+// //            $result[] = $r->requestEntity($json);
+//             $result[] = get_aa_data($json, $r);
+//             $j[] = $json;
+//
+//         }
+//
+//         //echo var_dump($result[0]);
+//         foreach ($result as $r)
+//         {
+//
+//         }
 
         // $res = json_decode($result[0], true);
         // $metrics = $res["summaryData"]["filteredTotals"];
@@ -413,11 +414,170 @@ if ($succ === 1)
         $re = array_column($allPages, "fields");
 
         // echo "<pre>";
-        // print_r(count($re));
         // print_r($re);
         // echo "</pre>";
 
+
+        $pageUrls = array_column($re, "Url");
+        // echo "<pre>";
+        // print_r($pageUrls);
+        // echo "</pre>";
+
+        $filter = "";
+        foreach ($pageUrls as $page) {
+          //$filter = $filter."( ENDS-WITH '".$page."' ) OR ";
+          $filter = $filter."( STARTS-WITH '".$page."' ) OR ";
+        }
+        $filter = substr($filter, 0, -4);
+        //$filter = str_replace("/", "\\\/", $filter);
+
+        //echo $filter;
+
+        $startTime = microtime(true);
+
+        $config = include ('./php/config-aa.php');
+        $r = new ApiClient($config[0]['ADOBE_API_KEY'], $config[0]['COMPANY_ID'], $_SESSION['token']);
+
+        //$temp = ['aa-ovrvw-smmry-metrics', 'aa-ovrvw-smmry-fwylf', 'aa-ovrvw-smmry-trnd', 'aa-ovrvw-smmry-tsks']; //, 'fwylf' ];
+        $temp = ['pages-home'];
+        //$temp = []; //, 'fwylf' ];
+        $result = array();
+        $j = array();
+
+        foreach ($temp as $t)
+        {
+
+            $json = $data[$t];
+            $json = sprintf($json, $filter);
+
+            $json = str_replace(array(
+                // "*previousMonthStart*",
+                // "*previousMonthEnd*",
+                // "*monthStart*",
+                // "*monthEnd*",
+                "*previousWeekStart*",
+                "*previousWeekEnd*",
+                "*weekStart*",
+                "*weekEnd*"
+            ) , array(
+                // $previousMonthStart,
+                // $previousMonthEnd,
+                // $monthStart,
+                // $monthEnd,
+                $previousWeekStart,
+                $previousWeekEnd,
+                $weekStart,
+                $weekEnd
+            ) , $json);
+            //$result = api_post($config[0]['ADOBE_API_KEY'], $config[0]['COMPANY_ID'], $_SESSION['token'], $api);
+//            $result[] = $r->requestEntity($json);
+            //echo $json;
+            $result[] = get_aa_data($json, $r);
+            $j[] = $json;
+
+        }
+
+        $time_elapsed_secs = microtime(true)-$startTime;
+        // echo "<pre>";
+        // print_r($result);
+        // echo "</pre>";
+        // echo "<br/>TIME:";
+        // echo $time_elapsed_secs;
+
+        //$res = json_encode($result["rows"]);
+        $metrics = json_decode($result[0], true);
+        $res = $metrics["rows"];
+        // echo "<pre>";
+        // print_r($res);
+        // echo "</pre>";
+        //echo var_dump($result[0]);
+        // foreach ($result as $r)
+        // {
+        //
+        // }
+
         ?>
+
+
+
+
+        <!-- <div class="row mb-4">
+          <div class="col-lg-12 col-md-12">
+            <div class="card">
+              <div class="card-body pt-2">
+                <h3 class="card-title"><span class="h6"></span></h3>
+                <div id="toptask_wrapper" class="dataTables_wrapper dt-bootstrap5 no-footer"><div class="row"><div class="col-sm-12 col-md-6"></div><div class="col-sm-12 col-md-6"></div></div><div class="row"><div class="col-sm-12">
+
+                   <?php
+
+                      $qry = $re;
+
+                        if (count($qry) > 0) { ?>
+                          <div class="table-responsive">
+                            <table class="table table-striped dataTable no-footer" id="pages_dt">
+                              <caption></caption>
+                              <thead>
+                                <tr>
+                                  <th data-i18n="" scope="col">Page title</th>
+                                  <th data-i18n="" scope="col">URL</th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                  <?php foreach ($qry as $row) { ?>
+                                      <tr>
+                                        <td><?= $row['Page Title'] ?></td>
+                                        <td><a href="./pages_summary.php?url=https://<?= $row['Url'] ?>"><?= $row['Url'] ?></a></td>
+                                      </tr>
+                                  <?php } ?>
+                              </tbody>
+                            </table>
+                          </div>
+                  <?php } ?>
+
+
+                </div></div><div class="row"><div class="col-sm-12 col-md-5"></div><div class="col-sm-12 col-md-7"></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div> -->
+
+
+        <?php
+          // GET PAGE titles for the DataTable.
+          // We now, only have the URLs' with Unique visits from AA
+          // To get all titles for these pages (nd not use breakdowns with AA) is from the SQLITE Db
+          //require 'vendor/autoload.php';
+          include_once "php/lib/sqlite/DataInterface.php";
+          include_once 'php/Utils/Date.php';
+          include_once 'php/lib/sqlite/helpers.php';
+          //require_once ('./php/get_aa_data.php');
+          //use TANIOS\Airtable\Airtable;
+          use Utils\DateUtils;
+
+          //$projectId = $_GET['projectId'] ?? '6f7f2cb1';
+
+          //$dr = $_GET['dr'] ?? 'week';
+
+          //$lang = $_GET['lang'] ?? 'en';
+
+          $db = new DataInterface();
+
+          $pagesSelectedFields = [
+                '"Page Title"',
+                '"Url"'
+          ];
+          $pagesData = $db->getPages($pagesSelectedFields) ?? [];
+
+          // echo "<pre>";
+          // print_r($pagesData);
+          // echo "</pre>";
+
+          // $projectPages = $db->getPagesByProjectId($projectId, ['Url']);
+          // $projectPages = array_column($projectPages, 'Url');
+
+        ?>
+
+
 
 
     <div class="row mb-4">
@@ -429,7 +589,7 @@ if ($succ === 1)
 
                <?php
 
-                  $qry = $re;
+                  $qry = $res;
 
                     if (count($qry) > 0) { ?>
                       <div class="table-responsive">
@@ -439,16 +599,39 @@ if ($succ === 1)
                             <tr>
                               <th data-i18n="" scope="col">Page title</th>
                               <th data-i18n="" scope="col">URL</th>
+                              <th data-i18n="" scope="col" sorting="descending">Unique visits</th>
                             </tr>
                           </thead>
                           <tbody>
-                              <?php foreach ($qry as $row) { ?>
-                                  <tr>
-                                    <td><?= $row['Page Title'] ?></td>
-                                    <td><a href="./pages_summary.php?url=https://<?= $row['Url'] ?>"><?= $row['Url'] ?></a></td>
-                                    <!-- <td><?//= $row['Url'] ?></td> -->
-                                  </tr>
-                              <?php } ?>
+                              <?php foreach ($qry as $row) {
+                                          if ($row["value"] != "(Low Traffic)") {
+                              ?>
+                                              <tr>
+                                                <?php
+                                                    $pageTitle = "N/A";
+                                                    foreach ($pagesData as $page) {
+                                                      if ($page["Url"] === $row['value']) {
+                                                        $pageTitle = $page["Page Title"];
+                                                      }
+                                                    }
+
+                                                    if (substr($pageTitle,-12,12)==" - Canada.ca") {
+                                                      $pageTitle = substr($pageTitle,0,-12);
+                                                    }
+                                                ?>
+                                                <!-- each title has " - Canada.ca" at the end of it. We'll trim that out when displayed -->
+                                                <?php
+
+                                                ?>
+                                                <td><?= $pageTitle ?></td>
+
+                                                <td><a href="./pages_summary.php?url=https://<?= $row['value'] ?>"><?= $row['value'] ?></a></td>
+                                                <td><?= number_format($row['data'][1]) ?></td>
+                                                <!-- <td><?//= $row['Url'] ?></td> -->
+                                              </tr>
+                              <?php         } //end - IF
+                            } //end Foreach
+                              ?>
                           </tbody>
                         </table>
                       </div>
