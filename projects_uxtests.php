@@ -426,7 +426,9 @@ $kpi_pieces = explode(":", $kpi_pos);
               }
 
 
-
+              // echo "Data (not JSON)<pre>";
+              // print_r($prjData);
+              // echo "</pre>";
               // ------------------------------------------------------------------------------
               // ---- IMPORTANT! - dataReady php array, converted to json----------
               // with this, we don't need the dataReady mapping done in JS, we directly provide the
@@ -435,6 +437,12 @@ $kpi_pieces = explode(":", $kpi_pos);
               $f =[];
               foreach ($prjData as $k) {
                   //$fJson["name"] = $k["id"];
+
+                  // if (!(array_key_exists($k["Task"],$fJson)))
+                  //   {
+                  //   $fJson["name"] = $k["Task"];
+                  //   }
+
                   $fJson["name"] = $k["Task"];
                   $fJ=[];
                   $fJ2=[];
@@ -474,8 +482,33 @@ $kpi_pieces = explode(":", $kpi_pos);
               }
               //echo count($f);
 
-              $f = array_slice($f,0,(count($f)/2));
+              function unique_multidim_array($array, $key) {
+                  $temp_array = array();
+                  $i = 0;
+                  $key_array = array();
 
+                  foreach($array as $val) {
+                      if (!in_array($val[$key], $key_array)) {
+                          $key_array[$i] = $val[$key];
+                          $temp_array[$i] = $val;
+                      }
+                      $i++;
+                  }
+                  return $temp_array;
+              }
+
+              $f = unique_multidim_array($f,'name');
+
+              // echo "<pre>";
+              // print_r($f);
+              // echo "</pre>";
+
+              //$f = array_slice($f,0,(count($f)/2));
+
+
+              //echo "Data (not JSON)<pre>";
+              // print_r($f);
+              // echo "</pre>";
               // ------------------------------------------------------------------------------
               // END------ IMPORTANT! - dataReady php array, converted to json----------
               // ------------------------------------------------------------------------------
@@ -498,6 +531,9 @@ $kpi_pieces = explode(":", $kpi_pos);
                 $jA[]=$j;
               }
               //$jA = array_slice($jA, 0, (count($jA)/2));
+              // echo "Data (not JSON)<pre>";
+              // print_r($f);
+              // echo "</pre>";
 
               $myNewData3 = json_encode($jA);
 
@@ -537,7 +573,7 @@ $kpi_pieces = explode(":", $kpi_pos);
                 //var data = <?//=$mydata?>;
 
                 //var data = <?//=$mydata;?>;
-                // var data = <?=$myNewData3;?>;
+                // var data = <?//=$myNewData3;?>;
                 // console.log("data");
                 // console.log(data);
 
