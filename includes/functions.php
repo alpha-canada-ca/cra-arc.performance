@@ -394,6 +394,9 @@ function getMonthRanges($start, $end) {
 // Get Page Title from URL
 /* **************************************  */
 function getSiteTitle( $url ){
+   if (substr($url,0,4)=="www.") {
+      $url = "https://".$url;
+   }
    $doc = new DOMDocument();
    @$doc->loadHTML(file_get_contents($url));
    $title = $doc->getElementsByTagName('title')->item(0)->nodeValue;
