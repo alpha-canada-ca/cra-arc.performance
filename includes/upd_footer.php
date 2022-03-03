@@ -42,7 +42,8 @@
         });
 
       $("#pages_dt").DataTable({
-        "searching": true
+        "searching": true,
+        "order":[]
       });
 
       // EXPORT BUTTONS ON DATA TABLE
