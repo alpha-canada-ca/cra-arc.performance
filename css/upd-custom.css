@@ -445,3 +445,13 @@ caption {
     color: #686F78 !important;
     display:none;
 }
+
+.view_all_link {
+  text-align: end;
+  position: relative;
+  top: -25px;
+}
+
+.extend_height {
+  display: grid;
+}

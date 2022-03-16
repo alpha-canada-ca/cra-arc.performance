@@ -210,7 +210,7 @@ function cardPercentage($percentage) {
 
 <div class="row">
     <h2 class="h3 pt-2 pb-2 d-inline-block" data-i18n="">
-        <?=$projectData['title']?>
+        <span>Project: </span><?=$projectData['title']?>
         <span class="h5 d-inline-block mb-0 align-top ms-1">
             <?=$projectStatusBadges[$projectStatus]?>
         </span>
@@ -310,7 +310,15 @@ function cardPercentage($percentage) {
 
 <script>
     $(document).ready( function () {
-        $('#pages-dt').DataTable({ deferRender: true, pageLength: 25 });
+        $('#pages-dt').DataTable({
+            deferRender: true,
+            pageLength: 25,
+            "language": {
+                          //search: '<i class="fa fa-filter" aria-hidden="true"></i>',
+                          search: 'Filter',
+                          searchPlaceholder: 'insert keyword(s)'
+                        }
+        });
     } );
 </script>
 
