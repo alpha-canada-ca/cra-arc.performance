@@ -402,7 +402,7 @@
                 if (count($qry) > 0) { ?>
                   <div class="table-responsive">
                     <!-- <table class="table table-striped dataTable no-footer" id="pages_dt"> -->
-                    <table class="table table-striped dataTable no-footer">
+                    <table class="table table-striped dataTable no-footer" id="pages_dt">
                       <caption>Recent testing scores by project</caption>
                       <thead>
                         <tr>

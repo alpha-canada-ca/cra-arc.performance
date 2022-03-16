@@ -43,7 +43,12 @@
 
       $("#pages_dt").DataTable({
         "searching": true,
-        "order":[]
+        "order":[],
+        "language": {
+                      //search: '<i class="fa fa-filter" aria-hidden="true"></i>',
+                      search: 'Filter',
+                      searchPlaceholder: 'insert keyword(s)'
+                    }
       });
 
       // EXPORT BUTTONS ON DATA TABLE
@@ -92,7 +97,12 @@
       if($("#pages_dt2_filter").length >0) {
 
             $("#pages_dt2_filter").DataTable({
-              "searching": true
+              "searching": true,
+              "language": {
+                            //search: '<i class="fa fa-filter" aria-hidden="true"></i>',
+                            search: 'Filter',
+                            searchPlaceholder: 'insert keyword(s)'
+                          }
             });
 
             //Get a reference to the new datatable
@@ -139,7 +149,16 @@
 
   });
 </script>
-
+<!-- <script>
+    $(document).ready( function () {
+        $('.table').DataTable({
+          "language": {
+                        //search: '<i class="fa fa-filter" aria-hidden="true"></i>',
+                        search: 'Filter',
+                        searchPlaceholder: 'insert keyword(s)'
+                      } });
+    } );
+</script> -->
 
 
 </body>

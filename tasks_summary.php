@@ -331,13 +331,13 @@ $relatedUxTests = array_column($taskTests, "Success Rate");
 <!-- <div class="row">
     <h2 class="h3 pt-2 pb-2 d-inline-block" data-i18n=""><?=$taskData['Task']?></h2>
 </div> -->
-<h2 class="h3 pt-2 pb-2" data-i18n=""><?=$taskData['Task']?></h2>
+<h2 class="h3 pt-2 pb-2" data-i18n=""><span>Task: </span><?=$taskData['Task']?></h2>
 
 <div class="page_header back_link">
         <span id="page_project">
               <?php
               if (count($taskProjects) > 0) {
-                  echo '<span class="material-icons align-top">folder</span>';
+                  echo '<span class="material-icons align-top px-1">folder</span>';
               }
 
               echo implode(", ", array_map(function($project) {
@@ -441,7 +441,7 @@ $kpi_pieces = explode(":", $kpi_pos);
       </div>
     </div>
   </div>
-    <div class="col-lg-6 col-md-6 col-sm-12">
+    <div class="col-lg-6 col-md-6 col-sm-12 extend_height">
         <div class="card">
             <div class="card-body card-pad pt-2">
                 <h3 class="card-title"><span class="h6" data-i18n="">Total visits from all pages</span></h3>
@@ -1184,7 +1184,15 @@ $kpi_pieces = explode(":", $kpi_pos);
 
     <script>
         $(document).ready( function () {
-            $('#pages-dt').DataTable({ deferRender: true, pageLength: 25 });
+            $('#pages-dt').DataTable({
+                deferRender: true,
+                pageLength: 25,
+                "language": {
+                              //search: '<i class="fa fa-filter" aria-hidden="true"></i>',
+                              search: 'Filter',
+                              searchPlaceholder: 'insert keyword(s)'
+                            }
+            });
         } );
     </script>
 
