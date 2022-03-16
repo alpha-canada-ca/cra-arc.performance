@@ -76,13 +76,15 @@
     <h1 class="visually-hidden">Usability Performance Dashboard</h1>
     <div class="back_link"><span class="material-icons align-top">west</span> <a href="./tasks_home.php" alt="Back to Tasks home page">Tasks</a></div>
 
-    <h2 class="h3 pt-2 pb-2" data-i18n=""><?=$taskData['Task']?></h2>
-
+    <h2 class="h3 pt-2 pb-2" data-i18n=""><span>Task: </span><?=$taskData['Task']?></h2>
+    <!-- <style>
+    h2.h3 span {color: #345ea5; text-transform:uppercase; font-variant: all-small-caps; letter-spacing: 5px; font-size: 16px; display: flex; padding-bottom: 5px;}
+    </style> -->
     <div class="page_header back_link">
             <span id="page_project">
                   <?php
                   if (count($taskProjects) > 0) {
-                      echo '<span class="material-icons align-top">folder</span>';
+                      echo '<span class="material-icons align-top px-1">folder</span>';
                   }
 
                   echo implode(", ", array_map(function($project) {

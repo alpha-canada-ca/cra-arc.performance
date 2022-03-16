@@ -125,7 +125,15 @@ usort($tasksData, fn($rowA, $rowB) => strcmp($rowA['Task'], $rowB['Task']));
 
 <script>
     $(document).ready( function () {
-        $('#tasks-dt').DataTable({ deferRender: true, pageLength: 25 });
+        $('#tasks-dt').DataTable({
+            deferRender: true,
+            pageLength: 25,
+            "language": {
+                          //search: '<i class="fa fa-filter" aria-hidden="true"></i>',
+                          search: 'Filter',
+                          searchPlaceholder: 'insert keyword(s)'
+                        }
+        });
     } );
 </script>
 <?php
