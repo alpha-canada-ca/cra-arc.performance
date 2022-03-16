@@ -153,7 +153,7 @@ $weeklyDatesHeader = $dateUtils->getWeeklyDates('header');
                             <?php
                             if (count($projectsData) > 0) { ?>
                                 <div class="table-responsive">
-                                    <table class="table table-striped dataTable no-footer">
+                                    <table class="table table-striped dataTable no-footer" id="pages-dt">
                                       <caption>List of all projects</caption>
                                         <thead>
                                         <tr>
@@ -187,6 +187,19 @@ $weeklyDatesHeader = $dateUtils->getWeeklyDates('header');
         </div>
     </div>
 </div>
+<script>
+    $(document).ready( function () {
+        $('#pages-dt').DataTable({
+            deferRender: true,
+            pageLength: 25,
+            "language": {
+                          //search: '<i class="fa fa-filter" aria-hidden="true"></i>',
+                          search: 'Filter',
+                          searchPlaceholder: 'insert keyword(s)'
+                        }
+        });
+    } );
+</script>
 
 <!--Main content end-->
 <?php include "includes/upd_footer.php"; ?>

@@ -140,7 +140,7 @@ $relatedProjects = $fullArray[0]['fields']['Projects'];
 <h1 class="visually-hidden">Usability Performance Dashboard</h1>
 <div class="back_link"><span class="material-icons align-top">west</span> <a href="./pages_home.php" alt="Back to Pages home page">Pages</a></div>
 
-      <h2 class="h3 pt-2 pb-2" data-i18n=""><?=getSiteTitle($url)?></h2>
+      <h2 class="h3 pt-2 pb-2" data-i18n=""><span>Page: </span><?=getSiteTitle($url)?></h2>
       <p data-i18n="" class="page_url hidden"><?=$url?></p>
 
       <script type="text/javascript">

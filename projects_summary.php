@@ -189,7 +189,7 @@ $weeklyDatesHeader = $dateUtils->getWeeklyDates('header');
 
 <div class="row">
     <h2 class="h3 pt-2 pb-2 d-inline-block" data-i18n="">
-        <?=$prjData['title']?>
+        <span>Project: </span><?=$prjData['title']?>
         <span class="h5 d-inline-block mb-0 align-top ms-1">
             <?=$projectStatusBadges[$prjStatus]?>
         </span>

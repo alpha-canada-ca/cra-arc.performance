@@ -248,7 +248,7 @@ $weeklyDatesHeader = $dateUtils->getWeeklyDates('header');
 <h1 class="visually-hidden">Usability Performance Dashboard</h1>
 <div class="back_link"><span class="material-icons align-top">west</span> <a href="./projects_home.php" alt="Back to Projects home page">Projects</a></div>
 
-<h2 class="h3 pt-2 pb-2" data-i18n=""><?=$projectData['title']?>
+<h2 class="h3 pt-2 pb-2" data-i18n=""><span>Project: </span><?=$projectData['title']?>
     <span class="h5 d-inline-block mb-0 align-top ms-1">
         <?=$projectStatusBadges[$projectStatus]?>
     </span>

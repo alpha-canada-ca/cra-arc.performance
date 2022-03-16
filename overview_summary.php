@@ -984,9 +984,9 @@ $diff = abs($diff);
                           <table class="table">
                             <caption><!--Last Week--></caption>
                             <thead>
-                              <th data-i18n="date">Date (<?=$d3DateRanges[0]?>)</th>
-                              <th data-i18n="visits">Visits</th>
-                              <th data-i18n="calls">Calls</th>
+                              <th data-i18n="date" scope="col">Date (<?=$d3DateRanges[0]?>)</th>
+                              <th data-i18n="visits" scope="col">Visits</th>
+                              <th data-i18n="calls" scope="col">Calls</th>
                             </thead>
                             <tbody>
 
@@ -1015,9 +1015,9 @@ $diff = abs($diff);
                           <table class="table">
                             <caption><!--Week--></caption>
                             <thead>
-                              <th data-i18n="date">Date (<?=$d3DateRanges[1]?>)</th>
-                              <th data-i18n="visits">Visits</th>
-                              <th data-i18n="calls">Calls</th>
+                              <th data-i18n="date" scope="col">Date (<?=$d3DateRanges[1]?>)</th>
+                              <th data-i18n="visits" scope="col">Visits</th>
+                              <th data-i18n="calls" scope="col">Calls</th>
                             </thead>
                             <tbody>
 
@@ -1248,7 +1248,10 @@ $sumNumUsers = number_format(array_sum($con1));
       <div class="col-lg-12 col-md-12">
         <div class="card">
           <div class="card-body pt-2">
-            <h3 class="card-title"><span class="card-tooltip h6" data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-placement="right" data-bs-content="Top Tasks from the CRA Quarterly Top Task Survey" data-bs-original-title="" title="" data-i18n="top10-tasks">Top 10 tasks GC Task Success Survey</span></h3>
+            <h3 class="card-title">
+                <span class="card-tooltip h6" data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-placement="right" data-bs-content="Top Tasks from the CRA Quarterly Top Task Survey" data-bs-original-title="" title="" data-i18n="top10-tasks">Top 10 tasks GC Task Success Survey</span>
+            </h3>
+            <div class="view_all_link"><a href="./tasks_home.php">View all tasks</a></div>
             <div id="toptask_wrapper" class="dataTables_wrapper dt-bootstrap5 no-footer"><div class="row"><div class="col-sm-12 col-md-6"></div><div class="col-sm-12 col-md-6"></div></div><div class="row"><div class="col-sm-12">
 
                <?php
@@ -1262,9 +1265,9 @@ $sumNumUsers = number_format(array_sum($con1));
                 <caption>Top 10 Tasks GC Task Success Survey</caption>
                 <thead>
                   <tr>
-                    <th data-i18n="task">Task</th>
-                    <th data-i18n="comparison">>Comparison</th>
-                    <th data-i18n=""><span class="card-tooltip h6" data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-placement="right" data-bs-content="Task Success Survey Completed tooltip" data-bs-original-title="" title="" data-i18n="">Task Success Survey Completed</span></th>
+                    <th data-i18n="task" scope="col">Task</th>
+                    <th data-i18n="comparison" scope="col">Comparison</th>
+                    <th data-i18n="" scope="col"><span class="card-tooltip h6" data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-placement="right" data-bs-content="Task Success Survey Completed tooltip" data-bs-original-title="" title="" data-i18n="">Task Success Survey Completed</span></th>
                   </tr>
                 </thead>
                 <tbody>
