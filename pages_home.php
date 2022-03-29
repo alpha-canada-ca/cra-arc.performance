@@ -173,7 +173,7 @@ if ($succ === 1)
 
 
     <div class="row mb-4 mt-1">
-      <div class="dropdown">
+      <!-- <div class="dropdown">
         <button type="button" class="btn bg-white border border-1 dropdown-toggle" id="range-button" data-bs-toggle="dropdown" aria-expanded="false"><span class="material-icons align-top">calendar_today</span> <span data-i18n="dr-lastweek">Last week</span></button>
             <span class="text-secondary ps-3 text-nowrap dates-header-week"><strong><?=$datesHeader[1][0] ?> - <?=$datesHeader[1][1] ?></strong></span>
             <span class="text-secondary ps-1 text-nowrap dates-header-week" data-i18n="compared_to">compared to</span>
@@ -184,7 +184,7 @@ if ($succ === 1)
           <li><a class="dropdown-item" href="#" data-i18n="dr-lastmonth">Last month</a></li>
         </ul>
 
-      </div>
+      </div> -->
     </div>
 
 
