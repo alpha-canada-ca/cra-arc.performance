@@ -607,6 +607,7 @@ $diff = abs($diff);
         <div class="card">
           <div class="card-body pt-2">
             <h3 class="card-title"><span class="card-tooltip h6" data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-placement="right" data-bs-content="Number of page visits breakdown (bar chart) relation over selected Date ranges, compared to the Call volume (line chart) - the total number of calls in the Calls centre for the same date ranges." data-bs-original-title="" title="" data-i18n="d3-visits-compared-to-calls">Visits compared to call volume</span></h3>
+            <div class="view_all_link"><a href="./overview_webtraffic.php">View more traffic data</a>&nbsp / &nbsp;<a href="./overview_calldrivers.php">View more call drivers data</a></div>
             <div class="card-body pt-2" id="d3_visits"></div>
             <div id="d3_www_legend"></div><div id="d3_www_legend4"></div>
               <!-- Total calls by Enquiry_line D3 bar chart -->
@@ -1301,6 +1302,7 @@ $sumNumUsers = number_format(array_sum($con1));
         <div class="card">
           <div class="card-body pt-2">
             <h3 class="card-title"><span class="card-tooltip h6" data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-placement="right" data-bs-content="Responses to  'Did you find what you were looking for?' on pages with page feedback question" data-bs-original-title="" title="" data-i18n="d3-dyfwywlf">Did you find what you were looking for?</span></h3>
+              <div class="view_all_link"><a href="./overview_pagefeedback.php">View more page feedback data</a></div>
               <div class="card-body pt-2" id="d3_dyfwywlf_barchart"></div>
                 <!-- Did you find what you werel looking - D3 100% Stacked Bar chart -->
                 <?php
@@ -1490,6 +1492,7 @@ $sumNumUsers = number_format(array_sum($con1));
         <div class="card">
           <div class="card-body pt-2">
             <h3 class="card-title"><span class="card-tooltip h6" data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-placement="right" data-bs-content="Reponses to  'What was wrong?' question after visitors clicked 'No' on the 'Did you find what you were looking for?' question." data-bs-original-title="" title="" data-i18n="d3-www">What was wrong?</span></h3>
+              <div class="view_all_link"><a href="./overview_pagefeedback.php">View more page feedback data</a></div>
               <div class="card-body pt-2" id="d3_www_barchart"></div>
                 <div id="d3_www_legend2"></div>
                 <!-- Did you find what you werel looking - WHAT WAS WRONG D3 100% Stacked Bar chart -->
