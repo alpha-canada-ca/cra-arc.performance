@@ -396,4 +396,29 @@ class DataInterface
 
         return $results;
     }
+
+      public function getProjectsByUxTestId($testId, $selectedFields = []): array
+      {
+          $fields = '';
+
+          if (count($selectedFields) > 0) {
+              $fields = ',' . implode(',', $selectedFields);
+          }
+
+          $query = $this->queryBuilder
+              ->select('id' . $fields)
+              ->where('test_id', '=', $testId)
+              ->join('tests_projects', 'id = tests_projects.project_id')
+          ->get('Projects');
+
+          $results = [];
+
+          while ($row = $query->fetchArray(1)) {
+              if (is_array($row)) {
+                  $results[] = $row;
+              }
+          }
+
+          return $results;
+      }
 }

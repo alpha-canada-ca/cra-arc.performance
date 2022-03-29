@@ -141,7 +141,7 @@ $relatedProjects = $fullArray[0]['fields']['Projects'];
 <div class="back_link"><span class="material-icons align-top">west</span> <a href="./pages_home.php" alt="Back to Pages home page">Pages</a></div>
 
       <h2 class="h3 pt-2 pb-2" data-i18n=""><span>Page: </span><?=getSiteTitle($url)?></h2>
-      <p data-i18n="" class="page_url hidden"><?=$url?></p>
+      <p data-i18n="" class="page_url"><?=$url?></p>
 
       <script type="text/javascript">
             function copy_to_clipboard() {
@@ -163,7 +163,7 @@ $relatedProjects = $fullArray[0]['fields']['Projects'];
                     ?>
                </span>
             <?php } ?>
-            <span id="view_url"><span class="material-icons align-top">link</span> View URL </span>
+            <span id="view_url"><span class="material-icons align-top">link</span> Show/Hide URL </span>
             <span id="copy_url" onclick="copy_to_clipboard()"><span class="material-icons align-top">content_copy</span> Copy URL</span>
       </div>
 
