@@ -285,6 +285,10 @@ if (count($prjDatesUnique)>1) {
     // echo "<pre>";
     // print_r($compareTest);
     // echo "</pre>";
+    // echo "<pre>";
+    // print_r($taskProjects);
+    // echo "</pre>";
+
 
     $avgTaskSuccess = (array_sum(array_column_recursive($latestTest, "Success Rate")))/(count($latestTest));
     $avgCmpTaskSuccess = (array_sum(array_column_recursive($compareTest, "Success Rate")))/(count($compareTest));
@@ -420,11 +424,20 @@ $kpi_pieces = explode(":", $kpi_pos);
   <div class="col-lg-6 col-md-6 col-sm-12">
     <div class="card">
       <div class="card-body card-pad pt-2">
-        <h3 class="card-title"><span class="card-tooltip h6" data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-placement="right" data-bs-content="" data-i18n="">Average task success from last UX test</span></h3>
+        <h3 class="card-title">
+            <span class="card-tooltip h6" data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-placement="right" data-bs-content="" data-i18n="">
+                Average task success from last UX test
+            </span>
+              <?php
+                  if (count($prjDatesUnique)>0) { ?>
+                    <span class="h6">&nbsp;(<?=date("M d, Y", strtotime($latestTestDate)); ?>)</span>
+                  <?php }
+                ?>
+        </h3>
             <?php
                 if (count($prjDatesUnique)>0) { ?>
                     <div class="row">
-                      <div class="col-lg-8 col-md-8 col-sm-8"><span class="h3 text-nowrap"><?=percent($avgTaskSuccess); ?></span><span class="small"><?//=number_format($metrics[$visitors + 2]) ?></span></div>
+                      <div class="col-lg-8 col-md-8 col-sm-8"><span class="h3 text-nowrap"><?=percent($avgTaskSuccess); ?></span></div>
                       <div class="col-lg-4 col-md-4 col-sm-4 text-end"><span class="h3 <?=$pieces[0] ?> text-nowrap"><span class="material-icons"><?=$pieces[1] ?></span> <?php if (count($prjDatesUnique)>1) {echo percent($diff);}  ?></span></div>
                     </div>
                     <div class="row">
@@ -1143,7 +1156,8 @@ $kpi_pieces = explode(":", $kpi_pos);
                          <caption>Success rate and scenarios</caption>
                          <thead>
                            <tr>
-                             <th class="sorting" aria-controls="toptask" aria-label="Project" data-i18n="" scope="col">UX Test</th>
+                             <th class="sorting" aria-controls="toptask" aria-label="UX Test" data-i18n="" scope="col">UX Test</th>
+                             <th class="sorting" aria-controls="toptask" aria-label="Project" data-i18n="" scope="col">Project</th>
                              <th class="sorting" aria-controls="toptask" aria-label="Date" data-i18n="" scope="col">Date</th>
                              <th class="sorting" aria-controls="toptask" aria-label="Scenario" data-i18n="" scope="col">Test Type</th>
                              <th class="sorting" aria-controls="toptask" aria-label="Result" data-i18n="" scope="col">Success rate</th>
@@ -1163,6 +1177,12 @@ $kpi_pieces = explode(":", $kpi_pos);
                          ?>
                            <tr>
                              <td><?=$row['Test title']?></td>
+                             <td>
+                                  <?php
+                                      $currProject = $db->getProjectsByUxTestId($row['id'], ['title']);
+                                      echo array_column($currProject, 'title')[0];
+                                  ?>
+                              </td>
                              <td><?=date("Y-m-d", strtotime($row['Date']))?></td>
                              <td><?=$row['Test Type']?></td>
                              <td><?=percent($row['Success Rate'])?></td>
